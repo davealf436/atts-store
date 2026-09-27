@@ -1,6 +1,6 @@
 import React from 'react';
 import { Product } from '../types';
-import { CompactProductCard } from './CompactProductCard';
+import { SwipeableProductCard } from './SwipeableProductCard';
 import { ArrowRight, ArrowLeftRight, Layers, ShieldCheck, Zap } from 'lucide-react';
 import { triggerHaptic } from '../services/telegram';
 import { AthLogo } from './AthLogo';
@@ -71,12 +71,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
       </section>
 
-      {/* Featured Products Section with Compact Vertical Cards */}
-      <section className="space-y-3">
+      {/* Featured Tools Section with Horizontal Swipeable Cards */}
+      <section className="space-y-2.5">
         <div className="flex items-center justify-between px-0.5">
           <div>
-            <h3 className="text-sm font-bold text-gray-900 tracking-tight">
-              Featured Tools
+            <h3 className="text-sm font-bold text-gray-900 tracking-tight flex items-center gap-1.5">
+              <span>Featured Tools</span>
+              <span className="text-[10px] font-semibold text-gray-400">· Swipe</span>
             </h3>
             <p className="text-[11px] text-gray-500">
               Select a tool to explore subscription options
@@ -95,10 +96,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </button>
         </div>
 
-        {/* Compact Vertical Cards Stack in requested order (1. TV Premium, 2. TV Essential, 3. FXReplay Pro) */}
-        <div className="grid grid-cols-1 gap-2.5">
+        {/* Horizontal Swipeable Track (Ordered: 1. TV Premium, 2. TV Essential, 3. FXReplay Pro) */}
+        <div className="flex gap-3 overflow-x-auto pb-2 pt-0.5 -mx-3.5 px-3.5 snap-x snap-mandatory scrollbar-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           {orderedProducts.map((product) => (
-            <CompactProductCard
+            <SwipeableProductCard
               key={product.id}
               product={product}
               onView={onViewProduct}
