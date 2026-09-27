@@ -1,11 +1,14 @@
 {
   "framework": "vite",
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/((?!assets/|.*\\.[a-zA-Z0-9]+$).*)",
+      "destination": "/index.html"
+    }
   ],
   "headers": [
     {
-      "source": "/",
+      "source": "/index.html",
       "headers": [
         {
           "key": "Cache-Control",
@@ -22,7 +25,7 @@
       ]
     },
     {
-      "source": "/index.html",
+      "source": "/",
       "headers": [
         {
           "key": "Cache-Control",
