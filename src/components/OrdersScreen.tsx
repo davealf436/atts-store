@@ -40,7 +40,7 @@ export const OrdersScreen: React.FC<OrdersScreenProps> = ({ onBrowseProducts }) 
         <div className="space-y-0.5">
           <h4 className="font-bold text-gray-900 text-xs">How License Delivery Works</h4>
           <p className="text-[10.5px] text-gray-500 leading-relaxed">
-            When you complete an order, your login credentials or license activation keys are automatically dispatched inside Abyssinia Trading Hub and backed up to your Telegram chat.
+            When you complete an order, your login credentials or license activation keys are automatically dispatched inside ATH and backed up to your Telegram chat.
           </p>
         </div>
       </div>

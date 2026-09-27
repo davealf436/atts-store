@@ -1,10 +1,10 @@
-# ATH (Abyssinia Trading Hub) Mini App Project Rules & Design Guidelines
+# ATH Mini App Project Rules & Design Guidelines
 
 ## 1. Brand Identity
-- **Full Brand Name**: **Abyssinia Trading Hub**
-- **Short Brand Name / Logo**: **ATH**
+- **Brand Name**: **ATH**
 - **Brand Slogan**: **Built for Better Trading.**
-- **Official Brand Logo**: The **Origami Bird** taking flight — an origami geometric low-poly bird crafted with faceted royal amethyst/purple crystal planes and polished 3D metallic gold wireframe creases (`#D4AF37`).
+- **Official Brand Logo**: The **Origami Bird** in flight — an origami geometric low-poly bird crafted with faceted royal amethyst crystal planes and polished 3D metallic gold wireframe creases (`#D4AF37`).
+- **Logo Freedom**: Completely frameless and unconfined — **no square bounding boxes, border lines, or enclosing containers**. The bird floats freely with its natural silhouette.
 - **Logo Animations**:
   - **Floating Hover Physics**: Smooth sine-wave levitation simulating flight.
   - **Wing Flex Articulation**: Gentle micro-flexing of the main wing facets.
@@ -29,7 +29,6 @@
   - Active navigation indicators
   - Links & key highlights
   - Cart counter badge
-  - ATH brand badge
 
 ## 4. Visual Styling & Structure
 - **Borders & Shadows**: Subtle borders (`border-gray-200/90`) and restrained soft shadows (`shadow-xs`, `shadow-2xs`).
@@ -39,8 +38,8 @@
 
 ## 5. Navigation & Layout
 - **Top Bar**:
-  - ATH logo mark with smooth entrance animation.
-  - Abyssinia Trading Hub name and "Built for Better Trading." slogan.
+  - Unboxed, free-floating ATH origami bird logo.
+  - Bold brand name: **ATH** with "Built for Better Trading." slogan.
   - Search trigger icon.
   - Cart icon with badge (Cart icon is kept exclusively in Top Bar).
 - **Floating Bottom Navigation**:

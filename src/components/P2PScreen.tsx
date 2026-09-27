@@ -13,7 +13,7 @@ export const P2PScreen: React.FC = () => {
           </div>
           <div>
             <h2 className="text-sm font-bold text-gray-900 tracking-tight leading-none">
-              Abyssinia Trading Hub P2P
+              ATH P2P Platform
             </h2>
             <span className="text-[10px] text-gray-500 font-medium">
               Direct Peer-to-Peer Escrow Desk

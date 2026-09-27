@@ -28,10 +28,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-[10px] font-bold uppercase tracking-wider text-[#721428] bg-[#FAF0F2] px-2 py-0.5 rounded border border-[#F0D5DA]">
-                ATH Official
+                Official
               </span>
               <span className="text-gray-300">·</span>
-              <span className="text-[11px] text-gray-500 font-medium">Abyssinia Trading Hub</span>
+              <span className="text-[11px] text-gray-500 font-semibold">ATH</span>
             </div>
 
             <h2 className="text-lg sm:text-xl font-bold text-gray-900 tracking-tight leading-snug mb-1">
@@ -153,7 +153,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </div>
           <h4 className="text-xs font-bold text-gray-900 mb-0.5">Direct Telegram</h4>
           <p className="text-[10.5px] text-gray-500 leading-snug">
-            Dispatched directly inside Abyssinia Trading Hub.
+            Dispatched directly inside ATH.
           </p>
         </div>
       </section>
