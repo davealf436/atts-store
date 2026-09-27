@@ -54,15 +54,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
       </section>
 
-      {/* Featured Products Section */}
-      <section className="space-y-3">
+      {/* Featured Products Section with Style C Mixed Cards */}
+      <section className="space-y-3.5">
         <div className="flex items-center justify-between px-0.5">
           <div>
             <h3 className="text-sm font-bold text-gray-900 tracking-tight">
               Featured Tools & Licenses
             </h3>
             <p className="text-[11px] text-gray-500">
-              Essential charting and replay software
+              Visual presentation · Select a product to view available plans
             </p>
           </div>
 
@@ -78,14 +78,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </button>
         </div>
 
-        {/* Product Cards Stack */}
-        <div className="grid grid-cols-1 gap-3.5">
+        {/* Product Cards Stack (Style C: Large visual/logo area + name + description + View Options CTA) */}
+        <div className="grid grid-cols-1 gap-4">
           {products.map((product) => (
             <ProductCard
               key={product.id}
               product={product}
               onView={onViewProduct}
-              onAddToCart={onAddToCart}
+              ctaVariant="options"
+              showPricePlaceholder={false}
             />
           ))}
         </div>
@@ -125,7 +126,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
       </section>
 
-      {/* Key Guarantees / Service Notes (Clean, concise, factual, no fake stats/reviews) */}
+      {/* Key Guarantees / Service Notes */}
       <section className="grid grid-cols-2 gap-3 pt-1">
         <div className="p-3.5 bg-white border border-gray-200/80 rounded-xl text-left">
           <div className="w-7 h-7 rounded-lg bg-gray-100 text-gray-800 flex items-center justify-center mb-2">

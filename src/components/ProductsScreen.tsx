@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Product } from '../types';
 import { ProductCard } from './ProductCard';
-import { Search, SlidersHorizontal } from 'lucide-react';
+import { Search } from 'lucide-react';
 
 interface ProductsScreenProps {
   products: Product[];
@@ -55,7 +55,7 @@ export const ProductsScreen: React.FC<ProductsScreenProps> = ({
           Product Catalog
         </h2>
         <p className="text-xs text-gray-500 mt-0.5">
-          Select a verified trading platform or market simulator.
+          Select a verified trading platform or market simulator to view specs and options.
         </p>
       </div>
 
@@ -98,7 +98,7 @@ export const ProductsScreen: React.FC<ProductsScreenProps> = ({
         />
       </div>
 
-      {/* Products Stack */}
+      {/* Products Stack with Style C Mixed Cards */}
       {filteredProducts.length === 0 ? (
         <div className="p-8 text-center bg-white rounded-2xl border border-gray-200">
           <p className="text-sm font-semibold text-gray-900 mb-1">No matching tools</p>
@@ -116,13 +116,14 @@ export const ProductsScreen: React.FC<ProductsScreenProps> = ({
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-3.5">
+        <div className="grid grid-cols-1 gap-4">
           {filteredProducts.map((product) => (
             <ProductCard
               key={product.id}
               product={product}
               onView={onViewProduct}
-              onAddToCart={onAddToCart}
+              ctaVariant="details"
+              showPricePlaceholder={true}
             />
           ))}
         </div>
