@@ -1,6 +1,6 @@
 import React from 'react';
 import { CartItem } from '../types';
-import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, Info } from 'lucide-react';
+import { X, Trash2, Plus, Minus, ArrowRight, Info } from 'lucide-react';
 import { EmptyState } from './EmptyState';
 import { triggerHaptic } from '../services/telegram';
 
@@ -40,9 +40,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         {/* Header */}
         <div className="p-3.5 border-b border-gray-100 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <ShoppingBag className="w-4.5 h-4.5 text-[#721428]" />
+            <span className="text-base select-none leading-none" role="img" aria-label="Cart">
+              🛒
+            </span>
             <h2 id="cart-drawer-title" className="text-sm font-bold text-gray-900">
-              Shopping Cart
+              Your Cart
             </h2>
             {totalItemsCount > 0 && (
               <span className="text-[11px] text-gray-500 font-medium">
@@ -67,7 +69,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         {items.length === 0 ? (
           <div className="flex-1 flex items-center justify-center">
             <EmptyState
-              icon={<ShoppingBag className="w-5 h-5 text-[#721428]" />}
+              icon={<span className="text-2xl select-none leading-none">🛒</span>}
               title="Your cart is empty"
               description="Browse our verified trading tools and licenses from ATH to add items to your cart."
               actionLabel="Explore Products"
