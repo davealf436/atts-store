@@ -25,18 +25,18 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       <section className="bg-white border border-gray-200/90 rounded-xl p-4 sm:p-5 shadow-xs">
         <div className="flex items-center gap-2 mb-2">
           <span className="text-[10px] font-bold uppercase tracking-wider text-[#721428] bg-[#FAF0F2] px-2 py-0.5 rounded border border-[#F0D5DA]">
-            Official Store
+            ATH Official
           </span>
           <span className="text-gray-300">·</span>
-          <span className="text-[11px] text-gray-500 font-medium">Abyssinia Trading Tools</span>
+          <span className="text-[11px] text-gray-500 font-medium">Abyssinia Trading Hub</span>
         </div>
 
-        <h2 className="text-lg sm:text-xl font-bold text-gray-900 tracking-tight leading-snug mb-1.5">
-          Verified Trading Tools & Subscriptions
+        <h2 className="text-lg sm:text-xl font-bold text-gray-900 tracking-tight leading-snug mb-1">
+          Built for Better Trading.
         </h2>
 
         <p className="text-xs text-gray-600 leading-relaxed mb-3.5">
-          Authentic TradingView account licenses and FXReplay Pro backtesting tools configured for retail traders.
+          Authentic TradingView account licenses and FXReplay Pro backtesting tools curated for serious retail traders.
         </p>
 
         <div className="flex items-center gap-2">
@@ -78,7 +78,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </button>
         </div>
 
-        {/* Product Cards Stack (Style C: Large visual/logo area + name + description + View Options CTA) */}
+        {/* Product Cards Stack */}
         <div className="grid grid-cols-1 gap-3.5">
           {products.map((product) => (
             <ProductCard
@@ -102,7 +102,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <span className="text-[10px] font-bold uppercase tracking-wider text-gray-700 bg-gray-100 px-2 py-0.5 rounded">
-                Separate Service
+                ATH Escrow Desk
               </span>
             </div>
             <h3 className="text-sm font-bold text-gray-900 tracking-tight mb-1">
@@ -144,7 +144,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </div>
           <h4 className="text-xs font-bold text-gray-900 mb-0.5">Direct Telegram</h4>
           <p className="text-[10.5px] text-gray-500 leading-snug">
-            Delivered directly inside your Telegram app.
+            Dispatched directly inside Abyssinia Trading Hub.
           </p>
         </div>
       </section>

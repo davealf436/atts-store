@@ -48,3 +48,19 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(114, 20, 40, 0.28);
 }
+
+/* ATH Logo Smooth Entrance Animation (0.8s–1.2s duration) */
+@keyframes athEntrance {
+  0% {
+    opacity: 0.15;
+    transform: scale(0.92) translateY(2px);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.02) translateY(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Search, ShoppingBag, X } from 'lucide-react';
 import { triggerHaptic } from '../services/telegram';
+import { AthLogo } from './AthLogo';
 
 interface TopBarProps {
   cartCount: number;
@@ -22,17 +23,15 @@ export const TopBar: React.FC<TopBarProps> = ({
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-200/80 transition-colors">
       <div className="max-w-md mx-auto px-4 h-13 flex items-center justify-between gap-3">
-        {/* Brand identity */}
+        {/* Brand identity: ATH Logo with subtle smooth entrance animation */}
         <div className="flex items-center gap-2.5 min-w-0">
-          <div className="w-7.5 h-7.5 rounded-lg bg-[#721428] text-white flex items-center justify-center font-bold text-xs tracking-tight shrink-0 shadow-xs">
-            ATTS
-          </div>
+          <AthLogo size="sm" />
           <div className="min-w-0">
             <h1 className="text-sm font-bold text-gray-900 tracking-tight leading-none truncate">
-              ATTS Store
+              Abyssinia Trading Hub
             </h1>
             <p className="text-[10px] text-gray-500 font-medium tracking-tight mt-0.5 truncate">
-              Abyssinia Trading Tools
+              Built for Better Trading.
             </p>
           </div>
         </div>

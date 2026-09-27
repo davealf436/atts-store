@@ -69,7 +69,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             <EmptyState
               icon={<ShoppingBag className="w-5 h-5 text-[#721428]" />}
               title="Your cart is empty"
-              description="Browse our verified trading tools and licenses to add items to your cart."
+              description="Browse our verified trading tools and licenses from Abyssinia Trading Hub to add items to your cart."
               actionLabel="Explore Products"
               onAction={() => {
                 triggerHaptic('light');

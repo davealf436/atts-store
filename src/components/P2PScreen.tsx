@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeftRight, ShieldCheck, AlertCircle } from 'lucide-react';
+import { ShieldCheck, AlertCircle } from 'lucide-react';
 import { triggerHaptic } from '../services/telegram';
 
 export const P2PScreen: React.FC = () => {
@@ -9,11 +9,11 @@ export const P2PScreen: React.FC = () => {
       <section className="bg-white border border-gray-200/90 rounded-xl p-4 sm:p-5 shadow-xs">
         <div className="flex items-center gap-2.5 mb-2">
           <div className="w-7.5 h-7.5 rounded-lg bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center font-bold text-xs shrink-0">
-            P2P
+            ATH
           </div>
           <div>
             <h2 className="text-sm font-bold text-gray-900 tracking-tight leading-none">
-              Abyssinia P2P Platform
+              Abyssinia Trading Hub P2P
             </h2>
             <span className="text-[10px] text-gray-500 font-medium">
               Direct Peer-to-Peer Escrow Desk
@@ -98,7 +98,7 @@ export const P2PScreen: React.FC = () => {
               1
             </div>
             <div className="leading-snug">
-              <strong className="text-gray-900 font-bold">USDT Lock:</strong> The seller's crypto is frozen in ATTS escrow before the trade begins.
+              <strong className="text-gray-900 font-bold">USDT Lock:</strong> The seller's crypto is frozen in ATH escrow before the trade begins.
             </div>
           </div>
 
