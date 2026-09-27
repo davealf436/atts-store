@@ -15,7 +15,6 @@ export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<NavigationTab>('home');
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
@@ -73,13 +72,6 @@ export const App: React.FC = () => {
         <TopBar
           cartCount={cartTotalCount}
           onOpenCart={() => setIsCartOpen(true)}
-          isSearchOpen={isSearchOpen}
-          onToggleSearch={() => {
-            setIsSearchOpen(!isSearchOpen);
-            if (!isSearchOpen && activeTab !== 'products') {
-              setActiveTab('products');
-            }
-          }}
           searchQuery={searchQuery}
           onSearchChange={handleSearchChange}
         />
