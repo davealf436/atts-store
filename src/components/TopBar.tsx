@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { User, Search, ShoppingCart, X, CheckCircle, Shield } from 'lucide-react';
+import { Search, ShoppingCart, X, CheckCircle, Shield } from 'lucide-react';
 import { triggerHaptic, getInitialTelegramUser } from '../services/telegram';
 
 interface TopBarProps {
@@ -37,30 +37,38 @@ export const TopBar: React.FC<TopBarProps> = ({
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-200/80 transition-colors">
       <div className="max-w-md mx-auto px-3.5 h-13 flex items-center justify-between gap-2.5">
-        {/* 1. Profile icon on the left */}
+        {/* 1. Profile pill badge on the left (Avatar initial + Current name) */}
         <div className="relative shrink-0" ref={profileRef}>
           <button
             onClick={() => {
               triggerHaptic('light');
               setIsProfileOpen((prev) => !prev);
             }}
-            className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all active:scale-95 border ${
+            className={`h-9 pl-1.5 pr-2.5 rounded-full flex items-center gap-1.5 transition-all active:scale-95 border ${
               isProfileOpen
-                ? 'bg-[#FAF0F2] text-[#721428] border-[#F0D5DA]'
-                : 'bg-gray-50/80 hover:bg-gray-100 text-gray-700 hover:text-gray-900 border-gray-200/80'
+                ? 'bg-[#FAF0F2] border-[#721428]/40 shadow-xs'
+                : 'bg-white hover:bg-gray-50 text-gray-900 border-gray-200/90 shadow-2xs'
             }`}
             aria-label="User Profile"
-            title="User Profile"
+            title={`${user.first_name || 'User'} Profile`}
           >
-            <User className="w-4.5 h-4.5" strokeWidth={1.8} />
+            {/* Avatar circle with initial in deep burgundy */}
+            <div className="w-6.5 h-6.5 rounded-full bg-[#721428] text-white font-extrabold text-[11.5px] flex items-center justify-center ring-2 ring-[#721428]/15 shrink-0">
+              {(user.first_name?.[0] || 'D').toUpperCase()}
+            </div>
+
+            {/* Current user name in bold white-burgundy theme */}
+            <span className="text-xs font-bold text-gray-900 tracking-tight truncate max-w-[72px] xs:max-w-[95px]">
+              {user.first_name || 'Dave'}
+            </span>
           </button>
 
           {/* Compact Profile Card Popover */}
           {isProfileOpen && (
             <div className="absolute left-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-200/90 p-3 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
               <div className="flex items-center gap-2.5 mb-2.5 pb-2.5 border-b border-gray-100">
-                <div className="w-9 h-9 rounded-full bg-[#FAF0F2] text-[#721428] font-bold text-sm flex items-center justify-center border border-[#F0D5DA] shrink-0">
-                  {user.first_name?.[0]?.toUpperCase() || 'U'}
+                <div className="w-9 h-9 rounded-full bg-[#721428] text-white font-bold text-sm flex items-center justify-center ring-2 ring-[#721428]/20 shrink-0">
+                  {user.first_name?.[0]?.toUpperCase() || 'D'}
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1">
