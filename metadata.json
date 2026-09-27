@@ -1,0 +1,8 @@
+{
+  "name": "ATTS Store - Telegram Mini App for Ethiopian Traders",
+  "description": "Telegram Mini App and E-Commerce store for Ethiopian Forex and Crypto traders. Featuring Prop Firm accounts, MT4/MT5 tools, TradingView subscriptions, Forex VPS, Hardware wallets, P2P exchange rates, and Telebirr/CBE payments.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
