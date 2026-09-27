@@ -56,14 +56,6 @@ export const App: React.FC = () => {
 
   const cartTotalCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
-  // Switch to Products with active search when searching from TopBar
-  const handleSearchChange = (query: string) => {
-    setSearchQuery(query);
-    if (query.trim() && activeTab !== 'products') {
-      setActiveTab('products');
-    }
-  };
-
   return (
     <div className="min-h-screen bg-[#F0F2F5] text-gray-900 flex flex-col items-center">
       {/* Mobile-first centered frame (320px–430px optimal viewport) */}
@@ -72,8 +64,6 @@ export const App: React.FC = () => {
         <TopBar
           cartCount={cartTotalCount}
           onOpenCart={() => setIsCartOpen(true)}
-          searchQuery={searchQuery}
-          onSearchChange={handleSearchChange}
         />
 
         {/* Main Content Area */}
