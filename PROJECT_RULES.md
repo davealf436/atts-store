@@ -41,7 +41,8 @@
   - Unboxed, free-floating ATH origami bird logo.
   - Bold brand name: **ATH** with "Built for Better Trading." slogan.
   - Search trigger icon.
-  - Cart icon with badge (Cart icon is kept exclusively in Top Bar).
+  - Outlined Lucide `ShoppingCart` icon in deep burgundy (`#721428`) with small quantity badge.
+  - Zero emojis anywhere in navigation or top bar.
 - **Floating Bottom Navigation**:
   - Elevated slightly above bottom edge (`fixed bottom-3.5`).
   - Refined slightly rounded rectangular shape (`rounded-xl`), not a large pill.

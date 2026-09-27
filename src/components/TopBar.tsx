@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, X } from 'lucide-react';
+import { Search, ShoppingCart, X } from 'lucide-react';
 import { triggerHaptic } from '../services/telegram';
 import { AthLogo } from './AthLogo';
 
@@ -65,11 +65,9 @@ export const TopBar: React.FC<TopBarProps> = ({
             aria-label="Your Cart"
             title="Your Cart"
           >
-            <span className="text-base select-none leading-none" role="img" aria-label="Cart">
-              🛒
-            </span>
+            <ShoppingCart className="w-4.5 h-4.5 text-[#721428]" strokeWidth={2} />
             {cartCount > 0 && (
-              <span className="absolute 1 top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-[#721428] text-white font-bold text-[10px] flex items-center justify-center leading-none shadow-xs">
+              <span className="absolute -top-0.5 -right-0.5 min-w-[17px] h-4 px-1 rounded-full bg-[#721428] text-white font-bold text-[10px] flex items-center justify-center leading-none shadow-xs border border-white">
                 {cartCount}
               </span>
             )}
