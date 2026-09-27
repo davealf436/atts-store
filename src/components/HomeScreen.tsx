@@ -3,6 +3,7 @@ import { Product } from '../types';
 import { ProductCard } from './ProductCard';
 import { ArrowRight, ArrowLeftRight, Layers, ShieldCheck, Zap } from 'lucide-react';
 import { triggerHaptic } from '../services/telegram';
+import { AthLogo } from './AthLogo';
 
 interface HomeScreenProps {
   products: Product[];
@@ -22,22 +23,30 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   return (
     <div className="space-y-4 pb-4">
       {/* Welcome / Hero Banner (Clean, compact, professional trading look) */}
-      <section className="bg-white border border-gray-200/90 rounded-xl p-4 sm:p-5 shadow-xs">
-        <div className="flex items-center gap-2 mb-2">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-[#721428] bg-[#FAF0F2] px-2 py-0.5 rounded border border-[#F0D5DA]">
-            ATH Official
-          </span>
-          <span className="text-gray-300">·</span>
-          <span className="text-[11px] text-gray-500 font-medium">Abyssinia Trading Hub</span>
+      <section className="bg-white border border-gray-200/90 rounded-xl p-4 sm:p-5 shadow-xs relative overflow-hidden">
+        <div className="flex items-start justify-between gap-3 mb-3">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#721428] bg-[#FAF0F2] px-2 py-0.5 rounded border border-[#F0D5DA]">
+                ATH Official
+              </span>
+              <span className="text-gray-300">·</span>
+              <span className="text-[11px] text-gray-500 font-medium">Abyssinia Trading Hub</span>
+            </div>
+
+            <h2 className="text-lg sm:text-xl font-bold text-gray-900 tracking-tight leading-snug mb-1">
+              Built for Better Trading.
+            </h2>
+
+            <p className="text-xs text-gray-600 leading-relaxed">
+              Authentic TradingView account licenses and FXReplay Pro backtesting tools curated for serious retail traders.
+            </p>
+          </div>
+
+          <div className="shrink-0 pt-0.5">
+            <AthLogo size="lg" />
+          </div>
         </div>
-
-        <h2 className="text-lg sm:text-xl font-bold text-gray-900 tracking-tight leading-snug mb-1">
-          Built for Better Trading.
-        </h2>
-
-        <p className="text-xs text-gray-600 leading-relaxed mb-3.5">
-          Authentic TradingView account licenses and FXReplay Pro backtesting tools curated for serious retail traders.
-        </p>
 
         <div className="flex items-center gap-2">
           <button

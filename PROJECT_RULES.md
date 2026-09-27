@@ -4,8 +4,12 @@
 - **Full Brand Name**: **Abyssinia Trading Hub**
 - **Short Brand Name / Logo**: **ATH**
 - **Brand Slogan**: **Built for Better Trading.**
-- **Logo Treatment**: Modern, clean geometric ATH monogram in deep burgundy (`#721428`) with subtle border (`#8C1B34`), crisp white typography, and ascending trading crest.
-- **Entrance Animation**: Subtle, smooth 0.8–1.2s logo entrance animation (`@keyframes athEntrance`) when the Mini App opens, which settles gracefully into the normal static logo state with no recurring CPU overhead or flashy effects.
+- **Official Brand Logo**: The **Origami Bird** taking flight — an origami geometric low-poly bird crafted with faceted royal amethyst/purple crystal planes and polished 3D metallic gold wireframe creases (`#D4AF37`).
+- **Logo Animations**:
+  - **Floating Hover Physics**: Smooth sine-wave levitation simulating flight.
+  - **Wing Flex Articulation**: Gentle micro-flexing of the main wing facets.
+  - **Metallic Gold Shimmer**: Light sheen gliding across the creases and amethyst specular highlights.
+  - **Haptic Touch Reaction**: Tactile flutter upon tapping/clicking with Telegram haptics.
 
 ## 2. Typography
 - **Primary Font**: **Plus Jakarta Sans** throughout the entire UI.

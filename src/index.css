@@ -49,18 +49,53 @@
   background: rgba(114, 20, 40, 0.28);
 }
 
-/* ATH Logo Smooth Entrance Animation (0.8s–1.2s duration) */
-@keyframes athEntrance {
-  0% {
-    opacity: 0.15;
-    transform: scale(0.92) translateY(2px);
+/* ATH Origami Bird Smooth Animations */
+@keyframes athBirdFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
   }
-  70% {
-    opacity: 1;
-    transform: scale(1.02) translateY(0);
+  50% {
+    transform: translateY(-2.5px) rotate(-1deg);
   }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
+}
+
+@keyframes athWingFlap {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.015, 0.99) rotate(-0.8deg);
+  }
+}
+
+@keyframes athAmethystPulse {
+  0%, 100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+.ath-bird-floating {
+  animation: athBirdFloat 3.4s ease-in-out infinite;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+.ath-bird-wings {
+  animation: athWingFlap 3.4s ease-in-out infinite;
+  transform-origin: 454px 488px;
+}
+
+.ath-amethyst-pulse {
+  animation: athAmethystPulse 3.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ath-bird-floating,
+  .ath-bird-wings,
+  .ath-amethyst-pulse {
+    animation: none !important;
   }
 }
