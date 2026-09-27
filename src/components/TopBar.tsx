@@ -98,25 +98,25 @@ export const TopBar: React.FC<TopBarProps> = ({
           )}
         </div>
 
-        {/* Right side cluster: Medium-width search bar + ShoppingCart icon */}
-        <div className="flex items-center gap-2 flex-1 justify-end min-w-0">
-          {/* 2. Medium-width search bar toward the right */}
-          <div className="relative w-full max-w-[210px] sm:max-w-[240px]">
+        {/* Right side cluster: Compact premium search bar + ShoppingCart icon */}
+        <div className="flex items-center gap-2 shrink-0">
+          {/* 2. Small-width professional & premium search bar */}
+          <div className="relative group w-28 xs:w-32 sm:w-36 focus-within:w-36 xs:focus-within:w-44 sm:focus-within:w-48 transition-all duration-200 ease-out">
             <Search
-              className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none"
-              strokeWidth={1.8}
+              className="w-3.5 h-3.5 text-gray-400 group-focus-within:text-[#721428] absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none transition-colors"
+              strokeWidth={1.75}
             />
             <input
               type="text"
               placeholder="Search..."
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
-              className="w-full pl-8 pr-7 py-1.5 text-xs bg-gray-50/90 hover:bg-gray-100/80 focus:bg-white border border-gray-200/90 rounded-lg text-gray-900 placeholder:text-gray-400 focus:border-[#721428] focus:ring-1 focus:ring-[#721428] focus:outline-none transition-all"
+              className="w-full h-9 pl-7.5 pr-7 text-[11.5px] font-medium bg-gray-100/80 hover:bg-gray-100/95 focus:bg-white border border-gray-200/90 rounded-full text-gray-900 placeholder:text-gray-400 focus:border-[#721428] focus:ring-2 focus:ring-[#721428]/15 focus:outline-none shadow-2xs transition-all"
             />
             {searchQuery && (
               <button
                 onClick={() => onSearchChange('')}
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-0.5 text-gray-400 hover:text-gray-600 rounded-full"
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 hover:text-gray-600 rounded-full flex items-center justify-center transition-colors"
                 aria-label="Clear search"
               >
                 <X className="w-3 h-3" />
