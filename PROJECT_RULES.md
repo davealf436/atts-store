@@ -51,8 +51,13 @@
   - 4 navigation tabs: **Home** · **Products** · **P2P** · **My Orders**.
 
 ## 6. Product Catalog & Brand Visuals
-- Product cards follow Style C (Premium Mixed Product Cards).
-- Strictly verified trading products: TradingView (Premium, Essential) and FXReplay Pro.
-- Preserve real official TradingView and FXReplay vector logos.
+- Home screen uses **Compact Vertical Cards** under section title **Featured Tools**.
+- Product ordering on Home screen:
+  1. **TradingView Premium**
+  2. **TradingView Essential**
+  3. **FXReplay Pro**
+- Official Logos:
+  - **TradingView Premium & Essential**: Uses official TradingView monogram on solid black square background (Photo 1).
+  - **FXReplay Pro**: Uses official FXReplay forward-play chevrons on dark cosmic background with stardust (Photo 2).
 - Home screen uses "View Options" CTA without fixed price.
 - Products screen uses "View Details" CTA with starting price placeholder.

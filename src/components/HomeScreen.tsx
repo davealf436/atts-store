@@ -1,6 +1,6 @@
 import React from 'react';
 import { Product } from '../types';
-import { ProductCard } from './ProductCard';
+import { CompactProductCard } from './CompactProductCard';
 import { ArrowRight, ArrowLeftRight, Layers, ShieldCheck, Zap } from 'lucide-react';
 import { triggerHaptic } from '../services/telegram';
 import { AthLogo } from './AthLogo';
@@ -20,6 +20,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onNavigateToProducts,
   onNavigateToP2P,
 }) => {
+  // Display products in the exact requested order:
+  // 1. TradingView Premium
+  // 2. TradingView Essential
+  // 3. FXReplay Pro
+  const orderedProducts = ['tv-premium', 'tv-essential', 'fxreplay-pro']
+    .map((id) => products.find((p) => p.id === id))
+    .filter((p): p is Product => Boolean(p));
+
   return (
     <div className="space-y-4 pb-4">
       {/* Welcome / Hero Banner (Clean, compact, professional trading look) */}
@@ -63,12 +71,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
       </section>
 
-      {/* Featured Products Section with Style C Mixed Cards */}
+      {/* Featured Products Section with Compact Vertical Cards */}
       <section className="space-y-3">
         <div className="flex items-center justify-between px-0.5">
           <div>
             <h3 className="text-sm font-bold text-gray-900 tracking-tight">
-              Featured Tools & Licenses
+              Featured Tools
             </h3>
             <p className="text-[11px] text-gray-500">
               Select a tool to explore subscription options
@@ -87,15 +95,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </button>
         </div>
 
-        {/* Product Cards Stack */}
-        <div className="grid grid-cols-1 gap-3.5">
-          {products.map((product) => (
-            <ProductCard
+        {/* Compact Vertical Cards Stack in requested order (1. TV Premium, 2. TV Essential, 3. FXReplay Pro) */}
+        <div className="grid grid-cols-1 gap-2.5">
+          {orderedProducts.map((product) => (
+            <CompactProductCard
               key={product.id}
               product={product}
               onView={onViewProduct}
-              ctaVariant="options"
-              showPricePlaceholder={false}
             />
           ))}
         </div>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Product } from '../types';
+import { ProductPhotoLogo } from './ProductPhotoLogo';
 
 interface ProductBrandVisualProps {
   product: Product;
@@ -10,11 +11,11 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
   const isTVPremium = product.id === 'tv-premium';
   const isFXReplay = product.brand === 'FXReplay';
 
-  // FXReplay Pro Visual
+  // FXReplay Pro Visual (matching Photo 2)
   if (isFXReplay) {
     return (
       <div
-        className={`relative w-full h-36 sm:h-40 rounded-t-xl overflow-hidden bg-[#0D121D] flex flex-col items-center justify-center p-5 border-b border-gray-100 select-none ${className}`}
+        className={`relative w-full h-36 sm:h-40 rounded-t-xl overflow-hidden bg-[#070D18] flex flex-col items-center justify-center p-5 border-b border-gray-100 select-none ${className}`}
       >
         {/* Subtle trading terminal micro-grid */}
         <div
@@ -38,16 +39,11 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
           <div className="w-1.5 h-7 bg-[#721428] rounded-xs" />
         </div>
 
-        {/* Real FXReplay Official Logo Mark & Typography */}
+        {/* Real FXReplay Official Logo Mark matching Photo 2 */}
         <div className="relative z-10 flex flex-col items-center">
           <div className="flex items-center gap-2.5 mb-2">
-            <div className="w-9 h-9 rounded-lg bg-white/10 backdrop-blur-xs border border-white/15 flex items-center justify-center p-2 shadow-xs">
-              <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z" opacity="0.3"/>
-                <path d="M11.5 7.5v9l6.5-4.5-6.5-4.5zM6 7.5v9l6.5-4.5-6.5-4.5z" />
-              </svg>
-            </div>
-            
+            <ProductPhotoLogo productId={product.id} size="md" className="border border-white/15" />
+
             <div className="text-left">
               <div className="text-base font-extrabold tracking-tight text-white uppercase leading-none">
                 FX<span className="text-emerald-400">REPLAY</span>
@@ -67,11 +63,11 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
     );
   }
 
-  // TradingView Premium Visual
+  // TradingView Premium Visual (matching Photo 1)
   if (isTVPremium) {
     return (
       <div
-        className={`relative w-full h-36 sm:h-40 rounded-t-xl overflow-hidden bg-[#0C101A] flex flex-col items-center justify-center p-5 border-b border-gray-100 select-none ${className}`}
+        className={`relative w-full h-36 sm:h-40 rounded-t-xl overflow-hidden bg-[#000000] flex flex-col items-center justify-center p-5 border-b border-gray-100 select-none ${className}`}
       >
         {/* Trading terminal micro-grid */}
         <div
@@ -96,18 +92,10 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
           />
         </svg>
 
-        {/* Real TradingView Official Logo */}
+        {/* Real TradingView Official Logo matching Photo 1 */}
         <div className="relative z-10 flex flex-col items-center">
           <div className="flex items-center gap-2.5 mb-2">
-            <div className="w-9 h-9 rounded-lg bg-white/10 backdrop-blur-xs border border-white/20 flex items-center justify-center p-2 shadow-xs">
-              <svg
-                viewBox="0 0 24 24"
-                className="w-full h-full fill-white"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M15.8654 8.2789c0 1.3541-1.0978 2.4519-2.452 2.4519-1.354 0-2.4519-1.0978-2.4519-2.452 0-1.354 1.0978-2.4518 2.452-2.4518 1.3541 0 2.4519 1.0977 2.4519 2.4519zM9.75 6H0v4.9038h4.8462v7.2692H9.75Zm8.5962 0H24l-5.1058 12.173h-5.6538z" />
-              </svg>
-            </div>
+            <ProductPhotoLogo productId={product.id} size="md" className="border border-white/20" />
 
             <div className="text-left">
               <div className="text-base font-extrabold tracking-tight text-white leading-none">
@@ -127,10 +115,10 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
     );
   }
 
-  // TradingView Essential Visual
+  // TradingView Essential Visual (matching Photo 1)
   return (
     <div
-      className={`relative w-full h-36 sm:h-40 rounded-t-xl overflow-hidden bg-[#111827] flex flex-col items-center justify-center p-5 border-b border-gray-100 select-none ${className}`}
+      className={`relative w-full h-36 sm:h-40 rounded-t-xl overflow-hidden bg-[#0A0A0A] flex flex-col items-center justify-center p-5 border-b border-gray-100 select-none ${className}`}
     >
       {/* Grid */}
       <div
@@ -142,18 +130,10 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
         }}
       />
 
-      {/* Real TradingView Official Logo */}
+      {/* Real TradingView Official Logo matching Photo 1 */}
       <div className="relative z-10 flex flex-col items-center">
         <div className="flex items-center gap-2.5 mb-2">
-          <div className="w-9 h-9 rounded-lg bg-white/10 backdrop-blur-xs border border-white/20 flex items-center justify-center p-2 shadow-xs">
-            <svg
-              viewBox="0 0 24 24"
-              className="w-full h-full fill-white"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M15.8654 8.2789c0 1.3541-1.0978 2.4519-2.452 2.4519-1.354 0-2.4519-1.0978-2.4519-2.452 0-1.354 1.0978-2.4518 2.452-2.4518 1.3541 0 2.4519 1.0977 2.4519 2.4519zM9.75 6H0v4.9038h4.8462v7.2692H9.75Zm8.5962 0H24l-5.1058 12.173h-5.6538z" />
-            </svg>
-          </div>
+          <ProductPhotoLogo productId={product.id} size="md" className="border border-white/20" />
 
           <div className="text-left">
             <div className="text-base font-extrabold tracking-tight text-white leading-none">
