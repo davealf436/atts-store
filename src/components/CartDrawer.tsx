@@ -27,7 +27,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex justify-end animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex justify-end animate-in fade-in duration-200"
       onClick={onClose}
     >
       <div
@@ -38,14 +38,14 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         aria-labelledby="cart-drawer-title"
       >
         {/* Header */}
-        <div className="p-4 border-b border-gray-100 flex items-center justify-between">
+        <div className="p-3.5 border-b border-gray-100 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <ShoppingBag className="w-5 h-5 text-gray-900" />
-            <h2 id="cart-drawer-title" className="text-base font-bold text-gray-900">
+            <ShoppingBag className="w-4.5 h-4.5 text-[#721428]" />
+            <h2 id="cart-drawer-title" className="text-sm font-bold text-gray-900">
               Shopping Cart
             </h2>
             {totalItemsCount > 0 && (
-              <span className="text-xs text-gray-500 font-medium">
+              <span className="text-[11px] text-gray-500 font-medium">
                 ({totalItemsCount} {totalItemsCount === 1 ? 'item' : 'items'})
               </span>
             )}
@@ -56,10 +56,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               triggerHaptic('light');
               onClose();
             }}
-            className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-900 flex items-center justify-center transition-colors"
+            className="w-7.5 h-7.5 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-900 flex items-center justify-center transition-colors"
             aria-label="Close cart"
           >
-            <X className="w-4 h-4" />
+            <X className="w-3.5 h-3.5" />
           </button>
         </div>
 
@@ -67,7 +67,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         {items.length === 0 ? (
           <div className="flex-1 flex items-center justify-center">
             <EmptyState
-              icon={<ShoppingBag className="w-6 h-6" />}
+              icon={<ShoppingBag className="w-5 h-5 text-[#721428]" />}
               title="Your cart is empty"
               description="Browse our verified trading tools and licenses to add items to your cart."
               actionLabel="Explore Products"
@@ -79,37 +79,37 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             />
           </div>
         ) : (
-          <div className="flex-1 overflow-y-auto p-4 space-y-3">
+          <div className="flex-1 overflow-y-auto p-3.5 space-y-2.5">
             {items.map((item) => (
               <div
                 key={item.product.id}
-                className="p-3.5 bg-gray-50 rounded-xl border border-gray-200/80 flex items-start gap-3"
+                className="p-3 bg-gray-50 rounded-lg border border-gray-200/80 flex items-start gap-3 shadow-2xs"
               >
                 <div className="flex-1 min-w-0">
-                  <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider block">
+                  <span className="text-[10px] font-bold text-[#721428] uppercase tracking-wider block">
                     {item.product.brand}
                   </span>
-                  <h4 className="text-sm font-bold text-gray-900 truncate">
+                  <h4 className="text-xs font-bold text-gray-900 truncate">
                     {item.product.name}
                   </h4>
-                  <div className="text-xs text-gray-600 font-mono mt-0.5">
+                  <div className="text-[11px] text-gray-500 mt-0.5">
                     {item.product.startingPricePlaceholder}
                   </div>
 
                   {/* Quantity Stepper & Remove */}
-                  <div className="flex items-center justify-between mt-3 pt-2 border-t border-gray-200/60">
-                    <div className="flex items-center bg-white border border-gray-200 rounded-lg p-0.5">
+                  <div className="flex items-center justify-between mt-2.5 pt-2 border-t border-gray-200/60">
+                    <div className="flex items-center bg-white border border-gray-200 rounded-md p-0.5 shadow-2xs">
                       <button
                         onClick={() => {
                           triggerHaptic('light');
                           onUpdateQuantity(item.product.id, item.quantity - 1);
                         }}
-                        className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-gray-900 rounded"
+                        className="w-5.5 h-5.5 flex items-center justify-center text-gray-500 hover:text-gray-900 rounded"
                         aria-label="Decrease quantity"
                       >
                         <Minus className="w-3 h-3" />
                       </button>
-                      <span className="w-7 text-center text-xs font-semibold text-gray-900">
+                      <span className="w-6 text-center text-xs font-bold text-gray-900">
                         {item.quantity}
                       </span>
                       <button
@@ -117,7 +117,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                           triggerHaptic('light');
                           onUpdateQuantity(item.product.id, item.quantity + 1);
                         }}
-                        className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-gray-900 rounded"
+                        className="w-5.5 h-5.5 flex items-center justify-center text-gray-500 hover:text-gray-900 rounded"
                         aria-label="Increase quantity"
                       >
                         <Plus className="w-3 h-3" />
@@ -133,7 +133,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       title="Remove item"
                       aria-label="Remove item"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>
@@ -141,9 +141,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             ))}
 
             {/* Note banner */}
-            <div className="p-3 bg-blue-50/70 rounded-xl border border-blue-100 flex items-start gap-2.5 text-xs text-blue-800">
-              <Info className="w-4 h-4 shrink-0 mt-0.5 text-blue-600" />
-              <p className="leading-relaxed text-[11px]">
+            <div className="p-2.5 bg-[#FAF0F2] rounded-lg border border-[#F0D5DA] flex items-start gap-2 text-xs text-[#721428]">
+              <Info className="w-4 h-4 shrink-0 mt-0.5 text-[#721428]" />
+              <p className="leading-relaxed text-[10.5px]">
                 Payment methods (Telebirr, CBE, and USDT) and automated bot delivery will be enabled in the upcoming release.
               </p>
             </div>
@@ -152,18 +152,18 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
         {/* Footer */}
         {items.length > 0 && (
-          <div className="p-4 border-t border-gray-100 bg-gray-50/50 pb-safe space-y-3">
-            <div className="flex items-center justify-between text-sm">
+          <div className="p-3.5 border-t border-gray-100 bg-gray-50/50 pb-safe space-y-2.5">
+            <div className="flex items-center justify-between text-xs">
               <span className="text-gray-600 font-medium">Selected Items</span>
               <span className="font-bold text-gray-900">{totalItemsCount}</span>
             </div>
 
             <button
               disabled
-              className="w-full h-12 rounded-xl bg-gray-300 text-gray-600 font-semibold text-sm flex items-center justify-center gap-2 cursor-not-allowed"
+              className="w-full h-11 rounded-lg bg-gray-200 text-gray-500 font-bold text-xs flex items-center justify-center gap-2 cursor-not-allowed"
             >
               <span>Checkout (Coming Soon)</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
         )}

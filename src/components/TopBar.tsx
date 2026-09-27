@@ -21,17 +21,17 @@ export const TopBar: React.FC<TopBarProps> = ({
 }) => {
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-200/80 transition-colors">
-      <div className="max-w-md mx-auto px-4 h-14 flex items-center justify-between gap-3">
+      <div className="max-w-md mx-auto px-4 h-13 flex items-center justify-between gap-3">
         {/* Brand identity */}
         <div className="flex items-center gap-2.5 min-w-0">
-          <div className="w-8 h-8 rounded-lg bg-gray-900 text-white flex items-center justify-center font-bold text-xs tracking-tight shrink-0 shadow-xs">
+          <div className="w-7.5 h-7.5 rounded-lg bg-[#721428] text-white flex items-center justify-center font-bold text-xs tracking-tight shrink-0 shadow-xs">
             ATTS
           </div>
           <div className="min-w-0">
             <h1 className="text-sm font-bold text-gray-900 tracking-tight leading-none truncate">
               ATTS Store
             </h1>
-            <p className="text-[11px] text-gray-500 font-medium tracking-tight mt-0.5 truncate">
+            <p className="text-[10px] text-gray-500 font-medium tracking-tight mt-0.5 truncate">
               Abyssinia Trading Tools
             </p>
           </div>
@@ -45,9 +45,9 @@ export const TopBar: React.FC<TopBarProps> = ({
               triggerHaptic('light');
               onToggleSearch();
             }}
-            className={`w-9 h-9 rounded-lg flex items-center justify-center transition-colors active:scale-95 ${
+            className={`w-8.5 h-8.5 rounded-lg flex items-center justify-center transition-colors active:scale-95 ${
               isSearchOpen
-                ? 'bg-gray-100 text-gray-900'
+                ? 'bg-[#FAF0F2] text-[#721428]'
                 : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
             }`}
             aria-label="Search products"
@@ -56,19 +56,19 @@ export const TopBar: React.FC<TopBarProps> = ({
             <Search className="w-4 h-4" />
           </button>
 
-          {/* Cart Icon (Top-Bar only, NEVER in bottom nav) */}
+          {/* Cart Icon (Top-Bar only) */}
           <button
             onClick={() => {
               triggerHaptic('medium');
               onOpenCart();
             }}
-            className="relative w-9 h-9 rounded-lg flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors active:scale-95"
+            className="relative w-8.5 h-8.5 rounded-lg flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors active:scale-95"
             aria-label="Shopping Cart"
             title="View Cart"
           >
             <ShoppingBag className="w-4 h-4" />
             {cartCount > 0 && (
-              <span className="absolute 1 top-1 -right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-gray-900 text-white font-bold text-[10px] flex items-center justify-center leading-none">
+              <span className="absolute 1 top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-[#721428] text-white font-bold text-[10px] flex items-center justify-center leading-none shadow-xs">
                 {cartCount}
               </span>
             )}
@@ -76,9 +76,9 @@ export const TopBar: React.FC<TopBarProps> = ({
         </div>
       </div>
 
-      {/* Inline Search Bar when active */}
+      {/* Inline Search Bar */}
       {isSearchOpen && (
-        <div className="max-w-md mx-auto px-4 pb-3 pt-1 border-t border-gray-100 animate-in fade-in slide-in-from-top-1 duration-150">
+        <div className="max-w-md mx-auto px-4 pb-2.5 pt-0.5 border-t border-gray-100 animate-in fade-in duration-150">
           <div className="relative flex items-center">
             <Search className="w-4 h-4 text-gray-400 absolute left-3 pointer-events-none" />
             <input
@@ -87,7 +87,7 @@ export const TopBar: React.FC<TopBarProps> = ({
               placeholder="Search TradingView, FXReplay..."
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
-              className="w-full pl-9 pr-8 py-2 text-sm bg-gray-100 border border-transparent rounded-xl focus:bg-white focus:border-gray-300 focus:outline-none transition-colors"
+              className="w-full pl-9 pr-8 py-1.5 text-xs bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:border-[#721428] focus:ring-1 focus:ring-[#721428] focus:outline-none transition-colors"
             />
             {searchQuery && (
               <button

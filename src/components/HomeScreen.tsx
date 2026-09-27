@@ -20,49 +20,49 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onNavigateToP2P,
 }) => {
   return (
-    <div className="space-y-6 pb-6">
-      {/* Welcome / Hero Banner */}
-      <section className="bg-white border border-gray-200/90 rounded-2xl p-5 shadow-xs">
+    <div className="space-y-4 pb-4">
+      {/* Welcome / Hero Banner (Clean, compact, professional trading look) */}
+      <section className="bg-white border border-gray-200/90 rounded-xl p-4 sm:p-5 shadow-xs">
         <div className="flex items-center gap-2 mb-2">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-gray-700 bg-gray-100 px-2 py-0.5 rounded">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-[#721428] bg-[#FAF0F2] px-2 py-0.5 rounded border border-[#F0D5DA]">
             Official Store
           </span>
           <span className="text-gray-300">·</span>
-          <span className="text-xs text-gray-500 font-medium">Abyssinia Trading Tools</span>
+          <span className="text-[11px] text-gray-500 font-medium">Abyssinia Trading Tools</span>
         </div>
 
-        <h2 className="text-xl font-extrabold text-gray-900 tracking-tight leading-snug mb-2">
+        <h2 className="text-lg sm:text-xl font-bold text-gray-900 tracking-tight leading-snug mb-1.5">
           Verified Trading Tools & Subscriptions
         </h2>
 
-        <p className="text-xs sm:text-sm text-gray-600 leading-relaxed mb-4">
-          Genuine TradingView account upgrades and FXReplay Pro backtesting tools configured for retail traders.
+        <p className="text-xs text-gray-600 leading-relaxed mb-3.5">
+          Authentic TradingView account licenses and FXReplay Pro backtesting tools configured for retail traders.
         </p>
 
-        <div className="flex items-center gap-2 pt-1">
+        <div className="flex items-center gap-2">
           <button
             onClick={() => {
               triggerHaptic('light');
               onNavigateToProducts();
             }}
-            className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-gray-900 text-white text-xs font-semibold hover:bg-gray-800 transition-all active:scale-[0.98] shadow-xs"
+            className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#721428] hover:bg-[#5A0E1E] active:bg-[#470A17] text-white text-xs font-bold transition-all active:scale-[0.98] shadow-xs"
           >
             <Layers className="w-3.5 h-3.5" />
             <span>Browse Catalog</span>
-            <ArrowRight className="w-3.5 h-3.5 ml-0.5" />
+            <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
       </section>
 
       {/* Featured Products Section with Style C Mixed Cards */}
-      <section className="space-y-3.5">
+      <section className="space-y-3">
         <div className="flex items-center justify-between px-0.5">
           <div>
             <h3 className="text-sm font-bold text-gray-900 tracking-tight">
               Featured Tools & Licenses
             </h3>
             <p className="text-[11px] text-gray-500">
-              Visual presentation · Select a product to view available plans
+              Select a tool to explore subscription options
             </p>
           </div>
 
@@ -71,7 +71,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               triggerHaptic('light');
               onNavigateToProducts();
             }}
-            className="text-xs font-semibold text-gray-700 hover:text-gray-900 flex items-center gap-1"
+            className="text-xs font-bold text-[#721428] hover:text-[#5A0E1E] flex items-center gap-1"
           >
             <span>View all</span>
             <ArrowRight className="w-3 h-3" />
@@ -79,7 +79,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
 
         {/* Product Cards Stack (Style C: Large visual/logo area + name + description + View Options CTA) */}
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 gap-3.5">
           {products.map((product) => (
             <ProductCard
               key={product.id}
@@ -93,10 +93,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       </section>
 
       {/* P2P Platform Entry Point Card */}
-      <section className="bg-white border border-gray-200/90 rounded-2xl p-5 shadow-xs">
-        <div className="flex items-start gap-3.5">
-          <div className="w-10 h-10 rounded-xl bg-gray-100 text-gray-900 flex items-center justify-center shrink-0 border border-gray-200/80">
-            <ArrowLeftRight className="w-5 h-5 stroke-[2]" />
+      <section className="bg-white border border-gray-200/90 rounded-xl p-4 shadow-xs">
+        <div className="flex items-start gap-3">
+          <div className="w-9 h-9 rounded-lg bg-[#FAF0F2] text-[#721428] flex items-center justify-center shrink-0 border border-[#F0D5DA]">
+            <ArrowLeftRight className="w-4.5 h-4.5 stroke-[2.2]" />
           </div>
 
           <div className="flex-1 min-w-0">
@@ -108,8 +108,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             <h3 className="text-sm font-bold text-gray-900 tracking-tight mb-1">
               P2P Currency & Escrow Platform
             </h3>
-            <p className="text-xs text-gray-600 leading-relaxed mb-3.5">
-              Secure peer-to-peer exchange for USDT and Ethiopian Birr (ETB) with integrated escrow protection.
+            <p className="text-xs text-gray-600 leading-relaxed mb-3">
+              Peer-to-peer exchange for USDT and Ethiopian Birr (ETB) with integrated escrow security.
             </p>
 
             <button
@@ -117,33 +117,33 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 triggerHaptic('medium');
                 onNavigateToP2P();
               }}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-900 text-xs font-semibold transition-all active:scale-[0.98]"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-900 text-xs font-bold transition-all active:scale-[0.98]"
             >
               <span>Explore P2P Platform</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight className="w-3.5 h-3.5 text-gray-700" />
             </button>
           </div>
         </div>
       </section>
 
       {/* Key Guarantees / Service Notes */}
-      <section className="grid grid-cols-2 gap-3 pt-1">
-        <div className="p-3.5 bg-white border border-gray-200/80 rounded-xl text-left">
-          <div className="w-7 h-7 rounded-lg bg-gray-100 text-gray-800 flex items-center justify-center mb-2">
-            <ShieldCheck className="w-4 h-4" />
+      <section className="grid grid-cols-2 gap-2.5">
+        <div className="p-3 bg-white border border-gray-200/80 rounded-xl text-left shadow-2xs">
+          <div className="w-6.5 h-6.5 rounded-md bg-[#FAF0F2] text-[#721428] flex items-center justify-center mb-1.5 border border-[#F0D5DA]">
+            <ShieldCheck className="w-3.5 h-3.5" />
           </div>
           <h4 className="text-xs font-bold text-gray-900 mb-0.5">Verified Accounts</h4>
-          <p className="text-[11px] text-gray-500 leading-snug">
-            Authentic subscriptions delivered with warranty.
+          <p className="text-[10.5px] text-gray-500 leading-snug">
+            Authentic subscriptions with active warranty.
           </p>
         </div>
 
-        <div className="p-3.5 bg-white border border-gray-200/80 rounded-xl text-left">
-          <div className="w-7 h-7 rounded-lg bg-gray-100 text-gray-800 flex items-center justify-center mb-2">
-            <Zap className="w-4 h-4" />
+        <div className="p-3 bg-white border border-gray-200/80 rounded-xl text-left shadow-2xs">
+          <div className="w-6.5 h-6.5 rounded-md bg-[#FAF0F2] text-[#721428] flex items-center justify-center mb-1.5 border border-[#F0D5DA]">
+            <Zap className="w-3.5 h-3.5" />
           </div>
           <h4 className="text-xs font-bold text-gray-900 mb-0.5">Direct Telegram</h4>
-          <p className="text-[11px] text-gray-500 leading-snug">
+          <p className="text-[10.5px] text-gray-500 leading-snug">
             Delivered directly inside your Telegram app.
           </p>
         </div>

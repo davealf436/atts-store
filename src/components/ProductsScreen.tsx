@@ -48,10 +48,10 @@ export const ProductsScreen: React.FC<ProductsScreenProps> = ({
   }, [products, selectedFilter, searchQuery]);
 
   return (
-    <div className="space-y-4 pb-6">
+    <div className="space-y-3.5 pb-4">
       {/* Page Title & Context */}
       <div>
-        <h2 className="text-xl font-extrabold text-gray-900 tracking-tight">
+        <h2 className="text-lg sm:text-xl font-bold text-gray-900 tracking-tight">
           Product Catalog
         </h2>
         <p className="text-xs text-gray-500 mt-0.5">
@@ -60,23 +60,23 @@ export const ProductsScreen: React.FC<ProductsScreenProps> = ({
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
+      <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
         {filters.map((filter) => {
           const isActive = selectedFilter === filter.id;
           return (
             <button
               key={filter.id}
               onClick={() => setSelectedFilter(filter.id)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
                 isActive
-                  ? 'bg-gray-900 text-white shadow-xs'
-                  : 'bg-white text-gray-600 hover:text-gray-900 border border-gray-200/80 hover:bg-gray-50'
+                  ? 'bg-[#721428] text-white shadow-xs'
+                  : 'bg-white text-gray-600 hover:text-gray-900 border border-gray-200/90 hover:bg-gray-50'
               }`}
             >
               <span>{filter.label}</span>
               <span
                 className={`ml-1.5 text-[10px] px-1.5 py-0.2 rounded-full ${
-                  isActive ? 'bg-gray-800 text-gray-300' : 'bg-gray-100 text-gray-500'
+                  isActive ? 'bg-[#5A0E1E] text-white' : 'bg-gray-100 text-gray-500'
                 }`}
               >
                 {filter.count}
@@ -94,14 +94,14 @@ export const ProductsScreen: React.FC<ProductsScreenProps> = ({
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Filter by name, brand, or feature..."
-          className="w-full pl-9 pr-4 py-2 text-xs bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-gray-400 transition-colors shadow-2xs"
+          className="w-full pl-9 pr-4 py-2 text-xs bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-[#721428] focus:ring-1 focus:ring-[#721428] transition-colors shadow-2xs"
         />
       </div>
 
       {/* Products Stack with Style C Mixed Cards */}
       {filteredProducts.length === 0 ? (
-        <div className="p-8 text-center bg-white rounded-2xl border border-gray-200">
-          <p className="text-sm font-semibold text-gray-900 mb-1">No matching tools</p>
+        <div className="p-8 text-center bg-white rounded-xl border border-gray-200">
+          <p className="text-sm font-bold text-gray-900 mb-1">No matching tools</p>
           <p className="text-xs text-gray-500 mb-3">
             Try adjusting your search query or reset the filter.
           </p>
@@ -110,13 +110,13 @@ export const ProductsScreen: React.FC<ProductsScreenProps> = ({
               setSearchQuery('');
               setSelectedFilter('all');
             }}
-            className="text-xs font-semibold text-gray-900 underline"
+            className="text-xs font-bold text-[#721428] underline"
           >
             Clear filters
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 gap-3.5">
           {filteredProducts.map((product) => (
             <ProductCard
               key={product.id}

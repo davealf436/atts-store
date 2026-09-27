@@ -8,119 +8,98 @@ interface ProductBrandVisualProps {
 
 export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product, className = '' }) => {
   const isTVPremium = product.id === 'tv-premium';
-  const isTVEssential = product.id === 'tv-essential';
   const isFXReplay = product.brand === 'FXReplay';
 
+  // FXReplay Pro Visual
   if (isFXReplay) {
     return (
       <div
-        className={`relative w-full h-44 rounded-t-2xl overflow-hidden bg-[#0A0E17] flex flex-col items-center justify-center p-6 border-b border-gray-100 select-none ${className}`}
+        className={`relative w-full h-36 sm:h-40 rounded-t-xl overflow-hidden bg-[#0D121D] flex flex-col items-center justify-center p-5 border-b border-gray-100 select-none ${className}`}
       >
-        {/* Subtle background grid pattern */}
+        {/* Subtle trading terminal micro-grid */}
         <div
-          className="absolute inset-0 opacity-20 pointer-events-none"
+          className="absolute inset-0 opacity-15 pointer-events-none"
           style={{
             backgroundImage:
-              'linear-gradient(to right, #1E293B 1px, transparent 1px), linear-gradient(to bottom, #1E293B 1px, transparent 1px)',
-            backgroundSize: '24px 24px',
+              'linear-gradient(to right, #334155 1px, transparent 1px), linear-gradient(to bottom, #334155 1px, transparent 1px)',
+            backgroundSize: '20px 20px',
           }}
         />
 
-        {/* Ambient backtest glow */}
-        <div className="absolute -top-10 -right-10 w-36 h-36 bg-emerald-500/15 rounded-full blur-2xl pointer-events-none" />
-        <div className="absolute -bottom-10 -left-10 w-36 h-36 bg-teal-500/10 rounded-full blur-2xl pointer-events-none" />
-
-        {/* Sim simulated replay bar chart graphic in background */}
-        <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between gap-1 opacity-25 pointer-events-none h-10">
-          <div className="w-1.5 h-4 bg-emerald-400 rounded-xs" />
-          <div className="w-1.5 h-7 bg-emerald-400 rounded-xs" />
-          <div className="w-1.5 h-5 bg-rose-400 rounded-xs" />
-          <div className="w-1.5 h-8 bg-emerald-400 rounded-xs" />
-          <div className="w-1.5 h-3 bg-rose-400 rounded-xs" />
-          <div className="w-1.5 h-9 bg-emerald-400 rounded-xs" />
+        {/* Ambient subtle backtest bars in background */}
+        <div className="absolute bottom-2 left-6 right-6 flex items-end justify-between gap-1 opacity-20 pointer-events-none h-8">
+          <div className="w-1.5 h-3 bg-emerald-400 rounded-xs" />
           <div className="w-1.5 h-6 bg-emerald-400 rounded-xs" />
-          <div className="w-1.5 h-10 bg-teal-300 rounded-xs animate-pulse" />
+          <div className="w-1.5 h-4 bg-gray-400 rounded-xs" />
+          <div className="w-1.5 h-7 bg-emerald-400 rounded-xs" />
+          <div className="w-1.5 h-2 bg-gray-400 rounded-xs" />
+          <div className="w-1.5 h-8 bg-emerald-400 rounded-xs" />
+          <div className="w-1.5 h-5 bg-emerald-400 rounded-xs" />
+          <div className="w-1.5 h-7 bg-[#721428] rounded-xs" />
         </div>
 
-        {/* Real FXReplay official logo mark & text */}
+        {/* Real FXReplay Official Logo Mark & Typography */}
         <div className="relative z-10 flex flex-col items-center">
-          <div className="flex items-center gap-2.5 mb-1.5">
-            {/* FXReplay Icon symbol */}
-            <div className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-xs border border-white/15 flex items-center justify-center p-2 shadow-inner">
-              <svg viewBox="0 0 24 24" className="w-6 h-6 fill-white" xmlns="http://www.w3.org/2000/svg">
+          <div className="flex items-center gap-2.5 mb-2">
+            <div className="w-9 h-9 rounded-lg bg-white/10 backdrop-blur-xs border border-white/15 flex items-center justify-center p-2 shadow-xs">
+              <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z" opacity="0.3"/>
                 <path d="M11.5 7.5v9l6.5-4.5-6.5-4.5zM6 7.5v9l6.5-4.5-6.5-4.5z" />
               </svg>
             </div>
             
             <div className="text-left">
-              <div className="text-lg font-black tracking-tight text-white font-display uppercase leading-tight">
+              <div className="text-base font-extrabold tracking-tight text-white uppercase leading-none">
                 FX<span className="text-emerald-400">REPLAY</span>
               </div>
-              <span className="text-[10px] font-semibold text-gray-400 tracking-wider uppercase block -mt-0.5">
+              <span className="text-[10px] font-semibold text-gray-400 tracking-wider uppercase block mt-1">
                 Market Simulator
               </span>
             </div>
           </div>
 
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 mt-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-[10px] font-bold text-emerald-300">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            Tick-by-Tick Engine
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 border border-white/15 text-[10px] font-semibold text-gray-200">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+            Tick-by-Tick Engine · Pro
           </div>
         </div>
       </div>
     );
   }
 
-  // TradingView Premium
+  // TradingView Premium Visual
   if (isTVPremium) {
     return (
       <div
-        className={`relative w-full h-44 rounded-t-2xl overflow-hidden bg-[#0A0D14] flex flex-col items-center justify-center p-6 border-b border-gray-100 select-none ${className}`}
+        className={`relative w-full h-36 sm:h-40 rounded-t-xl overflow-hidden bg-[#0C101A] flex flex-col items-center justify-center p-5 border-b border-gray-100 select-none ${className}`}
       >
-        {/* TradingView background grid */}
+        {/* Trading terminal micro-grid */}
         <div
-          className="absolute inset-0 opacity-20 pointer-events-none"
+          className="absolute inset-0 opacity-15 pointer-events-none"
           style={{
             backgroundImage:
-              'linear-gradient(to right, #1E293B 1px, transparent 1px), linear-gradient(to bottom, #1E293B 1px, transparent 1px)',
-            backgroundSize: '24px 24px',
+              'linear-gradient(to right, #334155 1px, transparent 1px), linear-gradient(to bottom, #334155 1px, transparent 1px)',
+            backgroundSize: '20px 20px',
           }}
         />
 
-        {/* Premium ambient blue/indigo glow */}
-        <div className="absolute -top-12 -left-8 w-40 h-40 bg-blue-600/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-10 -right-8 w-36 h-36 bg-indigo-500/15 rounded-full blur-2xl pointer-events-none" />
-
-        {/* Ambient candle line wave */}
+        {/* Ambient subtle candle wave */}
         <svg
-          className="absolute bottom-0 left-0 right-0 w-full h-14 opacity-25 pointer-events-none"
-          viewBox="0 0 300 60"
+          className="absolute bottom-0 left-0 right-0 w-full h-10 opacity-20 pointer-events-none"
+          viewBox="0 0 300 40"
           preserveAspectRatio="none"
           fill="none"
         >
           <path
-            d="M0 45 Q 40 20, 80 35 T 160 15 T 240 30 T 300 10 L 300 60 L 0 60 Z"
-            fill="url(#tv-grad-blue)"
+            d="M0 30 Q 50 10, 100 25 T 200 15 T 300 20 L 300 40 L 0 40 Z"
+            fill="#3B82F6"
           />
-          <path
-            d="M0 45 Q 40 20, 80 35 T 160 15 T 240 30 T 300 10"
-            stroke="#3B82F6"
-            strokeWidth="2"
-          />
-          <defs>
-            <linearGradient id="tv-grad-blue" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.4" />
-              <stop offset="100%" stopColor="#3B82F6" stopOpacity="0" />
-            </linearGradient>
-          </defs>
         </svg>
 
         {/* Real TradingView Official Logo */}
         <div className="relative z-10 flex flex-col items-center">
-          <div className="flex items-center gap-3 mb-1.5">
-            {/* Real TradingView SVG mark from simple-icons */}
-            <div className="w-11 h-11 rounded-xl bg-white/10 backdrop-blur-xs border border-white/20 flex items-center justify-center p-2.5 shadow-lg shadow-black/40">
+          <div className="flex items-center gap-2.5 mb-2">
+            <div className="w-9 h-9 rounded-lg bg-white/10 backdrop-blur-xs border border-white/20 flex items-center justify-center p-2 shadow-xs">
               <svg
                 viewBox="0 0 24 24"
                 className="w-full h-full fill-white"
@@ -131,51 +110,42 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
             </div>
 
             <div className="text-left">
-              <div className="text-xl font-black tracking-tight text-white leading-none">
+              <div className="text-base font-extrabold tracking-tight text-white leading-none">
                 TradingView
               </div>
-              <span className="text-[11px] font-semibold text-blue-400 tracking-wider uppercase block mt-1">
+              <span className="text-[10px] font-semibold text-blue-300 tracking-wider uppercase block mt-1">
                 Official Account License
               </span>
             </div>
           </div>
 
-          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 mt-1 rounded-full bg-blue-500/20 border border-blue-400/40 text-[10px] font-bold text-blue-300">
-            ★ PREMIUM TIER · 8 CHARTS / TAB
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#721428]/80 border border-[#721428] text-[10px] font-bold text-white shadow-xs">
+            ★ PREMIUM · 8 CHARTS / TAB
           </div>
         </div>
       </div>
     );
   }
 
-  // TradingView Essential (clean slate theme)
+  // TradingView Essential Visual
   return (
     <div
-      className={`relative w-full h-44 rounded-t-2xl overflow-hidden bg-[#0F172A] flex flex-col items-center justify-center p-6 border-b border-gray-100 select-none ${className}`}
+      className={`relative w-full h-36 sm:h-40 rounded-t-xl overflow-hidden bg-[#111827] flex flex-col items-center justify-center p-5 border-b border-gray-100 select-none ${className}`}
     >
       {/* Grid */}
       <div
-        className="absolute inset-0 opacity-20 pointer-events-none"
+        className="absolute inset-0 opacity-15 pointer-events-none"
         style={{
           backgroundImage:
-            'linear-gradient(to right, #334155 1px, transparent 1px), linear-gradient(to bottom, #334155 1px, transparent 1px)',
-          backgroundSize: '24px 24px',
+            'linear-gradient(to right, #374151 1px, transparent 1px), linear-gradient(to bottom, #374151 1px, transparent 1px)',
+          backgroundSize: '20px 20px',
         }}
       />
 
-      {/* Ambient glow */}
-      <div className="absolute -top-10 -right-8 w-36 h-36 bg-sky-500/15 rounded-full blur-2xl pointer-events-none" />
-
-      {/* Subtle dual-chart divider */}
-      <div className="absolute inset-x-8 bottom-3 flex items-center justify-center gap-3 opacity-20 pointer-events-none">
-        <div className="h-6 w-20 border border-dashed border-gray-400 rounded" />
-        <div className="h-6 w-20 border border-dashed border-gray-400 rounded" />
-      </div>
-
       {/* Real TradingView Official Logo */}
       <div className="relative z-10 flex flex-col items-center">
-        <div className="flex items-center gap-3 mb-1.5">
-          <div className="w-11 h-11 rounded-xl bg-white/10 backdrop-blur-xs border border-white/20 flex items-center justify-center p-2.5 shadow-lg shadow-black/40">
+        <div className="flex items-center gap-2.5 mb-2">
+          <div className="w-9 h-9 rounded-lg bg-white/10 backdrop-blur-xs border border-white/20 flex items-center justify-center p-2 shadow-xs">
             <svg
               viewBox="0 0 24 24"
               className="w-full h-full fill-white"
@@ -186,16 +156,16 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
           </div>
 
           <div className="text-left">
-            <div className="text-xl font-black tracking-tight text-white leading-none">
+            <div className="text-base font-extrabold tracking-tight text-white leading-none">
               TradingView
             </div>
-            <span className="text-[11px] font-semibold text-slate-300 tracking-wider uppercase block mt-1">
+            <span className="text-[10px] font-semibold text-slate-300 tracking-wider uppercase block mt-1">
               Essential Subscription
             </span>
           </div>
         </div>
 
-        <div className="inline-flex items-center gap-1.5 px-3 py-0.5 mt-1 rounded-full bg-slate-700/60 border border-slate-600/70 text-[10px] font-bold text-slate-200">
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-700/80 border border-slate-600 text-[10px] font-semibold text-slate-200">
           CORE SETUP · 2 CHARTS / TAB
         </div>
       </div>

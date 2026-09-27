@@ -9,7 +9,7 @@ import { P2PScreen } from './components/P2PScreen';
 import { OrdersScreen } from './components/OrdersScreen';
 import { ProductDetailModal } from './components/ProductDetailModal';
 import { CartDrawer } from './components/CartDrawer';
-import { initTelegramApp, triggerHaptic } from './services/telegram';
+import { initTelegramApp } from './services/telegram';
 
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<NavigationTab>('home');
@@ -66,9 +66,9 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100/70 text-gray-900 flex flex-col items-center">
+    <div className="min-h-screen bg-[#F0F2F5] text-gray-900 flex flex-col items-center">
       {/* Mobile-first centered frame (320px–430px optimal viewport) */}
-      <div className="w-full max-w-md min-h-screen bg-gray-50 flex flex-col relative shadow-md">
+      <div className="w-full max-w-md min-h-screen bg-[#F8F9FA] flex flex-col relative sm:border-x sm:border-gray-200/80 sm:shadow-sm">
         {/* Sticky Top Bar (Never contains bottom nav cart) */}
         <TopBar
           cartCount={cartTotalCount}
@@ -85,7 +85,7 @@ export const App: React.FC = () => {
         />
 
         {/* Main Content Area */}
-        <main className="flex-1 p-4 pb-24 overflow-y-auto">
+        <main className="flex-1 p-3.5 pb-24 overflow-y-auto">
           {activeTab === 'home' && (
             <HomeScreen
               products={PRODUCTS}
