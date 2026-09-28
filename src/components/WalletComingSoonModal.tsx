@@ -66,7 +66,7 @@ export const WalletComingSoonModal: React.FC<WalletComingSoonModalProps> = ({
 
           {/* Description */}
           <p className="text-xs text-stone-600 font-medium leading-relaxed mb-4">
-            Direct crypto &amp; local currency balances, instant P2P escrow settlements, and automatic subscription renewals are coming in an upcoming release.
+            Direct crypto &amp; local currency balances, instant P2P settlements, and automatic subscription renewals are coming in an upcoming release.
           </p>
 
           {/* Action Button */}

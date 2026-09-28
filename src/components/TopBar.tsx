@@ -30,8 +30,8 @@ const INITIAL_NOTIFICATIONS: NotificationItem[] = [
   },
   {
     id: 'notif-3',
-    title: 'P2P Escrow Guarantee',
-    description: 'Instant verified escrow channels via Telebirr, CBE & Crypto are operational.',
+    title: 'P2P Trading Verified',
+    description: 'Instant verified channels via Telebirr, CBE & Crypto are operational.',
     time: '4h ago',
     unread: false,
     type: 'system',

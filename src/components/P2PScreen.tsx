@@ -16,13 +16,13 @@ export const P2PScreen: React.FC = () => {
               ATH P2P Platform
             </h2>
             <span className="text-[10px] text-gray-500 font-medium">
-              Direct Peer-to-Peer Escrow Desk
+              Direct Peer-to-Peer Desk
             </span>
           </div>
         </div>
 
         <p className="text-xs text-gray-600 leading-relaxed mb-3.5">
-          Safe peer-to-peer exchange between USDT and Ethiopian Birr (ETB). Protected by automated escrow security with Telebirr and CBE verification.
+          Safe peer-to-peer exchange between USDT and Ethiopian Birr (ETB). Verified transfers with Telebirr and CBE verification.
         </p>
 
         {/* Indicative Rate Reference */}
@@ -73,7 +73,7 @@ export const P2PScreen: React.FC = () => {
             </div>
             <h3 className="text-xs font-bold text-gray-900 mb-0.5">Sell USDT</h3>
             <p className="text-[10.5px] text-gray-500 leading-snug">
-              Transfer USDT to escrow and receive ETB directly to your local bank.
+              Transfer USDT and receive ETB directly to your local bank.
             </p>
           </div>
           <button
@@ -85,11 +85,11 @@ export const P2PScreen: React.FC = () => {
         </div>
       </section>
 
-      {/* Escrow Workflow & Safeguards */}
+      {/* P2P Workflow & Safeguards */}
       <section className="bg-white border border-gray-200/90 rounded-xl p-4 shadow-xs space-y-3">
         <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider flex items-center gap-1.5">
           <ShieldCheck className="w-3.5 h-3.5 text-[#721428]" />
-          <span>How Escrow Protection Works</span>
+          <span>How P2P Trading Works</span>
         </h3>
 
         <div className="space-y-2 text-xs text-gray-600">
@@ -98,7 +98,7 @@ export const P2PScreen: React.FC = () => {
               1
             </div>
             <div className="leading-snug">
-              <strong className="text-gray-900 font-bold">USDT Lock:</strong> The seller's crypto is frozen in ATH escrow before the trade begins.
+              <strong className="text-gray-900 font-bold">USDT Order:</strong> The seller's crypto order is placed and verified before the trade begins.
             </div>
           </div>
 
@@ -116,7 +116,7 @@ export const P2PScreen: React.FC = () => {
               3
             </div>
             <div className="leading-snug">
-              <strong className="text-gray-900 font-bold">Release:</strong> Once payment is confirmed, escrow releases USDT to the buyer's destination wallet.
+              <strong className="text-gray-900 font-bold">Release:</strong> Once payment is confirmed, USDT is released directly to the buyer's destination wallet.
             </div>
           </div>
         </div>

@@ -144,7 +144,7 @@ export const shareToTelegram = (text: string, url: string) => {
   }
 };
 
-export const openTelegramSupport = (username: string = 'abyssiniatradingbot') => {
+export const openTelegramSupport = (username: string = 'abyssiniavendor') => {
   const cleanUsername = username.replace('@', '');
   const url = `https://t.me/${cleanUsername}`;
   const tg = getTelegramWebApp();

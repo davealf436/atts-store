@@ -241,14 +241,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <span className="text-[10px] font-bold uppercase tracking-wider text-gray-700 bg-gray-100 px-2 py-0.5 rounded">
-                ATH Escrow Desk
+                ATH P2P Desk
               </span>
             </div>
             <h3 className="text-sm font-bold text-gray-900 tracking-tight mb-1">
-              P2P Currency & Escrow Platform
+              P2P Currency Platform
             </h3>
             <p className="text-xs text-gray-600 leading-relaxed mb-3">
-              Peer-to-peer exchange for USDT and Ethiopian Birr (ETB) with integrated escrow security.
+              Peer-to-peer exchange for USDT and Ethiopian Birr (ETB) with verified instant transfers.
             </p>
 
             <button

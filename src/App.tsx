@@ -86,11 +86,6 @@ export const App: React.FC = () => {
           {currentView === 'profile' && (
             <ProfileScreen
               onBack={() => setCurrentView('main')}
-              onNavigateToOrders={() => {
-                setCurrentView('main');
-                setActiveTab('orders');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
             />
           )}
 
