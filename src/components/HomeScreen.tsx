@@ -58,18 +58,18 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
           {/* Minimalist market chart vector hairline behind logo */}
           <svg
-            className="absolute right-1 sm:right-3 bottom-1.5 w-48 sm:w-56 h-22 sm:h-24 pointer-events-none overflow-visible"
+            className="absolute right-1 sm:right-3 bottom-1 w-48 sm:w-56 h-22 sm:h-24 pointer-events-none overflow-visible"
             viewBox="0 0 190 90"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
             {/* Horizontal price levels */}
-            <line x1="20" y1="28" x2="180" y2="28" stroke="#721428" strokeOpacity="0.12" strokeWidth="0.75" strokeDasharray="2 3" />
-            <line x1="40" y1="62" x2="180" y2="62" stroke="#721428" strokeOpacity="0.12" strokeWidth="0.75" strokeDasharray="2 3" />
+            <line x1="16" y1="26" x2="182" y2="26" stroke="#721428" strokeOpacity="0.12" strokeWidth="0.75" strokeDasharray="2 3" />
+            <line x1="36" y1="62" x2="182" y2="62" stroke="#721428" strokeOpacity="0.12" strokeWidth="0.75" strokeDasharray="2 3" />
             
-            {/* Constant baseline chart trajectory (always visible) */}
+            {/* Constant baseline chart trajectory: ascending from bottom (y=80) to top (y=10) */}
             <path
-              d="M 15 68 L 48 58 L 78 46 L 108 52 L 142 26 L 175 16"
+              d="M 12 80 L 44 68 L 76 52 L 106 60 L 140 32 L 176 10"
               stroke="#721428"
               strokeWidth="1.2"
               strokeOpacity="0.25"
@@ -77,20 +77,20 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               strokeLinejoin="round"
             />
 
-            {/* Smooth animated active flow line (draws dynamically over the baseline) */}
+            {/* Smooth animated active flow line drawing from bottom to top */}
             <path
-              d="M 15 68 L 48 58 L 78 46 L 108 52 L 142 26 L 175 16"
+              d="M 12 80 L 44 68 L 76 52 L 106 60 L 140 32 L 176 10"
               stroke="#721428"
               strokeWidth="1.8"
               strokeOpacity="0.85"
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeDasharray="180"
-              strokeDashoffset="180"
+              strokeDasharray="190"
+              strokeDashoffset="190"
             >
               <animate
                 attributeName="stroke-dashoffset"
-                values="180;0;0;180"
+                values="190;0;0;190"
                 keyTimes="0;0.45;0.8;1"
                 dur="5.5s"
                 repeatCount="indefinite"
@@ -103,33 +103,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 repeatCount="indefinite"
               />
             </path>
-
-            {/* Small execution data point with gentle pulse */}
-            <circle cx="175" cy="16" r="2.5" fill="#721428" fillOpacity="0.85">
-              <animate
-                attributeName="r"
-                values="2;3.2;3.2;2"
-                keyTimes="0;0.45;0.8;1"
-                dur="5.5s"
-                repeatCount="indefinite"
-              />
-              <animate
-                attributeName="fill-opacity"
-                values="0.35;1;1;0.35"
-                keyTimes="0;0.45;0.8;1"
-                dur="5.5s"
-                repeatCount="indefinite"
-              />
-            </circle>
           </svg>
         </div>
 
         {/* Hero Content: Headline, Description & Compact Button on Left; Refined ATH Logo on Right */}
         <div className="relative z-10 flex items-center justify-between gap-3 sm:gap-4">
           <div className="flex-1 min-w-0">
-            {/* Small subtle premium "ATH" label */}
-            <div className="flex items-center gap-1.5 mb-1.5 select-none">
-              <span className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#721428] inline-flex items-center gap-1.5">
+            {/* Small subtle premium "ATH" label with short space above and below */}
+            <div className="flex items-center gap-1.5 mb-0.5 select-none leading-none">
+              <span className="text-[10px] font-extrabold tracking-[0.18em] uppercase text-[#721428] inline-flex items-center gap-1.5 leading-none">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#721428] opacity-80" />
                 ATH
               </span>
