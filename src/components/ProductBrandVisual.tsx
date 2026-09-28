@@ -103,7 +103,7 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
             <ProductPhotoLogo productId={product.id} size="md" className="border border-gray-200 shadow-sm" />
             <div className="text-left">
               <div className="text-base font-extrabold tracking-tight text-gray-900 leading-none">
-                Abyssinia Journal Website
+                Abyssinia Journal
               </div>
               <span className="text-[10px] font-semibold text-[#721428] tracking-wider uppercase block mt-1">
                 Official Trading Hub Ledger
@@ -137,7 +137,7 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
             <ProductPhotoLogo productId={product.id} size="md" className="border border-gray-800" />
             <div className="text-left">
               <div className="text-base font-extrabold tracking-tight text-white leading-none">
-                Backtesting Journal Website
+                Backtesting Journal
               </div>
               <span className="text-[10px] font-semibold text-gray-400 tracking-wider uppercase block mt-1">
                 Quantitative System Testing

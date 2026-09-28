@@ -26,13 +26,13 @@ export const ProductPhotoLogo: React.FC<ProductPhotoLogoProps> = ({
     banner: 'w-full h-full rounded-none',
   };
 
-  // 1. Abyssinia Journal Website (matching Image 1: 3D Origami Purple & Gold Bird on pure white background)
+  // 1. Abyssinia Journal (matching Image 1: 3D Origami Purple & Gold Bird on pure white background)
   if (productId === 'abyssinia-journal') {
     return (
       <div
         className={`relative overflow-hidden shrink-0 flex items-center justify-center select-none shadow-2xs ${sizeClasses[size]} ${className}`}
         style={{ backgroundColor: '#FFFFFF' }}
-        title="Abyssinia Journal Website"
+        title="Abyssinia Journal"
       >
         <svg
           viewBox="0 0 100 100"
@@ -174,13 +174,13 @@ export const ProductPhotoLogo: React.FC<ProductPhotoLogoProps> = ({
     );
   }
 
-  // 2. Backtesting Journal Website (matching Image 2: White 3-Bar Chart with Upward Trend Arrow on solid black)
+  // 2. Backtesting Journal (matching Image 2: White 3-Bar Chart with Upward Trend Arrow on solid black)
   if (productId === 'backtesting-journal') {
     return (
       <div
         className={`relative overflow-hidden shrink-0 flex items-center justify-center select-none shadow-2xs ${sizeClasses[size]} ${className}`}
         style={{ backgroundColor: '#000000' }}
-        title="Backtesting Journal Website"
+        title="Backtesting Journal"
       >
         <svg
           viewBox="0 0 100 100"

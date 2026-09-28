@@ -61,7 +61,7 @@ export const PRODUCTS: Product[] = [
   // Journaling Tools
   {
     id: 'abyssinia-journal',
-    name: 'Abyssinia Journal Website',
+    name: 'Abyssinia Journal',
     brand: 'Abyssinia Trading Hub',
     category: 'journaling',
     tier: 'Official',
@@ -80,7 +80,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'backtesting-journal',
-    name: 'Backtesting Journal Website',
+    name: 'Backtesting Journal',
     brand: 'ATH Analytics',
     category: 'journaling',
     tier: 'Pro System',
