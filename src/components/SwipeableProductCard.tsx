@@ -18,38 +18,52 @@ export const SwipeableProductCard: React.FC<SwipeableProductCardProps> = ({
     onView(product);
   };
 
+  const isFXReplay = product.id === 'fxreplay-pro';
+
   return (
     <div
       onClick={handleClick}
-      className="w-[245px] xs:w-[260px] shrink-0 snap-start bg-white border border-gray-200/90 hover:border-[#721428]/40 rounded-2xl p-4 flex flex-col justify-between shadow-2xs hover:shadow-xs transition-all duration-150 cursor-pointer group active:scale-[0.98]"
+      className="w-[210px] xs:w-[225px] shrink-0 snap-start bg-white border border-gray-200/90 hover:border-[#721428]/40 rounded-2xl p-2.5 flex flex-col justify-between shadow-2xs hover:shadow-xs transition-all duration-150 cursor-pointer group active:scale-[0.98]"
       role="button"
       tabIndex={0}
       aria-label={`View options for ${product.name}`}
     >
-      {/* Top Header: Official Brand Logo & Badge */}
       <div>
-        <div className="flex items-center justify-between gap-2 mb-3">
-          <ProductPhotoLogo productId={product.id} size="md" className="shrink-0" />
+        {/* Large Product Logo/Image Area with subtle badge overlay */}
+        <div
+          className={`relative w-full h-32 xs:h-36 rounded-xl overflow-hidden flex items-center justify-center shadow-inner ${
+            isFXReplay ? 'bg-[#070D18]' : 'bg-black'
+          }`}
+        >
+          {/* Official brand logo centered & scaled */}
+          <div className="w-full h-full p-4 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+            <ProductPhotoLogo
+              productId={product.id}
+              size="banner"
+              className="w-full h-full"
+            />
+          </div>
+
+          {/* Small subtle badge over the image area */}
           {product.badge && (
-            <span className="text-[10px] font-bold text-[#721428] bg-[#FAF0F2] px-2 py-0.5 rounded-full border border-[#F0D5DA] truncate">
-              {product.badge}
-            </span>
+            <div className="absolute top-2 left-2 z-10 pointer-events-none">
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold tracking-tight bg-white/95 backdrop-blur-md text-[#721428] border border-white/60 shadow-xs">
+                {product.badge}
+              </span>
+            </div>
           )}
         </div>
 
-        {/* Product Name */}
-        <h4 className="text-sm font-extrabold text-gray-900 tracking-tight leading-snug group-hover:text-[#721428] transition-colors mb-1.5 truncate">
-          {product.name}
-        </h4>
-
-        {/* Very Short Description - strictly 2 lines compact */}
-        <p className="text-[11.5px] text-gray-500 leading-relaxed line-clamp-2">
-          {product.shortDescription}
-        </p>
+        {/* Product Name at the bottom of the image area (No price, no description) */}
+        <div className="mt-2.5 mb-2 px-1">
+          <h4 className="text-[13.5px] font-bold text-gray-900 tracking-tight leading-snug group-hover:text-[#721428] transition-colors truncate">
+            {product.name}
+          </h4>
+        </div>
       </div>
 
-      {/* Bottom Action: View Options (No prices) */}
-      <div className="pt-3 mt-3 border-t border-gray-100">
+      {/* Deep Burgundy View Options Button */}
+      <div className="pt-1">
         <button
           onClick={(e) => {
             e.stopPropagation();
