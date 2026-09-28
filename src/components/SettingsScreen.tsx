@@ -10,17 +10,18 @@ import {
 } from 'lucide-react';
 import { triggerHaptic } from '../services/telegram';
 import { AthLogo } from './AthLogo';
+import { useTheme, AppearanceMode } from '../services/theme';
 
 interface SettingsScreenProps {
   onBack: () => void;
 }
 
 export const SettingsScreen: React.FC<SettingsScreenProps> = ({ onBack }) => {
-  const [appearance, setAppearance] = useState<'light' | 'dark' | 'system'>('light');
+  const { appearance, setAppearance } = useTheme();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [promoAlerts, setPromoAlerts] = useState(true);
 
-  const handleSelectAppearance = (mode: 'light' | 'dark' | 'system') => {
+  const handleSelectAppearance = (mode: AppearanceMode) => {
     triggerHaptic('light');
     setAppearance(mode);
   };
@@ -77,7 +78,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({ onBack }) => {
             onClick={() => handleSelectAppearance('light')}
             className={`p-2.5 rounded-xl border flex flex-col items-center gap-1.5 transition-all cursor-pointer ${
               appearance === 'light'
-                ? 'bg-[#FAF0F2] border-[#721428] text-[#721428] shadow-xs'
+                ? 'bg-[#FAF0F2] border-[#721428] text-[#721428] shadow-xs ring-1 ring-[#721428]/30'
                 : 'bg-gray-50 hover:bg-gray-100 border-gray-200/80 text-gray-600'
             }`}
           >
@@ -95,7 +96,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({ onBack }) => {
             onClick={() => handleSelectAppearance('dark')}
             className={`p-2.5 rounded-xl border flex flex-col items-center gap-1.5 transition-all cursor-pointer ${
               appearance === 'dark'
-                ? 'bg-[#FAF0F2] border-[#721428] text-[#721428] shadow-xs'
+                ? 'bg-[#FAF0F2] border-[#721428] text-[#721428] shadow-xs ring-1 ring-[#721428]/30'
                 : 'bg-gray-50 hover:bg-gray-100 border-gray-200/80 text-gray-600'
             }`}
           >
@@ -113,7 +114,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({ onBack }) => {
             onClick={() => handleSelectAppearance('system')}
             className={`p-2.5 rounded-xl border flex flex-col items-center gap-1.5 transition-all cursor-pointer ${
               appearance === 'system'
-                ? 'bg-[#FAF0F2] border-[#721428] text-[#721428] shadow-xs'
+                ? 'bg-[#FAF0F2] border-[#721428] text-[#721428] shadow-xs ring-1 ring-[#721428]/30'
                 : 'bg-gray-50 hover:bg-gray-100 border-gray-200/80 text-gray-600'
             }`}
           >
@@ -126,10 +127,6 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({ onBack }) => {
             )}
           </button>
         </div>
-
-        <p className="text-[10.5px] text-gray-500 italic">
-          ATH interface is tailored for high-contrast light trading readability.
-        </p>
       </div>
 
       {/* 2. Notifications Section */}

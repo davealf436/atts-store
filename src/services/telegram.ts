@@ -28,6 +28,8 @@ declare global {
         viewportStableHeight?: number;
         headerColor?: string;
         backgroundColor?: string;
+        setHeaderColor?: (color: string) => void;
+        setBackgroundColor?: (color: string) => void;
         BackButton?: {
           isVisible: boolean;
           show: () => void;

@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   :root {
     --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -21,6 +23,7 @@
     overscroll-behavior-y: none;
     background-color: #F8F9FA;
     color: #111827;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 }
 
@@ -46,6 +49,213 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(114, 20, 40, 0.28);
+}
+
+/* =========================================================================
+   ATH PREMIUM DARK THEME SYSTEM
+   Deep charcoal & obsidian canvas (#0D0D11), refined elevation layers, 
+   glowing burgundy accents (#FB7185 / #721428), and crisp typography.
+   ========================================================================= */
+
+.dark, html.dark {
+  color-scheme: dark;
+}
+
+html.dark body {
+  background-color: #0D0D11;
+  color: #F3F4F6;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(251, 113, 133, 0.25);
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(251, 113, 133, 0.4);
+}
+
+/* Container & Background Overrides */
+.dark .bg-\[\#F0F2F5\] {
+  background-color: #070709 !important;
+}
+
+.dark .bg-\[\#F8F9FA\] {
+  background-color: #0D0D11 !important;
+}
+
+.dark .bg-\[\#FCFAF7\] {
+  background-color: #15151C !important;
+  border-color: #282834 !important;
+}
+
+.dark .bg-white,
+.dark .bg-white\/98 {
+  background-color: #16161D !important;
+}
+
+.dark .bg-gray-50,
+.dark .bg-stone-50,
+.dark .bg-gray-50\/80,
+.dark .bg-gray-50\/60,
+.dark .bg-gray-50\/50 {
+  background-color: #1F1F28 !important;
+}
+
+.dark .ring-white {
+  --tw-ring-color: #16161D !important;
+}
+
+.dark .ring-\[\#FAF0F2\] {
+  --tw-ring-color: #281016 !important;
+}
+
+.dark .ring-\[\#721428\]\/15,
+.dark .ring-\[\#721428\]\/20 {
+  --tw-ring-color: rgba(251, 113, 133, 0.25) !important;
+}
+
+.dark .bg-gray-100,
+.dark .bg-stone-100 {
+  background-color: #262633 !important;
+}
+
+.dark .bg-gray-200 {
+  background-color: #2F2F3D !important;
+}
+
+/* Borders */
+.dark .border-gray-200,
+.dark .border-gray-150,
+.dark .border-gray-100,
+.dark .border-stone-200,
+.dark .border-stone-200\/90,
+.dark .border-stone-200\/80,
+.dark .border-gray-200\/90,
+.dark .border-gray-200\/80,
+.dark .border-gray-200\/70,
+.dark .border-gray-200\/60 {
+  border-color: #282834 !important;
+}
+
+.dark .border-gray-300 {
+  border-color: #383848 !important;
+}
+
+/* Typography & Contrast */
+.dark .text-gray-900,
+.dark .text-stone-900 {
+  color: #F9FAFB !important;
+}
+
+.dark .text-gray-800,
+.dark .text-stone-800 {
+  color: #E5E7EB !important;
+}
+
+.dark .text-gray-700,
+.dark .text-stone-700 {
+  color: #D1D5DB !important;
+}
+
+.dark .text-gray-600,
+.dark .text-stone-600 {
+  color: #9CA3AF !important;
+}
+
+.dark .text-gray-500,
+.dark .text-stone-500 {
+  color: #949BA8 !important;
+}
+
+.dark .text-gray-400,
+.dark .text-stone-400 {
+  color: #6B7280 !important;
+}
+
+/* Burgundy Signature Palette in Dark Mode */
+/* Subtle Burgundy Badges & Card Accents */
+.dark .bg-\[\#FAF0F2\],
+.dark .bg-\[\#FAF0F2\]\/70 {
+  background-color: #281016 !important;
+}
+
+.dark .border-\[\#F0D5DA\] {
+  border-color: #4A1622 !important;
+}
+
+/* Burgundy text on dark background becomes radiant rose-burgundy for high contrast */
+.dark .text-\[\#721428\] {
+  color: #FB7185 !important;
+}
+
+/* Primary Burgundy Solid Action Buttons retain bold deep burgundy with crisp white text */
+.dark .bg-\[\#721428\] {
+  background-color: #721428 !important;
+  color: #FFFFFF !important;
+}
+
+.dark .hover\:bg-\[\#5A0E1E\]:hover {
+  background-color: #8E1B34 !important;
+}
+
+.dark .active\:bg-\[\#470A17\]:active {
+  background-color: #5A0E1E !important;
+}
+
+/* Interactive Hover States */
+.dark .hover\:bg-gray-50:hover,
+.dark .hover\:bg-gray-50\/80:hover {
+  background-color: #22222C !important;
+}
+
+.dark .hover\:bg-gray-100:hover {
+  background-color: #2A2A38 !important;
+}
+
+.dark .hover\:bg-gray-200:hover {
+  background-color: #353545 !important;
+}
+
+.dark .active\:bg-gray-100:active {
+  background-color: #2D2D3B !important;
+}
+
+/* Form Inputs & Search Bars */
+.dark input,
+.dark textarea {
+  background-color: #1F1F28 !important;
+  border-color: #2E2E3C !important;
+  color: #F9FAFB !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #6B7280 !important;
+}
+
+/* Bottom Navigation Bar in Dark Mode */
+.dark .bottom-nav-bar {
+  background-color: rgba(22, 22, 29, 0.94) !important;
+  border-color: #282834 !important;
+  box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Modals & Popovers in Dark Mode */
+.dark .modal-content,
+.dark [role="dialog"] {
+  background-color: #181820 !important;
+  border-color: #2D2D3A !important;
+}
+
+/* Specific component visual tuning for Dark Mode */
+.dark .product-visual-container {
+  background-color: #1C1C24 !important;
+  border-color: #2B2B38 !important;
+}
+
+/* Origami Bird Brand Card in Dark Mode */
+.dark .brand-card-light {
+  background-color: #1C1C24 !important;
+  border-color: #2E2E3C !important;
 }
 
 /* ATH Origami Bird Smooth Animations */
