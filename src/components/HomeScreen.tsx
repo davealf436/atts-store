@@ -58,32 +58,69 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
           {/* Minimalist market chart vector hairline behind logo */}
           <svg
-            className="absolute right-0 bottom-2 w-44 h-20 text-stone-300/40 pointer-events-none"
+            className="absolute right-1 sm:right-3 bottom-1.5 w-48 sm:w-56 h-22 sm:h-24 pointer-events-none overflow-visible"
             viewBox="0 0 190 90"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
             {/* Horizontal price levels */}
-            <line x1="20" y1="28" x2="180" y2="28" stroke="currentColor" strokeWidth="0.75" strokeDasharray="2 3" />
-            <line x1="40" y1="62" x2="180" y2="62" stroke="currentColor" strokeWidth="0.75" strokeDasharray="2 3" />
+            <line x1="20" y1="28" x2="180" y2="28" stroke="#721428" strokeOpacity="0.12" strokeWidth="0.75" strokeDasharray="2 3" />
+            <line x1="40" y1="62" x2="180" y2="62" stroke="#721428" strokeOpacity="0.12" strokeWidth="0.75" strokeDasharray="2 3" />
             
-            {/* Precision market path with smooth line-drawing/flow animation */}
+            {/* Constant baseline chart trajectory (always visible) */}
             <path
-              className="ath-chart-line-animated"
               d="M 15 68 L 48 58 L 78 46 L 108 52 L 142 26 L 175 16"
               stroke="#721428"
               strokeWidth="1.2"
+              strokeOpacity="0.25"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
-            {/* Small execution data point */}
-            <circle
-              className="ath-chart-point-animated"
-              cx="175"
-              cy="16"
-              r="2"
-              fill="#721428"
-            />
+
+            {/* Smooth animated active flow line (draws dynamically over the baseline) */}
+            <path
+              d="M 15 68 L 48 58 L 78 46 L 108 52 L 142 26 L 175 16"
+              stroke="#721428"
+              strokeWidth="1.8"
+              strokeOpacity="0.85"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeDasharray="180"
+              strokeDashoffset="180"
+            >
+              <animate
+                attributeName="stroke-dashoffset"
+                values="180;0;0;180"
+                keyTimes="0;0.45;0.8;1"
+                dur="5.5s"
+                repeatCount="indefinite"
+              />
+              <animate
+                attributeName="stroke-opacity"
+                values="0.3;0.9;0.9;0.3"
+                keyTimes="0;0.45;0.8;1"
+                dur="5.5s"
+                repeatCount="indefinite"
+              />
+            </path>
+
+            {/* Small execution data point with gentle pulse */}
+            <circle cx="175" cy="16" r="2.5" fill="#721428" fillOpacity="0.85">
+              <animate
+                attributeName="r"
+                values="2;3.2;3.2;2"
+                keyTimes="0;0.45;0.8;1"
+                dur="5.5s"
+                repeatCount="indefinite"
+              />
+              <animate
+                attributeName="fill-opacity"
+                values="0.35;1;1;0.35"
+                keyTimes="0;0.45;0.8;1"
+                dur="5.5s"
+                repeatCount="indefinite"
+              />
+            </circle>
           </svg>
         </div>
 
