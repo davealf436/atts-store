@@ -26,13 +26,13 @@ export const ProductPhotoLogo: React.FC<ProductPhotoLogoProps> = ({
     banner: 'w-full h-full rounded-none',
   };
 
-  // 1. Abyssinia Journal Official Brand Mark
+  // 1. Abyssinia Journal Website (matching Image 1: 3D Origami Purple & Gold Bird on pure white background)
   if (productId === 'abyssinia-journal') {
     return (
       <div
         className={`relative overflow-hidden shrink-0 flex items-center justify-center select-none shadow-2xs ${sizeClasses[size]} ${className}`}
-        style={{ backgroundColor: '#28060F' }}
-        title="Abyssinia Journal"
+        style={{ backgroundColor: '#FFFFFF' }}
+        title="Abyssinia Journal Website"
       >
         <svg
           viewBox="0 0 100 100"
@@ -40,61 +40,147 @@ export const ProductPhotoLogo: React.FC<ProductPhotoLogoProps> = ({
           xmlns="http://www.w3.org/2000/svg"
           className="w-full h-full"
         >
+          <rect width="100" height="100" fill="#FFFFFF" />
           <defs>
-            <radialGradient id="athJournalGrad" cx="50%" cy="40%" r="65%">
-              <stop offset="0%" stopColor="#721428" />
-              <stop offset="60%" stopColor="#3F0914" />
-              <stop offset="100%" stopColor="#22040B" />
-            </radialGradient>
-            <linearGradient id="goldAcc" x1="0" y1="0" x2="1" y2="1">
+            {/* Rich multi-stop metallic gold stroke gradient */}
+            <linearGradient id="goldOrigami" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="#F5D061" />
-              <stop offset="100%" stopColor="#E6B325" />
+              <stop offset="35%" stopColor="#D4AF37" />
+              <stop offset="70%" stopColor="#B38728" />
+              <stop offset="100%" stopColor="#FDF0CD" />
+            </linearGradient>
+
+            {/* Facet gradients for amethyst/purple polygon facets matching Image 1 */}
+            <linearGradient id="purpleFacet1" x1="20%" y1="0%" x2="80%" y2="100%">
+              <stop offset="0%" stopColor="#300A52" />
+              <stop offset="100%" stopColor="#55157E" />
+            </linearGradient>
+
+            <linearGradient id="purpleFacet2" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#4A1373" />
+              <stop offset="100%" stopColor="#6C1E9D" />
+            </linearGradient>
+
+            <linearGradient id="purpleFacet3" x1="0%" y1="50%" x2="100%" y2="50%">
+              <stop offset="0%" stopColor="#250642" />
+              <stop offset="100%" stopColor="#3B0C5E" />
+            </linearGradient>
+
+            <linearGradient id="purpleFacet4" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#5E1B8C" />
+              <stop offset="100%" stopColor="#8A2BB8" />
+            </linearGradient>
+
+            <linearGradient id="purpleFacet5" x1="50%" y1="0%" x2="50%" y2="100%">
+              <stop offset="0%" stopColor="#1E0533" />
+              <stop offset="100%" stopColor="#2F094E" />
             </linearGradient>
           </defs>
-          <rect width="100" height="100" fill="url(#athJournalGrad)" />
 
-          {/* Subtle grid ledger lines */}
-          <line x1="20" y1="28" x2="80" y2="28" stroke="#FFFFFF" strokeOpacity="0.08" strokeWidth="1" />
-          <line x1="20" y1="48" x2="80" y2="48" stroke="#FFFFFF" strokeOpacity="0.08" strokeWidth="1" />
-          <line x1="20" y1="68" x2="80" y2="68" stroke="#FFFFFF" strokeOpacity="0.08" strokeWidth="1" />
+          {/* Geometric 3D Origami Amethyst & Gold Bird */}
+          <g transform="translate(6, 4) scale(0.88)">
+            {/* Rear secondary wing flare */}
+            <polygon
+              points="14,24 33,37 28,24"
+              fill="url(#purpleFacet3)"
+              stroke="url(#goldOrigami)"
+              strokeWidth="1.2"
+              strokeLinejoin="round"
+            />
 
-          {/* Open Journal Book Icon */}
-          <path
-            d="M 50 34 C 44 30 32 30 24 33 L 24 72 C 32 69 44 69 50 73 C 56 69 68 69 76 72 L 76 33 C 68 30 56 30 50 34 Z"
-            fill="none"
-            stroke="#FFFFFF"
-            strokeWidth="3.2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <line x1="50" y1="34" x2="50" y2="73" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" />
+            {/* Tail feathers - lower facet pointing down */}
+            <polygon
+              points="45,72 32,87 46,79"
+              fill="url(#purpleFacet5)"
+              stroke="url(#goldOrigami)"
+              strokeWidth="1.2"
+              strokeLinejoin="round"
+            />
 
-          {/* Left page: Candlesticks */}
-          <line x1="33" y1="42" x2="33" y2="60" stroke="#FFFFFF" strokeWidth="1.2" strokeOpacity="0.6" />
-          <rect x="31" y="46" width="4" height="9" fill="url(#goldAcc)" rx="0.5" />
-          
-          <line x1="41" y1="38" x2="41" y2="56" stroke="#FFFFFF" strokeWidth="1.2" strokeOpacity="0.6" />
-          <rect x="39" y="41" width="4" height="10" fill="#FFFFFF" rx="0.5" />
+            {/* Tail main flank */}
+            <polygon
+              points="45,49 32,87 45,72"
+              fill="url(#purpleFacet1)"
+              stroke="url(#goldOrigami)"
+              strokeWidth="1.2"
+              strokeLinejoin="round"
+            />
 
-          {/* Right page: Trading Hub Checklist lines */}
-          <line x1="57" y1="42" x2="69" y2="42" stroke="#FFFFFF" strokeWidth="2.2" strokeLinecap="round" strokeOpacity="0.9" />
-          <line x1="57" y1="50" x2="67" y2="50" stroke="#FFFFFF" strokeWidth="2.2" strokeLinecap="round" strokeOpacity="0.7" />
-          <line x1="57" y1="58" x2="64" y2="58" stroke="#FFFFFF" strokeWidth="2.2" strokeLinecap="round" strokeOpacity="0.5" />
+            {/* Back wing top facet */}
+            <polygon
+              points="20,12 48,17 45,49"
+              fill="url(#purpleFacet1)"
+              stroke="url(#goldOrigami)"
+              strokeWidth="1.3"
+              strokeLinejoin="round"
+            />
 
-          {/* Mini Gold Crest Star */}
-          <circle cx="50" cy="24" r="2.5" fill="url(#goldAcc)" />
+            {/* Back wing secondary facet */}
+            <polygon
+              points="20,12 45,49 28,24"
+              fill="url(#purpleFacet2)"
+              stroke="url(#goldOrigami)"
+              strokeWidth="1.2"
+              strokeLinejoin="round"
+            />
+
+            {/* Main torso diamond (faceted breast) */}
+            <polygon
+              points="48,17 66,43 45,72 45,49"
+              fill="url(#purpleFacet2)"
+              stroke="url(#goldOrigami)"
+              strokeWidth="1.3"
+              strokeLinejoin="round"
+            />
+
+            {/* Lower chest highlight facet */}
+            <polygon
+              points="66,43 73,55 58,68 45,72"
+              fill="url(#purpleFacet4)"
+              stroke="url(#goldOrigami)"
+              strokeWidth="1.3"
+              strokeLinejoin="round"
+            />
+
+            {/* Central chest shadow facet */}
+            <polygon
+              points="48,17 66,43 45,49"
+              fill="url(#purpleFacet3)"
+              stroke="url(#goldOrigami)"
+              strokeWidth="1.2"
+              strokeLinejoin="round"
+            />
+
+            {/* Head and beak facet */}
+            <polygon
+              points="66,43 78,43 85,53 73,55"
+              fill="url(#purpleFacet1)"
+              stroke="url(#goldOrigami)"
+              strokeWidth="1.3"
+              strokeLinejoin="round"
+            />
+
+            {/* Beak lower return */}
+            <polygon
+              points="78,43 85,53 76,53"
+              fill="url(#purpleFacet5)"
+              stroke="url(#goldOrigami)"
+              strokeWidth="1.2"
+              strokeLinejoin="round"
+            />
+          </g>
         </svg>
       </div>
     );
   }
 
-  // 2. Backtesting Journal Brand Mark
+  // 2. Backtesting Journal Website (matching Image 2: White 3-Bar Chart with Upward Trend Arrow on solid black)
   if (productId === 'backtesting-journal') {
     return (
       <div
         className={`relative overflow-hidden shrink-0 flex items-center justify-center select-none shadow-2xs ${sizeClasses[size]} ${className}`}
-        style={{ backgroundColor: '#0B1326' }}
-        title="Backtesting Journal"
+        style={{ backgroundColor: '#000000' }}
+        title="Backtesting Journal Website"
       >
         <svg
           viewBox="0 0 100 100"
@@ -102,54 +188,33 @@ export const ProductPhotoLogo: React.FC<ProductPhotoLogoProps> = ({
           xmlns="http://www.w3.org/2000/svg"
           className="w-full h-full"
         >
-          <defs>
-            <radialGradient id="backtestGrad" cx="50%" cy="40%" r="65%">
-              <stop offset="0%" stopColor="#172A4D" />
-              <stop offset="60%" stopColor="#0E1B33" />
-              <stop offset="100%" stopColor="#081020" />
-            </radialGradient>
-            <linearGradient id="cyanLine" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#38BDF8" />
-              <stop offset="100%" stopColor="#0284C7" />
-            </linearGradient>
-          </defs>
-          <rect width="100" height="100" fill="url(#backtestGrad)" />
+          <rect width="100" height="100" fill="#000000" />
 
-          {/* Coordinate grid lines */}
-          <line x1="18" y1="78" x2="82" y2="78" stroke="#FFFFFF" strokeOpacity="0.25" strokeWidth="1.5" strokeLinecap="round" />
-          <line x1="18" y1="22" x2="18" y2="78" stroke="#FFFFFF" strokeOpacity="0.25" strokeWidth="1.5" strokeLinecap="round" />
+          {/* White 3-Column Chart & Breakout Arrow matching Image 2 */}
+          <g fill="#FFFFFF" transform="translate(2, 2)">
+            {/* Left Bar (Short) with slanted roof */}
+            <polygon points="33,56 40.5,52 40.5,43 33,47" />
 
-          {/* Historical backtest histogram columns */}
-          <rect x="25" y="58" width="5.5" height="20" rx="1" fill="#38BDF8" fillOpacity="0.75" />
-          <rect x="35" y="44" width="5.5" height="34" rx="1" fill="#38BDF8" fillOpacity="0.9" />
-          <rect x="45" y="52" width="5.5" height="26" rx="1" fill="#94A3B8" fillOpacity="0.6" />
-          <rect x="55" y="34" width="5.5" height="44" rx="1" fill="#38BDF8" />
-          <rect x="65" y="40" width="5.5" height="38" rx="1" fill="#38BDF8" fillOpacity="0.85" />
-          <rect x="75" y="26" width="5.5" height="52" rx="1" fill="#10B981" />
+            {/* Middle Bar (Tall) with slanted roof */}
+            <polygon points="44,57 51.5,53 51.5,30 44,34" />
 
-          {/* Profit Expectancy Curve */}
-          <path
-            d="M 20 66 Q 38 52, 50 42 T 78 22"
-            fill="none"
-            stroke="url(#cyanLine)"
-            strokeWidth="2.8"
-            strokeLinecap="round"
-          />
+            {/* Right Bar (Medium) with slanted roof */}
+            <polygon points="55,54 62.5,50 62.5,36 55,40" />
 
-          {/* Replay Target checkmark badge */}
-          <circle cx="78" cy="22" r="4.5" fill="#10B981" />
-          <path d="M 76 22 L 77.5 23.5 L 80.5 20.5" stroke="#FFFFFF" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+            {/* Upward Breakout Zig-zag Arrow Path */}
+            <polygon points="29,62.5 43.5,53.5 51,66 67,52.5 65.5,47.5 74.5,49.5 70.5,58 68,54.5 51,68 43.5,56 31.5,63.5" />
+          </g>
         </svg>
       </div>
     );
   }
 
-  // 3. Notion Template Journal Brand Mark (Official Minimalist N Icon)
+  // 3. Notion Template Journal (matching Image 3: 3D Notion Cube + "Notion" text on pure white)
   if (productId === 'notion-template-journal') {
     return (
       <div
         className={`relative overflow-hidden shrink-0 flex items-center justify-center select-none shadow-2xs ${sizeClasses[size]} ${className}`}
-        style={{ backgroundColor: '#191919' }}
+        style={{ backgroundColor: '#FFFFFF' }}
         title="Notion Template Journal"
       >
         <svg
@@ -158,30 +223,52 @@ export const ProductPhotoLogo: React.FC<ProductPhotoLogoProps> = ({
           xmlns="http://www.w3.org/2000/svg"
           className="w-full h-full"
         >
-          <rect width="100" height="100" fill="#191919" />
+          <rect width="100" height="100" fill="#FFFFFF" />
 
-          {/* Ambient subtle glow */}
-          <circle cx="50" cy="50" r="35" fill="#FFFFFF" fillOpacity="0.04" />
+          {/* 3D Notion Cube on Left + Wordmark "Notion" on Right matching Image 3 */}
+          <g transform="translate(6, 32)">
+            {/* 3D Isometric Notion Cube */}
+            <g transform="scale(0.38)">
+              {/* Outer Cube Outline / Left Black Face */}
+              <path
+                d="M 15 28 L 47 10 C 49 9 52 9 54 10 L 86 28 C 88 29 89 31 89 33 L 89 74 C 89 77 87 79 84 81 L 52 98 C 50 99 47 99 45 98 L 13 81 C 10 79 9 77 9 74 L 9 33 C 9 31 11 29 15 28 Z"
+                fill="#000000"
+              />
+              {/* Top Isometric Face */}
+              <polygon
+                points="17,31 50,14 83,31 50,47"
+                fill="#FFFFFF"
+                stroke="#000000"
+                strokeWidth="3.5"
+                strokeLinejoin="round"
+              />
+              {/* Front Right Face (White with black 'N') */}
+              <polygon
+                points="50,48 85,32 85,73 50,89"
+                fill="#FFFFFF"
+                stroke="#000000"
+                strokeWidth="3.5"
+                strokeLinejoin="round"
+              />
+              {/* Iconic Serif 'N' inside front face */}
+              <path
+                d="M 57 58 C 59 57.5 61 56.5 63 56 L 76 50 C 78 51 78 52 77 54 L 66 73 L 76 68 C 78 68 79 69 79 70 C 79 72 78 72 76 73 L 62 80 C 60 80 59.5 79 60.5 77 L 72 58 L 62 63 C 60 63 59 62 59 61 Z"
+                fill="#000000"
+              />
+            </g>
 
-          {/* Notion Minimalist "N" logo mark */}
-          <g transform="translate(23, 20) scale(0.54)">
-            {/* Notion Book Shape */}
-            <path
-              d="M 4.4 12 C 4.4 7.6 8 4 12.4 4 L 83.6 4 C 88 4 91.6 7.6 91.6 12 L 91.6 88 C 91.6 92.4 88 96 83.6 96 L 12.4 96 C 8 96 4.4 92.4 4.4 88 Z"
-              fill="#FFFFFF"
-            />
-            {/* Inner Black Cutout */}
-            <path
-              d="M 12 10 L 84 10 C 86.2 10 88 11.8 88 14 L 88 86 C 88 88.2 86.2 90 84 90 L 12 90 C 9.8 90 8 88.2 8 86 L 8 14 C 8 11.8 9.8 10 12 10 Z"
-              fill="#191919"
-            />
-            {/* White Notion "N" Letterform */}
-            <path
-              d="M 23 26 C 26 25.5 30 24 33 23 L 64 23 C 67 24 67.5 25.5 65.5 29 L 41 68 L 65 68 C 68.5 68 70 69 70 72 C 70 75 68.5 76 65 76 L 31 76 C 27.5 76 26.5 74 28.5 70.5 L 53 32 L 33 32 C 29.5 32 28 31 28 28.5 C 28 26.5 28.5 26 23 26 Z"
-              fill="#FFFFFF"
-            />
-            {/* Top right fold hint */}
-            <path d="M 64 23 L 73 34 L 64 34 Z" fill="#FFFFFF" fillOpacity="0.3" />
+            {/* "Notion" Wordmark in Black */}
+            <text
+              x="42"
+              y="28"
+              fontFamily="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+              fontWeight="700"
+              fontSize="23"
+              fill="#000000"
+              letterSpacing="-0.6"
+            >
+              Notion
+            </text>
           </g>
         </svg>
       </div>

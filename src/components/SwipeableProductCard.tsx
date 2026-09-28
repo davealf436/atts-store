@@ -25,12 +25,14 @@ export const SwipeableProductCard: React.FC<SwipeableProductCardProps> = ({
   const isTelegram = product.id === 'telegram-premium';
   const isGoogleAI = product.id === 'google-ai';
 
+  const isLightBg = isAbyssiniaJournal || isNotion || isGoogleAI;
+
   const containerBg = isAbyssiniaJournal
-    ? 'bg-[#28060F]'
+    ? 'bg-white border border-gray-150'
     : isBacktestingJournal
-    ? 'bg-[#0B1326]'
+    ? 'bg-black'
     : isNotion
-    ? 'bg-[#191919]'
+    ? 'bg-white border border-gray-150'
     : isTelegram
     ? 'bg-[#24A1DE]'
     : isGoogleAI
@@ -66,7 +68,7 @@ export const SwipeableProductCard: React.FC<SwipeableProductCardProps> = ({
             <div className="absolute top-2 left-2 z-10 pointer-events-none">
               <span
                 className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold tracking-tight shadow-xs ${
-                  isGoogleAI
+                  isLightBg
                     ? 'bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]'
                     : 'bg-white/95 backdrop-blur-md text-[#721428] border border-white/60'
                 }`}
