@@ -13,6 +13,76 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
   const isAbyssiniaJournal = product.id === 'abyssinia-journal';
   const isBacktestingJournal = product.id === 'backtesting-journal';
   const isNotion = product.id === 'notion-template-journal';
+  const isTelegram = product.id === 'telegram-premium';
+  const isGoogleAI = product.id === 'google-ai';
+
+  // Telegram Premium Visual
+  if (isTelegram) {
+    return (
+      <div
+        className={`relative w-full h-36 sm:h-40 rounded-t-xl overflow-hidden bg-[#24A1DE] flex flex-col items-center justify-center p-5 border-b border-gray-100 select-none ${className}`}
+      >
+        <div
+          className="absolute inset-0 opacity-15 pointer-events-none"
+          style={{
+            backgroundImage:
+              'linear-gradient(to right, #FFFFFF 1px, transparent 1px), linear-gradient(to bottom, #FFFFFF 1px, transparent 1px)',
+            backgroundSize: '20px 20px',
+          }}
+        />
+        <div className="relative z-10 flex flex-col items-center">
+          <div className="flex items-center gap-2.5 mb-2">
+            <ProductPhotoLogo productId={product.id} size="md" className="border border-white/20 shadow-sm" />
+            <div className="text-left">
+              <div className="text-base font-extrabold tracking-tight text-white leading-none">
+                Telegram Premium
+              </div>
+              <span className="text-[10px] font-semibold text-blue-100 tracking-wider uppercase block mt-1">
+                Official Account Upgrade
+              </span>
+            </div>
+          </div>
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 text-[10px] font-bold text-white shadow-xs">
+            ★ FAST ACTIVATION · DOUBLED LIMITS
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Google AI Visual
+  if (isGoogleAI) {
+    return (
+      <div
+        className={`relative w-full h-36 sm:h-40 rounded-t-xl overflow-hidden bg-white flex flex-col items-center justify-center p-5 border-b border-gray-200 select-none ${className}`}
+      >
+        <div
+          className="absolute inset-0 opacity-10 pointer-events-none"
+          style={{
+            backgroundImage:
+              'linear-gradient(to right, #4285F4 1px, transparent 1px), linear-gradient(to bottom, #4285F4 1px, transparent 1px)',
+            backgroundSize: '20px 20px',
+          }}
+        />
+        <div className="relative z-10 flex flex-col items-center">
+          <div className="flex items-center gap-2.5 mb-2">
+            <ProductPhotoLogo productId={product.id} size="md" className="border border-gray-200 shadow-sm" />
+            <div className="text-left">
+              <div className="text-base font-extrabold tracking-tight text-gray-900 leading-none">
+                Google AI
+              </div>
+              <span className="text-[10px] font-semibold text-[#4285F4] tracking-wider uppercase block mt-1">
+                Gemini Advanced & Workspace
+              </span>
+            </div>
+          </div>
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#FAF0F2] border border-[#F0D5DA] text-[10px] font-bold text-[#721428] shadow-xs">
+            ✦ GEMINI 1.5 PRO · 2M CONTEXT
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Abyssinia Journal Visual
   if (isAbyssiniaJournal) {

@@ -36,6 +36,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     .map((id) => products.find((p) => p.id === id))
     .filter((p): p is Product => Boolean(p));
 
+  // Premium Subscriptions in exact requested order:
+  // 1. Telegram Premium
+  // 2. Google AI
+  const orderedSubscriptionProducts = ['telegram-premium', 'google-ai']
+    .map((id) => products.find((p) => p.id === id))
+    .filter((p): p is Product => Boolean(p));
+
   return (
     <div className="space-y-4 pb-4">
       {/* Welcome / Hero Banner (Clean, compact, professional trading look) */}
@@ -144,6 +151,43 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         {/* Horizontal Swipeable Track (Ordered: 1. Abyssinia Journal, 2. Backtesting Journal, 3. Notion Template Journal — Free) */}
         <div className="flex gap-3 overflow-x-auto pb-2 pt-0.5 -mx-3.5 px-3.5 snap-x snap-mandatory scrollbar-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           {orderedJournalProducts.map((product) => (
+            <SwipeableProductCard
+              key={product.id}
+              product={product}
+              onView={onViewProduct}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* Premium Subscriptions Section (Ordered: 1. Telegram Premium, 2. Google AI) */}
+      <section className="space-y-2.5">
+        <div className="flex items-center justify-between px-0.5">
+          <div>
+            <h3 className="text-sm font-bold text-gray-900 tracking-tight flex items-center gap-1.5">
+              <span>Premium Subscriptions</span>
+              <span className="text-[10px] font-semibold text-gray-400">· Swipe</span>
+            </h3>
+            <p className="text-[11px] text-gray-500">
+              Official productivity, communication & AI licenses
+            </p>
+          </div>
+
+          <button
+            onClick={() => {
+              triggerHaptic('light');
+              onNavigateToProducts();
+            }}
+            className="text-xs font-bold text-[#721428] hover:text-[#5A0E1E] flex items-center gap-1"
+          >
+            <span>View all</span>
+            <ArrowRight className="w-3 h-3" />
+          </button>
+        </div>
+
+        {/* Horizontal Swipeable Track */}
+        <div className="flex gap-3 overflow-x-auto pb-2 pt-0.5 -mx-3.5 px-3.5 snap-x snap-mandatory scrollbar-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+          {orderedSubscriptionProducts.map((product) => (
             <SwipeableProductCard
               key={product.id}
               product={product}

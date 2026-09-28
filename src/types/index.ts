@@ -13,7 +13,7 @@ export interface Product {
   id: string;
   name: string;
   brand: string;
-  category: 'tradingview' | 'backtesting' | 'journaling' | string;
+  category: 'tradingview' | 'backtesting' | 'journaling' | 'subscriptions' | string;
   shortDescription: string;
   fullDescription: string;
   startingPricePlaceholder: string;

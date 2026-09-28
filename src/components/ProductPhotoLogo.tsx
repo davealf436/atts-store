@@ -188,7 +188,99 @@ export const ProductPhotoLogo: React.FC<ProductPhotoLogoProps> = ({
     );
   }
 
-  // 4. Official FXReplay Logo (for FXReplay Pro)
+  // 4. Telegram Premium Official Brandmark (matching uploaded Image 1)
+  if (productId === 'telegram-premium') {
+    return (
+      <div
+        className={`relative overflow-hidden shrink-0 flex items-center justify-center select-none shadow-2xs ${sizeClasses[size]} ${className}`}
+        style={{ backgroundColor: '#24A1DE' }}
+        title="Telegram Premium"
+      >
+        <svg
+          viewBox="0 0 100 100"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-full h-full"
+        >
+          <rect width="100" height="100" fill="#24A1DE" />
+          {/* Telegram airplane silhouette in pure white */}
+          <path
+            d="M 77.5 26.8 C 76.5 26.1 74 27 71.8 28.1 L 18 51.4 C 15.5 52.4 15.4 54.2 17.8 55 L 31.8 59.4 L 64.5 38.4 C 66 37.4 67.2 38 66 39.1 L 39.5 63.1 L 38.5 76.9 C 40 76.9 40.8 76.1 41.7 75.2 L 49.8 67.4 L 66 79.4 C 69 81.1 71 80.1 71.8 76.7 L 81.8 29.7 C 82.5 26.3 80.5 24.9 77.5 26.8 Z"
+            fill="#FFFFFF"
+          />
+        </svg>
+      </div>
+    );
+  }
+
+  // 5. Google AI Official Brandmark (matching uploaded Image 2)
+  if (productId === 'google-ai') {
+    return (
+      <div
+        className={`relative overflow-hidden shrink-0 flex items-center justify-center select-none shadow-2xs ${sizeClasses[size]} ${className}`}
+        style={{ backgroundColor: '#FFFFFF' }}
+        title="Google AI"
+      >
+        <svg
+          viewBox="0 0 100 100"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-full h-full"
+        >
+          <rect width="100" height="100" fill="#FFFFFF" />
+          <defs>
+            {/* Smooth 4-point star spark outline with rounded tips */}
+            <clipPath id="googleSparkClip">
+              <path
+                d="M 47.8 11.2 C 48.8 9.6 51.2 9.6 52.2 11.2 C 54.2 30.5 69.5 45.8 88.8 47.8 C 90.4 48.8 90.4 51.2 88.8 52.2 C 69.5 54.2 54.2 69.5 52.2 88.8 C 51.2 90.4 48.8 90.4 47.8 88.8 C 45.8 69.5 30.5 54.2 11.2 52.2 C 9.6 51.2 9.6 48.8 11.2 47.8 C 30.5 45.8 45.8 30.5 47.8 11.2 Z"
+              />
+            </clipPath>
+
+            {/* Gradient layers for Red, Yellow, Green, Blue matching Image 2 */}
+            <radialGradient id="gSparkRed" cx="50%" cy="16%" r="58%">
+              <stop offset="0%" stopColor="#EA4335" />
+              <stop offset="45%" stopColor="#EA4335" stopOpacity="0.85" />
+              <stop offset="100%" stopColor="#EA4335" stopOpacity="0" />
+            </radialGradient>
+
+            <radialGradient id="gSparkYellow" cx="16%" cy="50%" r="58%">
+              <stop offset="0%" stopColor="#FBBC05" />
+              <stop offset="45%" stopColor="#FBBC05" stopOpacity="0.85" />
+              <stop offset="100%" stopColor="#FBBC05" stopOpacity="0" />
+            </radialGradient>
+
+            <radialGradient id="gSparkGreen" cx="50%" cy="84%" r="58%">
+              <stop offset="0%" stopColor="#34A853" />
+              <stop offset="45%" stopColor="#34A853" stopOpacity="0.85" />
+              <stop offset="100%" stopColor="#34A853" stopOpacity="0" />
+            </radialGradient>
+
+            <radialGradient id="gSparkBlue" cx="78%" cy="50%" r="62%">
+              <stop offset="0%" stopColor="#4285F4" />
+              <stop offset="55%" stopColor="#4285F4" stopOpacity="0.95" />
+              <stop offset="100%" stopColor="#4285F4" stopOpacity="0" />
+            </radialGradient>
+          </defs>
+
+          {/* Spark shape filled with blended chromatic gradient */}
+          <g clipPath="url(#googleSparkClip)">
+            {/* Core blue fill */}
+            <rect width="100" height="100" fill="#4285F4" />
+            {/* Red top glow */}
+            <rect width="100" height="100" fill="url(#gSparkRed)" />
+            {/* Yellow left glow */}
+            <rect width="100" height="100" fill="url(#gSparkYellow)" />
+            {/* Green bottom glow */}
+            <rect width="100" height="100" fill="url(#gSparkGreen)" />
+            {/* Blue right accent glow */}
+            <rect width="100" height="100" fill="url(#gSparkBlue)" />
+          </g>
+        </svg>
+      </div>
+    );
+  }
+
+  // 6. Official FXReplay Logo (for FXReplay Pro)
   if (productId === 'fxreplay-pro') {
     return (
       <div

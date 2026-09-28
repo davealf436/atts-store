@@ -22,6 +22,8 @@ export const SwipeableProductCard: React.FC<SwipeableProductCardProps> = ({
   const isAbyssiniaJournal = product.id === 'abyssinia-journal';
   const isBacktestingJournal = product.id === 'backtesting-journal';
   const isNotion = product.id === 'notion-template-journal';
+  const isTelegram = product.id === 'telegram-premium';
+  const isGoogleAI = product.id === 'google-ai';
 
   const containerBg = isAbyssiniaJournal
     ? 'bg-[#28060F]'
@@ -29,6 +31,10 @@ export const SwipeableProductCard: React.FC<SwipeableProductCardProps> = ({
     ? 'bg-[#0B1326]'
     : isNotion
     ? 'bg-[#191919]'
+    : isTelegram
+    ? 'bg-[#24A1DE]'
+    : isGoogleAI
+    ? 'bg-white border border-gray-150'
     : isFXReplay
     ? 'bg-[#070D18]'
     : 'bg-black';
@@ -58,7 +64,13 @@ export const SwipeableProductCard: React.FC<SwipeableProductCardProps> = ({
           {/* Small subtle badge over the image area */}
           {product.badge && (
             <div className="absolute top-2 left-2 z-10 pointer-events-none">
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold tracking-tight bg-white/95 backdrop-blur-md text-[#721428] border border-white/60 shadow-xs">
+              <span
+                className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold tracking-tight shadow-xs ${
+                  isGoogleAI
+                    ? 'bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]'
+                    : 'bg-white/95 backdrop-blur-md text-[#721428] border border-white/60'
+                }`}
+              >
                 {product.badge}
               </span>
             </div>
