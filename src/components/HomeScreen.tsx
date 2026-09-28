@@ -1,7 +1,7 @@
 import React from 'react';
 import { Product } from '../types';
 import { SwipeableProductCard } from './SwipeableProductCard';
-import { ArrowRight, ArrowLeftRight, Layers, ShieldCheck, Zap } from 'lucide-react';
+import { ArrowRight, ArrowLeftRight, ShieldCheck, Zap } from 'lucide-react';
 import { triggerHaptic } from '../services/telegram';
 import { AthLogo } from './AthLogo';
 
@@ -45,44 +45,42 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
   return (
     <div className="space-y-4 pb-4">
-      {/* Welcome / Hero Banner (Clean, compact, professional trading look) */}
-      <section className="bg-white border border-gray-200/90 rounded-xl p-4 sm:p-5 shadow-xs relative overflow-hidden">
-        <div className="flex items-start justify-between gap-3 mb-3">
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#721428] bg-[#FAF0F2] px-2 py-0.5 rounded border border-[#F0D5DA]">
-                Official
+      {/* ATH Home Hero Card */}
+      <section className="bg-white border border-gray-200/90 rounded-xl p-4 sm:p-5 shadow-xs">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex-1 min-w-0 space-y-2">
+            <div>
+              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-[#FAF0F2] border border-[#F0D5DA] text-[10px] font-bold text-[#721428] tracking-wider uppercase">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#721428]" />
+                <span>OFFICIAL · ATH</span>
               </span>
-              <span className="text-gray-300">·</span>
-              <span className="text-[11px] text-gray-500 font-semibold">ATH</span>
             </div>
 
-            <h2 className="text-lg sm:text-xl font-bold text-gray-900 tracking-tight leading-snug mb-1">
+            <h1 className="text-lg sm:text-xl font-bold text-gray-900 tracking-tight leading-snug">
               Built for Better Trading.
-            </h2>
+            </h1>
 
-            <p className="text-xs text-gray-600 leading-relaxed">
-              Authentic TradingView account licenses and FXReplay Pro backtesting tools curated for serious retail traders.
+            <p className="text-xs text-gray-600 leading-relaxed max-w-md">
+              Premium trading tools, journals &amp; digital resources — built for traders who take their process seriously.
             </p>
+
+            <div className="pt-1">
+              <button
+                onClick={() => {
+                  triggerHaptic('light');
+                  onNavigateToProducts();
+                }}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#721428] hover:bg-[#5A0E1E] active:bg-[#470A17] text-white text-xs font-bold transition-all active:scale-[0.98] shadow-xs cursor-pointer group"
+              >
+                <span>Browse Catalog</span>
+                <ArrowRight className="w-3.5 h-3.5 stroke-[2.2] transition-transform group-hover:translate-x-0.5" />
+              </button>
+            </div>
           </div>
 
-          <div className="shrink-0 pt-0.5">
-            <AthLogo size="lg" />
+          <div className="shrink-0 flex items-center justify-center p-2.5 sm:p-3 rounded-xl bg-gray-50 border border-gray-150/80 shadow-2xs self-center">
+            <AthLogo size="lg" animated={true} />
           </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => {
-              triggerHaptic('light');
-              onNavigateToProducts();
-            }}
-            className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#721428] hover:bg-[#5A0E1E] active:bg-[#470A17] text-white text-xs font-bold transition-all active:scale-[0.98] shadow-xs"
-          >
-            <Layers className="w-3.5 h-3.5" />
-            <span>Browse Catalog</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
         </div>
       </section>
 
