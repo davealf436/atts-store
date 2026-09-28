@@ -67,23 +67,37 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             <line x1="20" y1="28" x2="180" y2="28" stroke="currentColor" strokeWidth="0.75" strokeDasharray="2 3" />
             <line x1="40" y1="62" x2="180" y2="62" stroke="currentColor" strokeWidth="0.75" strokeDasharray="2 3" />
             
-            {/* Precision market path */}
+            {/* Precision market path with smooth line-drawing/flow animation */}
             <path
+              className="ath-chart-line-animated"
               d="M 15 68 L 48 58 L 78 46 L 108 52 L 142 26 L 175 16"
               stroke="#721428"
               strokeWidth="1.2"
-              strokeOpacity="0.25"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
             {/* Small execution data point */}
-            <circle cx="175" cy="16" r="2" fill="#721428" fillOpacity="0.45" />
+            <circle
+              className="ath-chart-point-animated"
+              cx="175"
+              cy="16"
+              r="2"
+              fill="#721428"
+            />
           </svg>
         </div>
 
         {/* Hero Content: Headline, Description & Compact Button on Left; Refined ATH Logo on Right */}
         <div className="relative z-10 flex items-center justify-between gap-3 sm:gap-4">
           <div className="flex-1 min-w-0">
+            {/* Small subtle premium "ATH" label */}
+            <div className="flex items-center gap-1.5 mb-1.5 select-none">
+              <span className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#721428] inline-flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#721428] opacity-80" />
+                ATH
+              </span>
+            </div>
+
             <h1 className="text-[19px] sm:text-[21px] font-black text-stone-900 tracking-tight leading-[1.18] mb-1.5">
               Built for Better<br />
               <span className="text-[#721428] inline-block">

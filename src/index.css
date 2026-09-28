@@ -301,10 +301,66 @@ html.dark body {
   animation: athAmethystPulse 3.4s ease-in-out infinite;
 }
 
+/* Hero Trading Chart Line Drawing / Flow Animation */
+@keyframes athHeroChartLineFlow {
+  0% {
+    stroke-dashoffset: 200;
+    opacity: 0.12;
+  }
+  15% {
+    opacity: 0.35;
+  }
+  50% {
+    stroke-dashoffset: 0;
+    opacity: 0.35;
+  }
+  80% {
+    stroke-dashoffset: 0;
+    opacity: 0.35;
+  }
+  95% {
+    opacity: 0.12;
+  }
+  100% {
+    stroke-dashoffset: 200;
+    opacity: 0.12;
+  }
+}
+
+@keyframes athHeroChartPointPulse {
+  0%, 35% {
+    opacity: 0.2;
+    transform: scale(0.85);
+  }
+  50%, 80% {
+    opacity: 0.75;
+    transform: scale(1.2);
+  }
+  95%, 100% {
+    opacity: 0.2;
+    transform: scale(0.85);
+  }
+}
+
+.ath-chart-line-animated {
+  stroke-dasharray: 200;
+  stroke-dashoffset: 200;
+  animation: athHeroChartLineFlow 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: stroke-dashoffset, opacity;
+}
+
+.ath-chart-point-animated {
+  transform-origin: 175px 16px;
+  animation: athHeroChartPointPulse 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: transform, opacity;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ath-bird-floating,
   .ath-bird-wings,
-  .ath-amethyst-pulse {
+  .ath-amethyst-pulse,
+  .ath-chart-line-animated,
+  .ath-chart-point-animated {
     animation: none !important;
   }
 }
