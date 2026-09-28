@@ -110,9 +110,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         <div className="relative z-10 flex items-center justify-between gap-3 sm:gap-4">
           <div className="flex-1 min-w-0">
             {/* Small subtle premium "ATH" label with short space above and below */}
-            <div className="flex items-center gap-1.5 mb-0.5 select-none leading-none">
-              <span className="text-[10px] font-extrabold tracking-[0.18em] uppercase text-[#721428] inline-flex items-center gap-1.5 leading-none">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#721428] opacity-80" />
+            <div className="mb-0.5 select-none leading-none">
+              <span className="text-[10px] font-extrabold tracking-[0.18em] uppercase text-[#721428] leading-none inline-block">
                 ATH
               </span>
             </div>
