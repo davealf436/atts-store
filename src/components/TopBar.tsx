@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Bell, ShoppingCart, Shield, Sparkles, Check, Trash2, Zap, User, Settings } from 'lucide-react';
+import { Bell, ShoppingCart, Shield, Sparkles, Check, Trash2, Zap, User, Settings, ChevronRight } from 'lucide-react';
 import { triggerHaptic, getInitialTelegramUser } from '../services/telegram';
 
 interface NotificationItem {
@@ -145,7 +145,7 @@ export const TopBar: React.FC<TopBarProps> = ({
                 </div>
               </div>
 
-              {/* Two Clean Options: Profile 👤 and Settings ⚙️ */}
+              {/* Two Clean Options: Profile and Settings */}
               <div className="space-y-1">
                 <button
                   onClick={() => {
@@ -153,7 +153,7 @@ export const TopBar: React.FC<TopBarProps> = ({
                     setIsProfileOpen(false);
                     onOpenProfile();
                   }}
-                  className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left hover:bg-[#FAF0F2] text-gray-800 hover:text-[#721428] transition-colors group cursor-pointer"
+                  className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-left hover:bg-[#FAF0F2] text-gray-800 hover:text-[#721428] transition-colors group cursor-pointer"
                 >
                   <div className="flex items-center gap-2.5">
                     <div className="w-7 h-7 rounded-lg bg-gray-50 group-hover:bg-white border border-gray-200/80 group-hover:border-[#F0D5DA] flex items-center justify-center text-gray-600 group-hover:text-[#721428] transition-colors">
@@ -161,7 +161,7 @@ export const TopBar: React.FC<TopBarProps> = ({
                     </div>
                     <span className="text-xs font-bold">Profile</span>
                   </div>
-                  <span className="text-sm">👤</span>
+                  <ChevronRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-[#721428] transition-colors" />
                 </button>
 
                 <button
@@ -170,7 +170,7 @@ export const TopBar: React.FC<TopBarProps> = ({
                     setIsProfileOpen(false);
                     onOpenSettings();
                   }}
-                  className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left hover:bg-[#FAF0F2] text-gray-800 hover:text-[#721428] transition-colors group cursor-pointer"
+                  className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-left hover:bg-[#FAF0F2] text-gray-800 hover:text-[#721428] transition-colors group cursor-pointer"
                 >
                   <div className="flex items-center gap-2.5">
                     <div className="w-7 h-7 rounded-lg bg-gray-50 group-hover:bg-white border border-gray-200/80 group-hover:border-[#F0D5DA] flex items-center justify-center text-gray-600 group-hover:text-[#721428] transition-colors">
@@ -178,7 +178,7 @@ export const TopBar: React.FC<TopBarProps> = ({
                     </div>
                     <span className="text-xs font-bold">Settings</span>
                   </div>
-                  <span className="text-sm">⚙️</span>
+                  <ChevronRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-[#721428] transition-colors" />
                 </button>
               </div>
             </div>
