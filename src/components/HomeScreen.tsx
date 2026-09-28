@@ -43,7 +43,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   return (
     <div className="space-y-4 pb-4">
       {/* ATH Home Hero Card — Compact Refined Edition */}
-      <section className="relative overflow-hidden rounded-2xl bg-[#FCFAF7] dark:bg-[#1C1C24] border border-[#721428]/40 dark:border-[#721428]/55 shadow-xs p-3.5 sm:p-4 select-none">
+      <section className="relative overflow-hidden rounded-2xl bg-[#FCFAF7] dark:bg-[#1C1C24] border border-[#721428]/40 dark:border-[#721428]/55 shadow-xs pt-2.5 pb-3.5 px-3.5 sm:pt-3 sm:pb-4 sm:px-4 select-none">
         {/* Subtle background technical grid & market watermark */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           {/* Faint coordinate grid lines */}
@@ -108,10 +108,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
         {/* Hero Content: Headline, Description & Compact Button on Left; Refined ATH Logo on Right */}
         <div className="relative z-10 flex items-center justify-between gap-3 sm:gap-4">
-          <div className="flex-1 min-w-0">
-            {/* Small subtle premium "ATH" label with short space above and below */}
-            <div className="mb-0.5 select-none leading-none">
-              <span className="text-[10px] font-extrabold tracking-[0.18em] uppercase text-[#721428] leading-none inline-block">
+          <div className="flex-1 min-w-0 -mt-0.5">
+            {/* ATH Badge with refined border line and minimized top space */}
+            <div className="mb-1 select-none leading-none">
+              <span className="inline-flex items-center px-1.5 py-[2px] rounded-[5px] border border-[#721428]/45 dark:border-[#721428]/60 bg-[#721428]/[0.05] dark:bg-[#721428]/20 text-[9px] font-extrabold tracking-[0.16em] uppercase text-[#721428] dark:text-[#FB7185] leading-none shadow-2xs">
                 ATH
               </span>
             </div>
