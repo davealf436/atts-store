@@ -19,6 +19,19 @@ export const SwipeableProductCard: React.FC<SwipeableProductCardProps> = ({
   };
 
   const isFXReplay = product.id === 'fxreplay-pro';
+  const isAbyssiniaJournal = product.id === 'abyssinia-journal';
+  const isBacktestingJournal = product.id === 'backtesting-journal';
+  const isNotion = product.id === 'notion-template-journal';
+
+  const containerBg = isAbyssiniaJournal
+    ? 'bg-[#28060F]'
+    : isBacktestingJournal
+    ? 'bg-[#0B1326]'
+    : isNotion
+    ? 'bg-[#191919]'
+    : isFXReplay
+    ? 'bg-[#070D18]'
+    : 'bg-black';
 
   return (
     <div
@@ -31,12 +44,10 @@ export const SwipeableProductCard: React.FC<SwipeableProductCardProps> = ({
       <div>
         {/* Large Product Logo/Image Area with subtle badge overlay */}
         <div
-          className={`relative w-full h-32 xs:h-36 rounded-xl overflow-hidden flex items-center justify-center shadow-inner ${
-            isFXReplay ? 'bg-[#070D18]' : 'bg-black'
-          }`}
+          className={`relative w-full h-32 xs:h-36 rounded-xl overflow-hidden flex items-center justify-center shadow-inner ${containerBg}`}
         >
           {/* Official brand logo centered & scaled */}
-          <div className="w-full h-full p-4 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+          <div className="w-full h-full p-3.5 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
             <ProductPhotoLogo
               productId={product.id}
               size="banner"

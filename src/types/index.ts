@@ -12,8 +12,8 @@ export interface TelegramUser {
 export interface Product {
   id: string;
   name: string;
-  brand: 'TradingView' | 'FXReplay';
-  category: 'tradingview' | 'backtesting';
+  brand: string;
+  category: 'tradingview' | 'backtesting' | 'journaling' | string;
   shortDescription: string;
   fullDescription: string;
   startingPricePlaceholder: string;

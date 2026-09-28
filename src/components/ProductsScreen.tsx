@@ -10,7 +10,7 @@ interface ProductsScreenProps {
   initialSearchQuery?: string;
 }
 
-type FilterCategory = 'all' | 'tradingview' | 'backtesting';
+type FilterCategory = 'all' | 'tradingview' | 'backtesting' | 'journaling';
 
 export const ProductsScreen: React.FC<ProductsScreenProps> = ({
   products,
@@ -32,6 +32,11 @@ export const ProductsScreen: React.FC<ProductsScreenProps> = ({
       id: 'backtesting',
       label: 'Backtesting',
       count: products.filter((p) => p.category === 'backtesting').length,
+    },
+    {
+      id: 'journaling',
+      label: 'Journaling',
+      count: products.filter((p) => p.category === 'journaling').length,
     },
   ];
 
