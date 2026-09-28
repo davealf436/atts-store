@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Layers, ArrowLeftRight, Package } from 'lucide-react';
+import { Home, Layers, ArrowLeftRight, Wallet, ReceiptText } from 'lucide-react';
 import { NavigationTab } from '../types';
 import { triggerHaptic } from '../services/telegram';
 
@@ -19,16 +19,17 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onSelectTab }) 
     { id: 'home', label: 'Home', icon: Home },
     { id: 'products', label: 'Products', icon: Layers },
     { id: 'p2p', label: 'P2P', icon: ArrowLeftRight },
-    { id: 'orders', label: 'My Orders', icon: Package },
+    { id: 'wallet', label: 'Wallet', icon: Wallet },
+    { id: 'orders', label: 'My Orders', icon: ReceiptText },
   ];
 
   return (
-    <div className="fixed bottom-3.5 inset-x-0 z-40 pointer-events-none flex justify-center px-3 pb-safe">
+    <div className="fixed bottom-3.5 inset-x-0 z-40 pointer-events-none flex justify-center px-2 pb-safe">
       {/* Floating Navigation Surface: Refined slightly rounded rectangle (not a large pill) */}
       <nav
         role="navigation"
         aria-label="Main Navigation"
-        className="pointer-events-auto w-full max-w-[390px] bg-white/98 backdrop-blur-md border border-gray-200/90 rounded-xl shadow-[0_4px_20px_-2px_rgba(0,0,0,0.08),0_2px_6px_-1px_rgba(0,0,0,0.04)] px-1.5 py-1 grid grid-cols-4 items-center gap-1 transition-all duration-150"
+        className="pointer-events-auto w-full max-w-[420px] bg-white/98 backdrop-blur-md border border-gray-200/90 rounded-xl shadow-[0_4px_20px_-2px_rgba(0,0,0,0.08),0_2px_6px_-1px_rgba(0,0,0,0.04)] px-1 py-1 grid grid-cols-5 items-center gap-0.5 transition-all duration-150"
       >
         {navItems.map((item) => {
           const isActive = activeTab === item.id;
@@ -51,11 +52,11 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onSelectTab }) 
             >
               <Icon
                 className={`w-4 h-4 transition-colors ${
-                  isActive ? 'text-[#721428] stroke-[2.4]' : 'text-gray-400'
+                  isActive ? 'text-[#721428] stroke-[2.4]' : 'text-gray-400 stroke-[1.8]'
                 }`}
               />
               <span
-                className={`text-[10px] tracking-tight mt-0.5 leading-none transition-colors ${
+                className={`text-[9.5px] xs:text-[10px] tracking-tight mt-0.5 leading-none transition-colors truncate px-0.5 ${
                   isActive ? 'text-[#721428]' : 'text-gray-400'
                 }`}
               >
