@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Bell, ShoppingCart, CheckCircle, Shield, Sparkles, Check, Trash2, Zap } from 'lucide-react';
+import { Bell, ShoppingCart, Shield, Sparkles, Check, Trash2, Zap, User, Settings } from 'lucide-react';
 import { triggerHaptic, getInitialTelegramUser } from '../services/telegram';
 
 interface NotificationItem {
@@ -41,11 +41,15 @@ const INITIAL_NOTIFICATIONS: NotificationItem[] = [
 interface TopBarProps {
   cartCount: number;
   onOpenCart: () => void;
+  onOpenProfile: () => void;
+  onOpenSettings: () => void;
 }
 
 export const TopBar: React.FC<TopBarProps> = ({
   cartCount,
   onOpenCart,
+  onOpenProfile,
+  onOpenSettings,
 }) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
@@ -123,36 +127,59 @@ export const TopBar: React.FC<TopBarProps> = ({
             </span>
           </button>
 
-          {/* Compact Profile Card Popover */}
+          {/* Profile Menu Popover with Profile and Settings */}
           {isProfileOpen && (
-            <div className="absolute left-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-200/90 p-3 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
-              <div className="flex items-center gap-2.5 mb-2.5 pb-2.5 border-b border-gray-100">
-                <div className="w-9 h-9 rounded-full bg-[#721428] text-white font-bold text-sm flex items-center justify-center ring-2 ring-[#721428]/20 shrink-0">
+            <div className="absolute left-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-200/90 p-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150 select-none">
+              {/* User Identity Mini Banner */}
+              <div className="px-2.5 py-2 mb-1.5 border-b border-gray-100 flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-full bg-[#721428] text-white font-bold text-xs flex items-center justify-center ring-2 ring-[#721428]/20 shrink-0">
                   {user.first_name?.[0]?.toUpperCase() || 'D'}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-1">
-                    <p className="text-xs font-bold text-gray-900 truncate">
-                      {user.first_name} {user.last_name || ''}
-                    </p>
-                    <CheckCircle className="w-3.5 h-3.5 text-[#721428] shrink-0" />
-                  </div>
-                  {user.username && (
-                    <p className="text-[11px] text-gray-500 truncate">
-                      @{user.username}
-                    </p>
-                  )}
+                  <p className="text-xs font-bold text-gray-900 truncate">
+                    {user.first_name} {user.last_name || ''}
+                  </p>
+                  <p className="text-[10.5px] text-gray-400 truncate">
+                    {user.username ? `@${user.username}` : 'ATH Member'}
+                  </p>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between text-[11px] text-gray-600 bg-gray-50 rounded-lg px-2.5 py-1.5 border border-gray-200/70">
-                <span className="flex items-center gap-1 text-[10.5px] font-medium text-gray-700">
-                  <Shield className="w-3.5 h-3.5 text-[#721428]" />
-                  <span>ATH Member</span>
-                </span>
-                <span className="text-[10px] font-mono text-gray-400">
-                  ID: {user.id}
-                </span>
+              {/* Two Clean Options: Profile 👤 and Settings ⚙️ */}
+              <div className="space-y-1">
+                <button
+                  onClick={() => {
+                    triggerHaptic('light');
+                    setIsProfileOpen(false);
+                    onOpenProfile();
+                  }}
+                  className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left hover:bg-[#FAF0F2] text-gray-800 hover:text-[#721428] transition-colors group cursor-pointer"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-lg bg-gray-50 group-hover:bg-white border border-gray-200/80 group-hover:border-[#F0D5DA] flex items-center justify-center text-gray-600 group-hover:text-[#721428] transition-colors">
+                      <User className="w-4 h-4 stroke-[1.8]" />
+                    </div>
+                    <span className="text-xs font-bold">Profile</span>
+                  </div>
+                  <span className="text-sm">👤</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    triggerHaptic('light');
+                    setIsProfileOpen(false);
+                    onOpenSettings();
+                  }}
+                  className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left hover:bg-[#FAF0F2] text-gray-800 hover:text-[#721428] transition-colors group cursor-pointer"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-lg bg-gray-50 group-hover:bg-white border border-gray-200/80 group-hover:border-[#F0D5DA] flex items-center justify-center text-gray-600 group-hover:text-[#721428] transition-colors">
+                      <Settings className="w-4 h-4 stroke-[1.8]" />
+                    </div>
+                    <span className="text-xs font-bold">Settings</span>
+                  </div>
+                  <span className="text-sm">⚙️</span>
+                </button>
               </div>
             </div>
           )}

@@ -7,6 +7,8 @@ import { HomeScreen } from './components/HomeScreen';
 import { ProductsScreen } from './components/ProductsScreen';
 import { P2PScreen } from './components/P2PScreen';
 import { OrdersScreen } from './components/OrdersScreen';
+import { ProfileScreen } from './components/ProfileScreen';
+import { SettingsScreen } from './components/SettingsScreen';
 import { ProductDetailModal } from './components/ProductDetailModal';
 import { CartDrawer } from './components/CartDrawer';
 import { WalletComingSoonModal } from './components/WalletComingSoonModal';
@@ -15,6 +17,7 @@ import { Wallet } from 'lucide-react';
 
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<NavigationTab>('home');
+  const [currentView, setCurrentView] = useState<'main' | 'profile' | 'settings'>('main');
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
@@ -67,62 +70,95 @@ export const App: React.FC = () => {
         <TopBar
           cartCount={cartTotalCount}
           onOpenCart={() => setIsCartOpen(true)}
+          onOpenProfile={() => {
+            setCurrentView('profile');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          onOpenSettings={() => {
+            setCurrentView('settings');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
         />
 
         {/* Main Content Area */}
         <main className="flex-1 p-3.5 pb-26 overflow-y-auto">
-          {activeTab === 'home' && (
-            <HomeScreen
-              products={PRODUCTS}
-              onViewProduct={(product) => setSelectedProduct(product)}
-              onAddToCart={handleAddToCart}
-              onNavigateToProducts={() => setActiveTab('products')}
-              onNavigateToP2P={() => setActiveTab('p2p')}
+          {/* Dedicated Profile View */}
+          {currentView === 'profile' && (
+            <ProfileScreen
+              onBack={() => setCurrentView('main')}
+              onNavigateToOrders={() => {
+                setCurrentView('main');
+                setActiveTab('orders');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
             />
           )}
 
-          {activeTab === 'products' && (
-            <ProductsScreen
-              products={PRODUCTS}
-              onViewProduct={(product) => setSelectedProduct(product)}
-              onAddToCart={handleAddToCart}
-              initialSearchQuery={searchQuery}
+          {/* Dedicated Settings View */}
+          {currentView === 'settings' && (
+            <SettingsScreen
+              onBack={() => setCurrentView('main')}
             />
           )}
 
-          {activeTab === 'p2p' && <P2PScreen />}
+          {/* Main Tab Views */}
+          {currentView === 'main' && (
+            <>
+              {activeTab === 'home' && (
+                <HomeScreen
+                  products={PRODUCTS}
+                  onViewProduct={(product) => setSelectedProduct(product)}
+                  onAddToCart={handleAddToCart}
+                  onNavigateToProducts={() => setActiveTab('products')}
+                  onNavigateToP2P={() => setActiveTab('p2p')}
+                />
+              )}
 
-          {activeTab === 'wallet' && (
-            <div className="flex flex-col items-center justify-center py-20 px-4 text-center select-none">
-              <div className="w-14 h-14 rounded-2xl bg-[#FAF0F2] border border-[#F0D5DA] flex items-center justify-center text-[#721428] shadow-xs mb-3">
-                <Wallet className="w-7 h-7 stroke-[1.8]" />
-              </div>
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] text-[10px] font-extrabold tracking-wider uppercase mb-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#721428] animate-pulse" />
-                <span>Coming Soon</span>
-              </span>
-              <h2 className="text-lg font-bold text-stone-900 tracking-tight mb-1">ATH Wallet</h2>
-              <p className="text-xs text-stone-600 max-w-xs mb-4">
-                Direct crypto balances and automated settlements are currently in development.
-              </p>
-              <button
-                onClick={() => setActiveTab('home')}
-                className="px-4 py-2 rounded-lg bg-[#721428] hover:bg-[#5A0E1E] text-white text-xs font-bold shadow-xs cursor-pointer"
-              >
-                Return to Home
-              </button>
-            </div>
-          )}
+              {activeTab === 'products' && (
+                <ProductsScreen
+                  products={PRODUCTS}
+                  onViewProduct={(product) => setSelectedProduct(product)}
+                  onAddToCart={handleAddToCart}
+                  initialSearchQuery={searchQuery}
+                />
+              )}
 
-          {activeTab === 'orders' && (
-            <OrdersScreen onBrowseProducts={() => setActiveTab('products')} />
+              {activeTab === 'p2p' && <P2PScreen />}
+
+              {activeTab === 'wallet' && (
+                <div className="flex flex-col items-center justify-center py-20 px-4 text-center select-none">
+                  <div className="w-14 h-14 rounded-2xl bg-[#FAF0F2] border border-[#F0D5DA] flex items-center justify-center text-[#721428] shadow-xs mb-3">
+                    <Wallet className="w-7 h-7 stroke-[1.8]" />
+                  </div>
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] text-[10px] font-extrabold tracking-wider uppercase mb-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#721428] animate-pulse" />
+                    <span>Coming Soon</span>
+                  </span>
+                  <h2 className="text-lg font-bold text-stone-900 tracking-tight mb-1">ATH Wallet</h2>
+                  <p className="text-xs text-stone-600 max-w-xs mb-4">
+                    Direct crypto balances and automated settlements are currently in development.
+                  </p>
+                  <button
+                    onClick={() => setActiveTab('home')}
+                    className="px-4 py-2 rounded-lg bg-[#721428] hover:bg-[#5A0E1E] text-white text-xs font-bold shadow-xs cursor-pointer"
+                  >
+                    Return to Home
+                  </button>
+                </div>
+              )}
+
+              {activeTab === 'orders' && (
+                <OrdersScreen onBrowseProducts={() => setActiveTab('products')} />
+              )}
+            </>
           )}
         </main>
 
         {/* Fixed Bottom Navigation (Home, Products, P2P, Wallet, My Orders) */}
         <BottomNav
-          activeTab={isWalletModalOpen ? 'wallet' : activeTab}
+          activeTab={currentView !== 'main' ? (currentView as any) : isWalletModalOpen ? 'wallet' : activeTab}
           onSelectTab={(tab) => {
+            setCurrentView('main');
             if (tab === 'wallet') {
               setIsWalletModalOpen(true);
               return;
