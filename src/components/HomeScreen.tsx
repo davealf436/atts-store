@@ -43,7 +43,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   return (
     <div className="space-y-4 pb-4">
       {/* ATH Home Hero Card — Compact Refined Edition */}
-      <section className="relative overflow-hidden rounded-xl bg-[#FCFAF7] border border-stone-200/90 shadow-xs p-3.5 sm:p-4 select-none">
+      <section className="relative overflow-hidden rounded-2xl bg-[#FCFAF7] dark:bg-[#1C1C24] border border-[#721428]/40 dark:border-[#721428]/55 shadow-xs p-3.5 sm:p-4 select-none">
         {/* Subtle background technical grid & market watermark */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           {/* Faint coordinate grid lines */}
