@@ -1,7 +1,7 @@
 import React from 'react';
 import { Product } from '../types';
 import { SwipeableProductCard } from './SwipeableProductCard';
-import { ArrowRight, ArrowLeftRight, Layers, ShieldCheck, Zap } from 'lucide-react';
+import { ArrowRight, ArrowLeftRight, ShieldCheck, Zap } from 'lucide-react';
 import { triggerHaptic } from '../services/telegram';
 import { AthLogo } from './AthLogo';
 
@@ -9,15 +9,12 @@ interface HomeScreenProps {
   products: Product[];
   onViewProduct: (product: Product) => void;
   onAddToCart: (product: Product) => void;
-  onNavigateToProducts: () => void;
   onNavigateToP2P: () => void;
 }
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({
   products,
   onViewProduct,
-  onAddToCart,
-  onNavigateToProducts,
   onNavigateToP2P,
 }) => {
   // Display products in the exact requested order:
@@ -102,12 +99,17 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               <button
                 onClick={() => {
                   triggerHaptic('light');
-                  onNavigateToProducts();
+                  const el = document.getElementById('featured-tools');
+                  if (el) {
+                    el.scrollIntoView({ behavior: 'smooth' });
+                  } else {
+                    window.scrollTo({ top: 180, behavior: 'smooth' });
+                  }
                 }}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#721428] hover:bg-[#5A0E1E] active:bg-[#470A17] text-white text-xs font-bold transition-all active:scale-[0.98] shadow-xs cursor-pointer group"
               >
-                <Layers className="w-3.5 h-3.5" />
-                <span>Browse Catalog</span>
+                <Zap className="w-3.5 h-3.5" />
+                <span>Explore Tools</span>
                 <ArrowRight className="w-3.5 h-3.5 stroke-[2.2] transition-transform group-hover:translate-x-0.5" />
               </button>
             </div>
@@ -121,7 +123,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       </section>
 
       {/* Featured Tools Section with Horizontal Swipeable Cards */}
-      <section className="space-y-2.5">
+      <section id="featured-tools" className="space-y-2.5 scroll-mt-16">
         <div className="flex items-center justify-between px-0.5">
           <div>
             <h3 className="text-sm font-bold text-gray-900 tracking-tight flex items-center gap-1.5">
@@ -132,17 +134,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               Select a tool to explore subscription options
             </p>
           </div>
-
-          <button
-            onClick={() => {
-              triggerHaptic('light');
-              onNavigateToProducts();
-            }}
-            className="text-xs font-bold text-[#721428] hover:text-[#5A0E1E] flex items-center gap-1"
-          >
-            <span>View all</span>
-            <ArrowRight className="w-3 h-3" />
-          </button>
         </div>
 
         {/* Horizontal Swipeable Track (Ordered: 1. TV Premium, 2. TV Essential, 3. FXReplay Pro) */}
@@ -166,20 +157,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               <span className="text-[10px] font-semibold text-gray-400">· Swipe</span>
             </h3>
             <p className="text-[11px] text-gray-500">
-              Track executions, psychology & backtesting systems
+              Track executions, psychology &amp; backtesting systems
             </p>
           </div>
-
-          <button
-            onClick={() => {
-              triggerHaptic('light');
-              onNavigateToProducts();
-            }}
-            className="text-xs font-bold text-[#721428] hover:text-[#5A0E1E] flex items-center gap-1"
-          >
-            <span>View all</span>
-            <ArrowRight className="w-3 h-3" />
-          </button>
         </div>
 
         {/* Horizontal Swipeable Track (Ordered: 1. Abyssinia Journal, 2. Backtesting Journal, 3. Notion Template Journal — Free) */}
@@ -203,20 +183,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               <span className="text-[10px] font-semibold text-gray-400">· Swipe</span>
             </h3>
             <p className="text-[11px] text-gray-500">
-              Official productivity, communication & AI licenses
+              Official productivity, communication &amp; AI licenses
             </p>
           </div>
-
-          <button
-            onClick={() => {
-              triggerHaptic('light');
-              onNavigateToProducts();
-            }}
-            className="text-xs font-bold text-[#721428] hover:text-[#5A0E1E] flex items-center gap-1"
-          >
-            <span>View all</span>
-            <ArrowRight className="w-3 h-3" />
-          </button>
         </div>
 
         {/* Horizontal Swipeable Track */}

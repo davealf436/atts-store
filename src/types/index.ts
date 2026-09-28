@@ -1,4 +1,4 @@
-export type NavigationTab = 'home' | 'products' | 'p2p' | 'wallet' | 'orders';
+export type NavigationTab = 'home' | 'p2p' | 'wallet' | 'orders';
 
 export interface TelegramUser {
   id: number;

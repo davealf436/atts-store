@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Layers, ArrowLeftRight, Wallet, ReceiptText } from 'lucide-react';
+import { Home, ArrowLeftRight, Wallet, ReceiptText } from 'lucide-react';
 import { NavigationTab } from '../types';
 import { triggerHaptic } from '../services/telegram';
 
@@ -17,7 +17,6 @@ interface NavItem {
 export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onSelectTab }) => {
   const navItems: NavItem[] = [
     { id: 'home', label: 'Home', icon: Home },
-    { id: 'products', label: 'Products', icon: Layers },
     { id: 'p2p', label: 'P2P', icon: ArrowLeftRight },
     { id: 'wallet', label: 'Wallet', icon: Wallet },
     { id: 'orders', label: 'My Orders', icon: ReceiptText },
@@ -29,7 +28,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onSelectTab }) 
       <nav
         role="navigation"
         aria-label="Main Navigation"
-        className="pointer-events-auto w-full max-w-[420px] bg-white/98 backdrop-blur-md border border-gray-200/90 rounded-xl shadow-[0_4px_20px_-2px_rgba(0,0,0,0.08),0_2px_6px_-1px_rgba(0,0,0,0.04)] px-1 py-1 grid grid-cols-5 items-center gap-0.5 transition-all duration-150"
+        className="pointer-events-auto w-full max-w-[420px] bg-white/98 backdrop-blur-md border border-gray-200/90 rounded-xl shadow-[0_4px_20px_-2px_rgba(0,0,0,0.08),0_2px_6px_-1px_rgba(0,0,0,0.04)] px-1 py-1 grid grid-cols-4 items-center gap-0.5 transition-all duration-150"
       >
         {navItems.map((item) => {
           const isActive = activeTab === item.id;

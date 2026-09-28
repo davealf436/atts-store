@@ -4,7 +4,6 @@ import { PRODUCTS } from './data/products';
 import { TopBar } from './components/TopBar';
 import { BottomNav } from './components/BottomNav';
 import { HomeScreen } from './components/HomeScreen';
-import { ProductsScreen } from './components/ProductsScreen';
 import { P2PScreen } from './components/P2PScreen';
 import { OrdersScreen } from './components/OrdersScreen';
 import { ProfileScreen } from './components/ProfileScreen';
@@ -21,7 +20,6 @@ export const App: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   // Initialize Telegram WebApp viewport & safe-area config
@@ -66,7 +64,7 @@ export const App: React.FC = () => {
     <div className="min-h-screen bg-[#F0F2F5] text-gray-900 flex flex-col items-center">
       {/* Mobile-first centered frame (320px–430px optimal viewport) */}
       <div className="w-full max-w-md min-h-screen bg-[#F8F9FA] flex flex-col relative sm:border-x sm:border-gray-200/80 sm:shadow-sm">
-        {/* Sticky Top Bar (Never contains bottom nav cart) */}
+        {/* Sticky Top Bar with Profile, Global Search, Notifications, Cart */}
         <TopBar
           cartCount={cartTotalCount}
           onOpenCart={() => setIsCartOpen(true)}
@@ -78,6 +76,7 @@ export const App: React.FC = () => {
             setCurrentView('settings');
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
+          onSelectProduct={(product) => setSelectedProduct(product)}
         />
 
         {/* Main Content Area */}
@@ -104,17 +103,10 @@ export const App: React.FC = () => {
                   products={PRODUCTS}
                   onViewProduct={(product) => setSelectedProduct(product)}
                   onAddToCart={handleAddToCart}
-                  onNavigateToProducts={() => setActiveTab('products')}
-                  onNavigateToP2P={() => setActiveTab('p2p')}
-                />
-              )}
-
-              {activeTab === 'products' && (
-                <ProductsScreen
-                  products={PRODUCTS}
-                  onViewProduct={(product) => setSelectedProduct(product)}
-                  onAddToCart={handleAddToCart}
-                  initialSearchQuery={searchQuery}
+                  onNavigateToP2P={() => {
+                    setActiveTab('p2p');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
                 />
               )}
 
@@ -143,13 +135,13 @@ export const App: React.FC = () => {
               )}
 
               {activeTab === 'orders' && (
-                <OrdersScreen onBrowseProducts={() => setActiveTab('products')} />
+                <OrdersScreen onBrowseProducts={() => setActiveTab('home')} />
               )}
             </>
           )}
         </main>
 
-        {/* Fixed Bottom Navigation (Home, Products, P2P, Wallet, My Orders) */}
+        {/* Fixed Bottom Navigation (Home · P2P · Wallet · My Orders) */}
         <BottomNav
           activeTab={currentView !== 'main' ? (currentView as any) : isWalletModalOpen ? 'wallet' : activeTab}
           onSelectTab={(tab) => {
@@ -185,7 +177,7 @@ export const App: React.FC = () => {
           onRemoveItem={handleRemoveItem}
           onBrowseProducts={() => {
             setIsCartOpen(false);
-            setActiveTab('products');
+            setActiveTab('home');
           }}
         />
       </div>
