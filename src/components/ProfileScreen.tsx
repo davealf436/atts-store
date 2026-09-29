@@ -4,19 +4,25 @@ import {
   ShieldCheck, 
   Copy, 
   Check, 
-  CheckCircle 
+  CheckCircle,
+  Wallet,
+  ArrowRight
 } from 'lucide-react';
 import { triggerHaptic, getInitialTelegramUser } from '../services/telegram';
+import { getWalletState, formatETB, etbToUsdt } from '../services/wallet';
 
 interface ProfileScreenProps {
   onBack: () => void;
   onNavigateToOrders?: () => void;
+  onNavigateToWallet?: () => void;
 }
 
 export const ProfileScreen: React.FC<ProfileScreenProps> = ({
   onBack,
+  onNavigateToWallet,
 }) => {
   const user = getInitialTelegramUser();
+  const wallet = getWalletState();
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
   const handleCopy = (text: string, fieldName: string) => {
@@ -104,6 +110,43 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
               </span>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* ATH Wallet Balance Card */}
+      <div className="rounded-2xl bg-gradient-to-br from-[#721428] via-[#5A0E1E] to-[#3B0712] text-white p-4 shadow-sm select-none">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white">
+              <Wallet className="w-4 h-4" />
+            </div>
+            <div>
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#F0D5DA]/90 block">
+                ATH Wallet Balance
+              </span>
+              <span className="text-base font-black text-white">
+                {formatETB(wallet.balanceETB)}
+              </span>
+            </div>
+          </div>
+
+          {onNavigateToWallet && (
+            <button
+              onClick={() => {
+                triggerHaptic('light');
+                onNavigateToWallet();
+              }}
+              className="py-1.5 px-3 rounded-lg bg-white text-[#721428] hover:bg-stone-100 font-bold text-xs flex items-center gap-1 transition-all shadow-2xs cursor-pointer"
+            >
+              <span>Manage</span>
+              <ArrowRight className="w-3 h-3" />
+            </button>
+          )}
+        </div>
+
+        <div className="pt-2 border-t border-white/15 flex items-center justify-between text-[11px] text-[#F7D388]">
+          <span>≈ {etbToUsdt(wallet.balanceETB)}</span>
+          <span className="text-white/60 text-[10px]">Instant 1s Checkout Ready</span>
         </div>
       </div>
 

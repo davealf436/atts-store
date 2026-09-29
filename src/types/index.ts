@@ -17,6 +17,7 @@ export interface Product {
   shortDescription: string;
   fullDescription: string;
   startingPricePlaceholder: string;
+  priceETB: number;
   features: string[];
   badge?: string;
   tier?: string;
@@ -33,4 +34,28 @@ export interface OrderItem {
   productName: string;
   date: string;
   status: 'active' | 'processing' | 'expired';
+  priceETB?: number;
+  paymentMethod?: string;
+  licenseKey?: string;
+}
+
+export interface WalletTransaction {
+  id: string;
+  type: 'deposit' | 'purchase';
+  amountETB: number;
+  amountUSDT?: number;
+  method: string;
+  description: string;
+  date: string;
+  status: 'completed' | 'pending' | 'failed';
+  reference?: string;
+  screenshotUrl?: string;
+  adminCommand?: string;
+}
+
+export interface WalletState {
+  balanceETB: number;
+  totalDepositedETB: number;
+  totalSpentETB: number;
+  transactions: WalletTransaction[];
 }

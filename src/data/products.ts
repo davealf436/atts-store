@@ -11,6 +11,7 @@ export const PRODUCTS: Product[] = [
     shortDescription: 'Maximum charting performance with 8 charts per tab, 25 indicators per layout, and second-based intervals.',
     fullDescription: 'The ultimate TradingView experience designed for professional and high-frequency traders. Includes unlimited alert configurations, 20,000 historical bars, 4x more data per chart, and highest priority customer support directly on TradingView.',
     startingPricePlaceholder: 'Starting at $24.99 / ~3,500 ETB [Placeholder]',
+    priceETB: 3500,
     features: [
       '8 charts per layout tab',
       'Up to 25 technical indicators per chart',
@@ -30,6 +31,7 @@ export const PRODUCTS: Product[] = [
     shortDescription: 'Essential multi-chart setup with 2 charts per tab, 5 indicators per layout, and 10,000 historical bars.',
     fullDescription: 'The foundational subscription for technical analysts and swing traders. Upgrade your charting workspace with dual-split layouts, customized timeframes, and distraction-free ad blocking on desktop, tablet, and mobile apps.',
     startingPricePlaceholder: 'Starting at $9.99 / ~1,400 ETB [Placeholder]',
+    priceETB: 1400,
     features: [
       '2 charts per layout tab',
       'Up to 5 indicators per chart',
@@ -49,6 +51,7 @@ export const PRODUCTS: Product[] = [
     shortDescription: 'Market replay and simulation platform with realistic spread modeling, multi-timeframe sync, and execution metrics.',
     fullDescription: 'Master your trading edge without risking capital. FXReplay gives traders true tick-by-tick market replay across Forex, Crypto, and Indices, replicating live market execution with full risk analytics and trade journal logging.',
     startingPricePlaceholder: 'Starting at $19.00 / ~2,700 ETB [Placeholder]',
+    priceETB: 2700,
     features: [
       'Accurate tick-by-tick candle replay',
       'Multi-timeframe simultaneous chart sync',
@@ -69,6 +72,7 @@ export const PRODUCTS: Product[] = [
     shortDescription: 'Flagship execution journal with session metrics, risk calculators, and psychology scoring.',
     fullDescription: 'The premier trade management and psychology journal engineered specifically by Abyssinia Trading Hub. Track your session setups, risk-to-reward ratios, win rate curves, and emotional discipline with integrated ATH cloud sync.',
     startingPricePlaceholder: 'Free with ATH Membership',
+    priceETB: 0,
     features: [
       'Session-by-session trade logging',
       'Automated R:R and win-rate analytics',
@@ -88,6 +92,7 @@ export const PRODUCTS: Product[] = [
     shortDescription: 'Deep statistical testing sheets to record 100+ historical trade samples, drawdowns, and edge models.',
     fullDescription: 'Designed for mechanical and systematic traders. Log extensive historical backtest samples across Forex, Crypto, and Metals with automated expectancy quantification, maximum drawdown simulation, and win streak statistics.',
     startingPricePlaceholder: 'Instant Access',
+    priceETB: 0,
     features: [
       '100+ sample trade backtest sheets',
       'Automated edge & expectancy formulas',
@@ -107,6 +112,7 @@ export const PRODUCTS: Product[] = [
     shortDescription: 'All-in-one Notion workspace with database filters, calendar view, rules playbook, and weekly reviews.',
     fullDescription: 'A free, beautifully crafted Notion workspace template ready to duplicate with 1 click. Includes pre-configured databases for daily setups, strategy rules, trade post-mortems, and weekly review summaries.',
     startingPricePlaceholder: '100% Free Gift',
+    priceETB: 0,
     features: [
       '1-Click instant Notion duplicate',
       'Calendar and gallery trade views',
@@ -127,6 +133,7 @@ export const PRODUCTS: Product[] = [
     shortDescription: 'Unlock 4GB file uploads, faster downloads, voice-to-text conversion, and exclusive star badge.',
     fullDescription: 'Upgrade your Telegram account with doubled limits, real-time chat translation, animated avatars, 1000 channel joins, and top-tier cloud speed. Fast activation directly linked to your Telegram ID.',
     startingPricePlaceholder: 'Flexible Subscription [Placeholder]',
+    priceETB: 850,
     features: [
       '4 GB file upload limits (doubled)',
       'High-speed server downloads',
@@ -146,6 +153,7 @@ export const PRODUCTS: Product[] = [
     shortDescription: 'Access Google’s flagship Gemini models, 2M context window, and integrated Workspace AI.',
     fullDescription: 'Experience Google AI with Gemini Advanced. Process complex documents, analyze financial code, execute multi-step research, and boost productivity across Google Docs, Drive, Sheets, and Gmail.',
     startingPricePlaceholder: 'Official License [Placeholder]',
+    priceETB: 1200,
     features: [
       'Gemini 1.5 Pro with 2M token context',
       'Native Docs, Gmail & Drive integration',

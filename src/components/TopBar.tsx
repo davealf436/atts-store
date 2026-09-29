@@ -9,9 +9,11 @@ import {
   Zap, 
   User, 
   Settings, 
-  ChevronRight
+  ChevronRight,
+  Wallet
 } from 'lucide-react';
 import { triggerHaptic, getInitialTelegramUser } from '../services/telegram';
+import { getWalletState, formatETB } from '../services/wallet';
 
 interface NotificationItem {
   id: string;
@@ -54,6 +56,7 @@ interface TopBarProps {
   onOpenCart: () => void;
   onOpenProfile: () => void;
   onOpenSettings: () => void;
+  onOpenWallet: () => void;
 }
 
 export const TopBar: React.FC<TopBarProps> = ({
@@ -61,9 +64,11 @@ export const TopBar: React.FC<TopBarProps> = ({
   onOpenCart,
   onOpenProfile,
   onOpenSettings,
+  onOpenWallet,
 }) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [walletBalance, setWalletBalance] = useState(() => getWalletState().balanceETB);
   const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS);
 
   const profileRef = useRef<HTMLDivElement>(null);
@@ -71,6 +76,15 @@ export const TopBar: React.FC<TopBarProps> = ({
   const user = getInitialTelegramUser();
 
   const unreadCount = notifications.filter((n) => n.unread).length;
+
+  // Reactively track wallet balance changes
+  useEffect(() => {
+    const handleWalletUpdate = () => {
+      setWalletBalance(getWalletState().balanceETB);
+    };
+    window.addEventListener('ath_wallet_updated', handleWalletUpdate);
+    return () => window.removeEventListener('ath_wallet_updated', handleWalletUpdate);
+  }, []);
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -196,8 +210,26 @@ export const TopBar: React.FC<TopBarProps> = ({
           )}
         </div>
 
-        {/* Right side cluster: Bell Icon + ShoppingCart Icon */}
-        <div className="flex items-center gap-2 shrink-0">
+        {/* Right side cluster: Dedicated Wallet Button + Bell Icon + ShoppingCart Icon */}
+        <div className="flex items-center gap-1.5 xs:gap-2 shrink-0">
+          {/* Dedicated Wallet Button */}
+          <button
+            onClick={() => {
+              triggerHaptic('light');
+              setIsProfileOpen(false);
+              setIsNotificationsOpen(false);
+              onOpenWallet();
+            }}
+            className="h-9 px-2.5 rounded-xl flex items-center gap-1.5 bg-[#FAF0F2] hover:bg-[#F3DEE2] active:bg-[#ECD0D6] text-[#721428] border border-[#F0D5DA] shadow-2xs transition-all active:scale-95 cursor-pointer"
+            aria-label="Open ATH Wallet"
+            title="Open ATH Wallet & View Balance"
+          >
+            <Wallet className="w-3.5 h-3.5 stroke-[2.2] text-[#721428]" />
+            <span className="text-[11px] font-extrabold tracking-tight leading-none">
+              {formatETB(walletBalance).replace(' ETB', '')} <span className="text-[9px] font-bold text-[#721428]/80">ETB</span>
+            </span>
+          </button>
+
           {/* 1. Bell Icon Feature */}
           <div className="relative" ref={notifRef}>
             <button
