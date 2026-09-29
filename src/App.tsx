@@ -64,7 +64,7 @@ export const App: React.FC = () => {
     <div className="min-h-screen bg-[#F0F2F5] text-gray-900 flex flex-col items-center">
       {/* Mobile-first centered frame (320px–430px optimal viewport) */}
       <div className="w-full max-w-md min-h-screen bg-[#F8F9FA] flex flex-col relative sm:border-x sm:border-gray-200/80 sm:shadow-sm">
-        {/* Sticky Top Bar with Profile, Global Search, Notifications, Cart */}
+        {/* Sticky Top Bar with Profile, Notifications, Cart */}
         <TopBar
           cartCount={cartTotalCount}
           onOpenCart={() => setIsCartOpen(true)}
@@ -76,7 +76,6 @@ export const App: React.FC = () => {
             setCurrentView('settings');
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
-          onSelectProduct={(product) => setSelectedProduct(product)}
         />
 
         {/* Main Content Area */}

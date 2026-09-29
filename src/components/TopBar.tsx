@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { 
   Bell, 
   ShoppingCart, 
@@ -9,15 +9,9 @@ import {
   Zap, 
   User, 
   Settings, 
-  ChevronRight, 
-  Search, 
-  X,
-  ArrowRight
+  ChevronRight
 } from 'lucide-react';
 import { triggerHaptic, getInitialTelegramUser } from '../services/telegram';
-import { Product } from '../types';
-import { PRODUCTS } from '../data/products';
-import { ProductPhotoLogo } from './ProductPhotoLogo';
 
 interface NotificationItem {
   id: string;
@@ -60,7 +54,6 @@ interface TopBarProps {
   onOpenCart: () => void;
   onOpenProfile: () => void;
   onOpenSettings: () => void;
-  onSelectProduct?: (product: Product) => void;
 }
 
 export const TopBar: React.FC<TopBarProps> = ({
@@ -68,42 +61,16 @@ export const TopBar: React.FC<TopBarProps> = ({
   onOpenCart,
   onOpenProfile,
   onOpenSettings,
-  onSelectProduct,
 }) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS);
 
   const profileRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
-  const searchInputRef = useRef<HTMLInputElement>(null);
   const user = getInitialTelegramUser();
 
   const unreadCount = notifications.filter((n) => n.unread).length;
-
-  // Filter products for global search
-  const searchResults = useMemo(() => {
-    if (!searchQuery.trim()) return [];
-    const q = searchQuery.toLowerCase().trim();
-    return PRODUCTS.filter(
-      (p) =>
-        p.name.toLowerCase().includes(q) ||
-        p.brand.toLowerCase().includes(q) ||
-        p.shortDescription.toLowerCase().includes(q) ||
-        p.category.toLowerCase().includes(q)
-    );
-  }, [searchQuery]);
-
-  // Focus search input when modal opens
-  useEffect(() => {
-    if (isSearchOpen) {
-      setTimeout(() => searchInputRef.current?.focus(), 50);
-    } else {
-      setSearchQuery('');
-    }
-  }, [isSearchOpen]);
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -229,24 +196,9 @@ export const TopBar: React.FC<TopBarProps> = ({
           )}
         </div>
 
-        {/* Right side cluster: Search Icon + Bell Icon + ShoppingCart Icon */}
+        {/* Right side cluster: Bell Icon + ShoppingCart Icon */}
         <div className="flex items-center gap-2 shrink-0">
-          {/* 1. Global Search Icon */}
-          <button
-            onClick={() => {
-              triggerHaptic('light');
-              setIsProfileOpen(false);
-              setIsNotificationsOpen(false);
-              setIsSearchOpen(true);
-            }}
-            className="w-9 h-9 rounded-xl flex items-center justify-center bg-gray-50/80 hover:bg-gray-100 text-gray-700 hover:text-gray-900 border border-gray-200/80 transition-all active:scale-95 shrink-0 cursor-pointer"
-            aria-label="Search Tools & Products"
-            title="Search Tools & Products"
-          >
-            <Search className="w-4.5 h-4.5 stroke-[1.8]" />
-          </button>
-
-          {/* 2. Bell Icon Feature */}
+          {/* 1. Bell Icon Feature */}
           <div className="relative" ref={notifRef}>
             <button
               onClick={() => {
@@ -385,119 +337,6 @@ export const TopBar: React.FC<TopBarProps> = ({
           </button>
         </div>
       </div>
-
-      {/* Global Quick-Search Modal */}
-      {isSearchOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-start justify-center p-3 sm:p-4 pt-16 sm:pt-20 animate-in fade-in duration-150"
-          onClick={() => setIsSearchOpen(false)}
-        >
-          <div
-            className="w-full max-w-md bg-white rounded-2xl border border-gray-200/90 shadow-2xl overflow-hidden flex flex-col max-h-[80vh] animate-in zoom-in-95 duration-150"
-            onClick={(e) => e.stopPropagation()}
-            role="dialog"
-            aria-modal="true"
-            aria-label="Search Tools"
-          >
-            {/* Search Input Bar */}
-            <div className="p-3 border-b border-gray-100 flex items-center gap-2.5">
-              <Search className="w-4.5 h-4.5 text-[#721428] shrink-0" />
-              <input
-                ref={searchInputRef}
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search tools, journals, licenses..."
-                className="flex-1 bg-transparent text-xs text-gray-900 placeholder:text-gray-400 focus:outline-none"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="p-1 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 cursor-pointer"
-                  aria-label="Clear input"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              )}
-              <button
-                onClick={() => setIsSearchOpen(false)}
-                className="px-2 py-1 rounded-lg text-xs font-semibold text-gray-500 hover:text-gray-800 hover:bg-gray-100 cursor-pointer"
-              >
-                Done
-              </button>
-            </div>
-
-            {/* Quick Suggestions Chips (when no input) */}
-            {!searchQuery.trim() && (
-              <div className="p-3.5 space-y-2">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">
-                  Quick Searches
-                </span>
-                <div className="flex flex-wrap gap-1.5">
-                  {['TradingView', 'FXReplay', 'Abyssinia Journal', 'Telegram Premium', 'Backtesting'].map((tag) => (
-                    <button
-                      key={tag}
-                      onClick={() => setSearchQuery(tag)}
-                      className="px-2.5 py-1 rounded-lg bg-gray-50 hover:bg-gray-100 border border-gray-200/80 text-xs font-medium text-gray-700 hover:text-[#721428] transition-colors cursor-pointer"
-                    >
-                      {tag}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Search Results List */}
-            {searchQuery.trim() && (
-              <div className="flex-1 overflow-y-auto p-2 divide-y divide-gray-100">
-                {searchResults.length === 0 ? (
-                  <div className="p-8 text-center text-gray-400">
-                    <p className="text-xs font-bold text-gray-700">No matching tools</p>
-                    <p className="text-[11px] text-gray-400 mt-0.5">
-                      No results found for "{searchQuery}".
-                    </p>
-                  </div>
-                ) : (
-                  searchResults.map((product) => (
-                    <div
-                      key={product.id}
-                      onClick={() => {
-                        triggerHaptic('light');
-                        setIsSearchOpen(false);
-                        onSelectProduct?.(product);
-                      }}
-                      className="p-2.5 rounded-xl hover:bg-[#FAF0F2]/60 flex items-center justify-between gap-3 transition-colors cursor-pointer group"
-                    >
-                      <div className="flex items-center gap-3 min-w-0">
-                        <ProductPhotoLogo productId={product.id} size="sm" className="border border-gray-200 shrink-0" />
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-1.5 mb-0.5">
-                            <span className="text-[9.5px] font-bold text-[#721428] uppercase tracking-wider">
-                              {product.brand}
-                            </span>
-                            {product.badge && (
-                              <span className="text-[9px] px-1.5 py-0.2 rounded bg-gray-100 text-gray-600 font-semibold">
-                                {product.badge}
-                              </span>
-                            )}
-                          </div>
-                          <h4 className="text-xs font-bold text-gray-900 group-hover:text-[#721428] transition-colors truncate">
-                            {product.name}
-                          </h4>
-                          <p className="text-[10.5px] text-gray-500 truncate">
-                            {product.startingPricePlaceholder}
-                          </p>
-                        </div>
-                      </div>
-                      <ArrowRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-[#721428] group-hover:translate-x-0.5 transition-all shrink-0" />
-                    </div>
-                  ))
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </header>
   );
 };
