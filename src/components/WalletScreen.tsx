@@ -38,6 +38,9 @@ interface PaymentMethodOption {
   name: string;
   badge: string;
   badgeColor: string;
+  accountNumber: string;
+  accountLabel: string;
+  recipientName: string;
   description: string;
 }
 
@@ -45,30 +48,42 @@ const PAYMENT_METHODS: PaymentMethodOption[] = [
   {
     id: 'telebirr',
     name: 'Telebirr',
-    badge: 'Instant & Most Popular',
+    badge: 'Instant Transfer',
     badgeColor: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-    description: 'Pay via Telebirr mobile app or *127#',
+    accountNumber: '0934313020',
+    accountLabel: 'Telebirr Phone Number',
+    recipientName: 'Dawit',
+    description: '0934313020 | Dawit',
   },
   {
     id: 'cbe',
-    name: 'CBE & CBE Birr',
-    badge: 'Zero Transfer Fee',
+    name: 'CBE',
+    badge: 'Bank Transfer',
     badgeColor: 'bg-purple-50 text-purple-700 border-purple-200',
-    description: 'Transfer via CBE Mobile Banking or CBE Birr',
+    accountNumber: '1000638416151',
+    accountLabel: 'CBE Account Number',
+    recipientName: 'Dawit',
+    description: '1000638416151 | Dawit',
   },
   {
     id: 'awash',
     name: 'Awash Bank',
-    badge: 'Commercial Bank',
+    badge: 'Bank Transfer',
     badgeColor: 'bg-blue-50 text-blue-700 border-blue-200',
-    description: 'Transfer via Awash Online or Mobile App',
+    accountNumber: '013201369124500',
+    accountLabel: 'Awash Account Number',
+    recipientName: 'Dawit',
+    description: '013201369124500 | Dawit',
   },
   {
     id: 'usdt',
-    name: 'USDT (TRC-20 & TON)',
-    badge: 'Crypto Payment',
+    name: 'USDT (Binance)',
+    badge: 'Binance Pay',
     badgeColor: 'bg-amber-50 text-amber-800 border-amber-200',
-    description: `Calculated at 1 USDT ≈ ${ETB_TO_USDT_RATE} ETB`,
+    accountNumber: '874067761',
+    accountLabel: 'Binance ID (Pay ID)',
+    recipientName: 'ABYSSINIAVENDOR',
+    description: 'Binance ID: 874067761 | ABYSSINIAVENDOR',
   },
 ];
 
@@ -158,6 +173,7 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
   };
 
   const effectiveAmount = isCustom ? (parseInt(customAmount, 10) || 0) : selectedAmount;
+  const currentMethod = PAYMENT_METHODS.find((m) => m.id === selectedMethod) || PAYMENT_METHODS[0];
 
   const handleSubmitDeposit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -650,16 +666,87 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
                 );
               })}
             </div>
+
+            {/* Payment Details for Selected Method */}
+            <div className="mt-3.5 p-3.5 rounded-xl bg-stone-50 border border-stone-200">
+              <div className="flex items-center justify-between mb-2.5 pb-2 border-b border-stone-200/80">
+                <span className="text-[11px] font-bold text-stone-900 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-[#721428]" />
+                  <span>Payment Details • {currentMethod.name}</span>
+                </span>
+                <span className="text-[10px] font-semibold text-[#721428] bg-[#FAF0F2] px-2 py-0.5 rounded-md border border-[#F0D5DA]">
+                  {currentMethod.badge}
+                </span>
+              </div>
+
+              <div className="space-y-2">
+                {/* Deposit Amount */}
+                <div className="flex items-center justify-between text-xs py-0.5">
+                  <span className="text-stone-500 font-medium">Deposit Amount:</span>
+                  <div className="text-right">
+                    <span className="font-bold text-stone-900">
+                      {formatETB(effectiveAmount)}
+                    </span>
+                    {selectedMethod === 'usdt' && (
+                      <span className="text-stone-500 text-[11px] ml-1 font-semibold">
+                        (≈ {etbToUsdt(effectiveAmount)})
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Recipient Name */}
+                <div className="flex items-center justify-between text-xs py-0.5">
+                  <span className="text-stone-500 font-medium">Recipient Name:</span>
+                  <span className="font-bold text-stone-900">{currentMethod.recipientName}</span>
+                </div>
+
+                {/* Account / Binance ID with Copy button */}
+                <div className="flex items-center justify-between text-xs py-1.5 border-t border-stone-200/70 mt-1">
+                  <div className="min-w-0 pr-2">
+                    <span className="text-stone-500 text-[10.5px] font-medium block">
+                      {currentMethod.accountLabel}:
+                    </span>
+                    <span className="font-mono font-bold text-stone-900 text-xs sm:text-sm tracking-tight select-all">
+                      {currentMethod.accountNumber}
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => handleCopy(currentMethod.accountNumber, currentMethod.id)}
+                    className={`py-1.5 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs shrink-0 ${
+                      copiedItem === currentMethod.id
+                        ? 'bg-emerald-600 text-white'
+                        : 'bg-[#721428] hover:bg-[#5A0E1E] text-white active:scale-95'
+                    }`}
+                    title={`Copy ${currentMethod.accountLabel}`}
+                  >
+                    {copiedItem === currentMethod.id ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                        <span>Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5" />
+                        <span>Copy</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Step 3: Verification Form */}
+          {/* Step 3: Payment Verification */}
           <div className="bg-white rounded-2xl border border-gray-200/90 shadow-xs p-4 select-none">
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-xs font-bold text-gray-900 flex items-center gap-1.5">
                 <span className="w-5 h-5 rounded-full bg-[#721428] text-white text-[10px] font-black flex items-center justify-center">
                   3
                 </span>
-                <span>Verification Form</span>
+                <span>Payment Verification</span>
               </h3>
             </div>
 
@@ -684,7 +771,7 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
             {/* Screenshot Upload with Preview */}
             <div className="mb-4">
               <label className="text-[10.5px] font-semibold text-stone-700 block mb-1">
-                Payment Screenshot (Optional, Accelerates Verification)
+                Upload Payment Screenshot (Optional)
               </label>
 
               <input
@@ -752,7 +839,7 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
               ) : (
                 <>
                   <ArrowDownLeft className="w-4 h-4" />
-                  <span>Submit Deposit Verification ({formatETB(effectiveAmount)})</span>
+                  <span>Submit Deposit</span>
                 </>
               )}
             </button>
