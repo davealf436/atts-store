@@ -1,7 +1,7 @@
 import { TelegramUser } from '../types';
 
 export const P2P_BUY_RATE = 142.50; // 1 USDT = 142.50 ETB
-export const P2P_SELL_RATE = 140.00; // 1 USDT = 140.00 ETB
+export const P2P_SELL_RATE = 140.50; // 1 USDT = 140.50 ETB
 
 export type P2POrderType = 'buy' | 'sell';
 export type P2POrderStatus = 'pending' | 'approved' | 'rejected';

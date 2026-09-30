@@ -292,12 +292,8 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
 
         <div className="relative z-10">
           {/* Header Title & Subtitle */}
-          <div className="flex items-start justify-between gap-3 mb-3.5">
+          <div className="flex items-start justify-between gap-3">
             <div>
-              <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-white/10 text-white/90 text-[10px] font-semibold mb-1 backdrop-blur-xs border border-white/10">
-                <ArrowRightLeft className="w-3 h-3 text-amber-300" />
-                <span>Direct Exchange Desk</span>
-              </div>
               <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight leading-tight">
                 Exchange Desk
               </h1>
@@ -320,35 +316,33 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
             </div>
           </div>
 
-          {/* Rates Display: Buy USDT & Sell USDT (Smaller and more compact) */}
-          <div className="grid grid-cols-2 gap-2 pt-0.5">
-            {/* Buy Rate */}
-            <div className="py-2 px-2.5 rounded-xl bg-white/10 border border-white/15 backdrop-blur-xs flex flex-col justify-between">
-              <div className="flex items-center justify-between mb-0.5">
-                <span className="text-[10px] font-semibold text-white/80">
-                  Buy USDT Rate
+          {/* Clean Compact Rate Row (Exchange Terminal Style) */}
+          <div className="mt-3.5 bg-black/25 backdrop-blur-xs rounded-xl border border-white/15 overflow-hidden shadow-xs">
+            <div className="grid grid-cols-2 divide-x divide-white/15">
+              {/* BUY USDT Column */}
+              <div className="py-2.5 px-3 flex flex-col justify-between">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-300/90">
+                  BUY USDT
                 </span>
-                <span className="w-3.5 h-3.5 rounded-full bg-emerald-500/25 text-emerald-300 text-[9px] font-bold flex items-center justify-center">
-                  ↓
+                <div className="text-base sm:text-lg font-black text-white tracking-tight tabular-nums mt-0.5 leading-tight">
+                  {P2P_BUY_RATE.toFixed(2)} <span className="text-xs font-bold text-white/80">ETB</span>
+                </div>
+                <span className="text-[10px] text-white/60 font-medium mt-0.5">
+                  1 USDT
                 </span>
               </div>
-              <div className="text-xs sm:text-sm font-extrabold text-white tracking-tight">
-                1 USDT = {P2P_BUY_RATE.toFixed(2)} ETB
-              </div>
-            </div>
 
-            {/* Sell Rate */}
-            <div className="py-2 px-2.5 rounded-xl bg-white/10 border border-white/15 backdrop-blur-xs flex flex-col justify-between">
-              <div className="flex items-center justify-between mb-0.5">
-                <span className="text-[10px] font-semibold text-white/80">
-                  Sell USDT Rate
+              {/* SELL USDT Column */}
+              <div className="py-2.5 px-3 flex flex-col justify-between">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-amber-300/90">
+                  SELL USDT
                 </span>
-                <span className="w-3.5 h-3.5 rounded-full bg-amber-400/25 text-amber-300 text-[9px] font-bold flex items-center justify-center">
-                  ↑
+                <div className="text-base sm:text-lg font-black text-white tracking-tight tabular-nums mt-0.5 leading-tight">
+                  {P2P_SELL_RATE.toFixed(2)} <span className="text-xs font-bold text-white/80">ETB</span>
+                </div>
+                <span className="text-[10px] text-white/60 font-medium mt-0.5">
+                  1 USDT
                 </span>
-              </div>
-              <div className="text-xs sm:text-sm font-extrabold text-white tracking-tight">
-                1 USDT = {P2P_SELL_RATE.toFixed(2)} ETB
               </div>
             </div>
           </div>
