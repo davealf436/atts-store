@@ -296,47 +296,8 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
           </div>
         </div>
 
-        {/* 3 Quick Stats Cards in Standard Caps (Tightened) */}
-        <div className="grid grid-cols-3 gap-1.5 mt-2.5">
-          <div className="px-2 py-1.5 rounded-lg bg-stone-50 border border-stone-200/80">
-            <span className="text-[9.5px] font-semibold text-stone-500 block leading-tight mb-0.5">
-              Available
-            </span>
-            <div className="text-xs font-bold text-[#721428] truncate leading-tight">
-              {formatETB(wallet.balanceETB)}
-            </div>
-            <span className="text-[9px] text-stone-400 block truncate leading-tight mt-0.5">
-              {etbToUsdt(wallet.balanceETB)}
-            </span>
-          </div>
-
-          <div className="px-2 py-1.5 rounded-lg bg-emerald-50/70 border border-emerald-200/70">
-            <span className="text-[9.5px] font-semibold text-emerald-800 block leading-tight mb-0.5">
-              Deposited
-            </span>
-            <div className="text-xs font-bold text-emerald-700 truncate leading-tight">
-              {formatETB(wallet.totalDepositedETB)}
-            </div>
-            <span className="text-[9px] text-emerald-600/80 block truncate leading-tight mt-0.5">
-              Lifetime total
-            </span>
-          </div>
-
-          <div className="px-2 py-1.5 rounded-lg bg-stone-50 border border-stone-200/80">
-            <span className="text-[9.5px] font-semibold text-stone-500 block leading-tight mb-0.5">
-              Total Spent
-            </span>
-            <div className="text-xs font-bold text-stone-800 truncate leading-tight">
-              {formatETB(wallet.totalSpentETB)}
-            </div>
-            <span className="text-[9px] text-stone-400 block truncate leading-tight mt-0.5">
-              Tool checkouts
-            </span>
-          </div>
-        </div>
-
         {/* Segment Tabs: Overview and Add Funds in Standard Caps */}
-        <div className="grid grid-cols-2 gap-1 bg-stone-100 p-1 rounded-xl mt-2.5 border border-stone-200/60">
+        <div className="grid grid-cols-2 gap-1 bg-stone-100 p-1 rounded-xl mt-3 border border-stone-200/60">
           <button
             type="button"
             onClick={() => {
