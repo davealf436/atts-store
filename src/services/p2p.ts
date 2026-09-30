@@ -17,6 +17,7 @@ export interface P2POrder {
   accountName?: string;
   destinationAddress?: string; // Binance ID / USDT Address
   reference?: string;
+  screenshot?: string;
   date: string;
   status: P2POrderStatus;
 }

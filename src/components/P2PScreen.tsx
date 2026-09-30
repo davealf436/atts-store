@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   ArrowDownLeft,
   ArrowUpRight,
@@ -18,6 +18,7 @@ import {
   Building2,
   Smartphone,
   Info,
+  Upload,
 } from 'lucide-react';
 import { triggerHaptic, triggerNotificationHaptic } from '../services/telegram';
 import { getWalletState, saveWalletState, formatETB } from '../services/wallet';
@@ -90,6 +91,36 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
   const [sellAccountNumber, setSellAccountNumber] = useState<string>('');
   const [sellAccountName, setSellAccountName] = useState<string>('');
   const [sellTxReference, setSellTxReference] = useState<string>('');
+
+  // Sell screenshot state
+  const [sellScreenshotPreview, setSellScreenshotPreview] = useState<string | null>(null);
+  const [sellScreenshotName, setSellScreenshotName] = useState<string>('');
+  const sellFileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleSellFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 8 * 1024 * 1024) {
+        alert('Image file is too large. Please choose an image under 8MB.');
+        return;
+      }
+      setSellScreenshotName(file.name);
+      const reader = new FileReader();
+      reader.onload = () => {
+        setSellScreenshotPreview(reader.result as string);
+        triggerHaptic('light');
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleClearSellScreenshot = () => {
+    setSellScreenshotPreview(null);
+    setSellScreenshotName('');
+    if (sellFileInputRef.current) {
+      sellFileInputRef.current.value = '';
+    }
+  };
 
   // UI feedback & modals
   const [copiedItem, setCopiedItem] = useState<string | null>(null);
@@ -239,6 +270,7 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
         accountNumber: sellAccountNumber.trim(),
         accountName: sellAccountName.trim(),
         reference: sellTxReference.trim() || undefined,
+        screenshot: sellScreenshotPreview || undefined,
       });
 
       setIsSubmitting(false);
@@ -246,6 +278,7 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
       setPendingApprovalModal(newOrder);
       setSellAccountNumber('');
       setSellTxReference('');
+      handleClearSellScreenshot();
     }, 700);
   };
 
@@ -757,7 +790,7 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
               {/* Tx Reference */}
               <div className="mt-2.5 pt-2 border-t border-stone-200/80">
                 <label className="text-[10px] font-semibold text-stone-600 block mb-1">
-                  Transaction Reference / Order ID (Optional):
+                  Transaction Reference / Order ID:
                 </label>
                 <input
                   type="text"
@@ -766,6 +799,63 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
                   placeholder="e.g. Binance Order # or TxID"
                   className="w-full h-9 px-3 rounded-lg border border-stone-200 bg-white focus:border-[#721428] focus:outline-none text-xs font-medium text-stone-900"
                 />
+              </div>
+
+              {/* Upload Payment Screenshot Feature */}
+              <div className="mt-2.5 pt-2 border-t border-stone-200/80">
+                <label className="text-[10px] font-semibold text-stone-600 block mb-1">
+                  Upload Payment Screenshot:
+                </label>
+
+                <input
+                  type="file"
+                  ref={sellFileInputRef}
+                  onChange={handleSellFileChange}
+                  accept="image/*"
+                  className="hidden"
+                  id="sell-payment-screenshot-upload"
+                />
+
+                {!sellScreenshotPreview ? (
+                  <label
+                    htmlFor="sell-payment-screenshot-upload"
+                    className="flex flex-col items-center justify-center p-3 border-2 border-dashed border-stone-200 hover:border-[#721428] rounded-xl bg-white hover:bg-[#FAF0F2]/40 transition-all cursor-pointer text-center group"
+                  >
+                    <Upload className="w-4 h-4 text-stone-400 group-hover:text-[#721428] mb-1 transition-colors" />
+                    <span className="text-xs font-bold text-stone-700 group-hover:text-[#721428]">
+                      Click to upload transfer screenshot
+                    </span>
+                    <span className="text-[9.5px] text-stone-400 mt-0.5">
+                      JPG, PNG or WEBP (Max 8MB)
+                    </span>
+                  </label>
+                ) : (
+                  <div className="relative rounded-xl border border-stone-200 overflow-hidden bg-white p-2 flex items-center justify-between">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <img
+                        src={sellScreenshotPreview}
+                        alt="Transfer receipt"
+                        className="w-11 h-11 object-cover rounded-lg border border-stone-300 shrink-0"
+                      />
+                      <div className="min-w-0">
+                        <span className="text-xs font-bold text-stone-900 block truncate">
+                          {sellScreenshotName || 'Payment receipt'}
+                        </span>
+                        <span className="text-[10px] text-emerald-600 font-semibold flex items-center gap-1">
+                          <CheckCircle2 className="w-3 h-3" /> Attached
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleClearSellScreenshot}
+                      className="p-1.5 rounded-lg text-stone-400 hover:text-rose-600 hover:bg-stone-100 transition-colors cursor-pointer"
+                      title="Remove screenshot"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -928,6 +1018,14 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
                 <span className="text-stone-500">Status:</span>
                 <div>{getStatusBadge(pendingApprovalModal.status)}</div>
               </div>
+              {pendingApprovalModal.screenshot && (
+                <div className="flex items-center justify-between pt-1 border-t border-stone-200/80">
+                  <span className="text-stone-500">Screenshot:</span>
+                  <span className="text-[10px] text-emerald-600 font-semibold flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3" /> Attached
+                  </span>
+                </div>
+              )}
             </div>
 
             <button
