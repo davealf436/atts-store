@@ -252,23 +252,29 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
     switch (status) {
       case 'approved':
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-            <CheckCircle2 className="w-2.5 h-2.5 stroke-[2.5]" />
+          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-300 shadow-2xs">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+            <CheckCircle2 className="w-3 h-3 text-emerald-600 stroke-[2.5]" />
             <span>Approved</span>
           </span>
         );
       case 'rejected':
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
-            <XCircle className="w-2.5 h-2.5 stroke-[2.5]" />
+          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-rose-50 text-rose-700 border border-rose-300 shadow-2xs">
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
+            <XCircle className="w-3 h-3 text-rose-600 stroke-[2.5]" />
             <span>Rejected</span>
           </span>
         );
       case 'pending':
       default:
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
-            <Clock className="w-2.5 h-2.5 stroke-[2.5]" />
+          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10.5px] font-bold bg-amber-50 text-amber-900 border border-amber-300 shadow-2xs">
+            <span className="relative flex h-1.5 w-1.5 shrink-0">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-amber-500" />
+            </span>
+            <Clock className="w-3 h-3 text-amber-700 stroke-[2.5]" />
             <span>Pending</span>
           </span>
         );
@@ -823,23 +829,23 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
           </div>
         ) : (
           <div className="space-y-2">
-            {orders.slice(0, 3).map((order) => (
+            {orders.slice(0, 4).map((order) => (
               <div
                 key={order.id}
-                className="p-3 rounded-xl bg-stone-50/70 border border-stone-200/70 flex items-center justify-between transition-colors hover:bg-stone-50"
+                className="p-3 rounded-xl bg-stone-50/80 border border-stone-200/80 flex items-center justify-between transition-colors hover:bg-stone-50"
               >
                 <div className="flex items-center gap-2.5 min-w-0">
                   <div
-                    className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border ${
+                    className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border shadow-2xs ${
                       order.type === 'buy'
                         ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                         : 'bg-amber-50 text-amber-800 border-amber-200'
                     }`}
                   >
                     {order.type === 'buy' ? (
-                      <ArrowDownLeft className="w-4 h-4" />
+                      <ArrowDownLeft className="w-4.5 h-4.5 stroke-[2.2]" />
                     ) : (
-                      <ArrowUpRight className="w-4 h-4" />
+                      <ArrowUpRight className="w-4.5 h-4.5 stroke-[2.2]" />
                     )}
                   </div>
                   <div className="min-w-0">
@@ -851,21 +857,23 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
                         #{order.id}
                       </span>
                     </div>
-                    <span className="text-[10px] text-stone-500 block truncate">
+                    <span className="text-[10px] text-stone-500 block truncate mt-0.5">
                       {order.date} • {order.paymentMethod}
                     </span>
                   </div>
                 </div>
 
-                <div className="text-right shrink-0 pl-2">
-                  <div className="text-xs font-bold text-stone-900">
-                    {order.type === 'buy' ? '+' : '-'}
-                    {order.amountUSDT.toFixed(2)} USDT
-                  </div>
-                  <div className="flex items-center justify-end gap-1 mt-0.5">
-                    <span className="text-[10px] text-stone-500 font-medium">
-                      {formatETB(order.amountETB)}
+                <div className="text-right shrink-0 pl-3 flex flex-col items-end gap-1">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs font-bold text-stone-900 tabular-nums">
+                      {order.type === 'buy' ? '+' : '-'}
+                      {order.amountUSDT.toFixed(2)} USDT
                     </span>
+                    <span className="text-[10px] text-stone-400 font-medium tabular-nums">
+                      ({formatETB(order.amountETB)})
+                    </span>
+                  </div>
+                  <div>
                     {getStatusBadge(order.status)}
                   </div>
                 </div>
