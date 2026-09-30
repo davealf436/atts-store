@@ -285,8 +285,9 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
 
   return (
     <div className="space-y-3.5 pb-6">
-      {/* 1. Burgundy Card Panel: Main Exchange Desk Rate Panel (Matches Wallet Card Styling) */}
-      <div className="bg-white rounded-2xl border border-gray-200/90 shadow-xs p-3.5 select-none">
+      {/* 1. Main Exchange Desk Card (Matches Wallet Screen Card Architecture) */}
+      <div className="bg-white rounded-2xl border border-gray-200/90 shadow-xs p-4 select-none">
+        {/* Burgundy Card Display */}
         <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-[#721428] via-[#5A0E1E] to-[#3B0712] p-4 text-white shadow-md">
           {/* Subtle gold grid overlay matching Wallet card */}
           <div
@@ -345,26 +346,59 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
                 </div>
               </div>
             </div>
+
+            {/* Quick Action Bar inside Burgundy Card (Matches Wallet card Add Funds / Explore Tools) */}
+            <div className="relative z-10 grid grid-cols-2 gap-2 mt-3.5 pt-3 border-t border-white/15">
+              <button
+                type="button"
+                onClick={() => {
+                  triggerHaptic('medium');
+                  setActiveAction('buy');
+                }}
+                className={`py-2 px-3 rounded-lg font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs active:scale-[0.98] cursor-pointer ${
+                  activeAction === 'buy'
+                    ? 'bg-white text-[#721428]'
+                    : 'bg-white/15 hover:bg-white/25 text-white border border-white/20'
+                }`}
+              >
+                <ArrowDownLeft className="w-3.5 h-3.5 stroke-[2.5]" />
+                <span>Buy USDT</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  triggerHaptic('medium');
+                  setActiveAction('sell');
+                }}
+                className={`py-2 px-3 rounded-lg font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs active:scale-[0.98] cursor-pointer ${
+                  activeAction === 'sell'
+                    ? 'bg-white text-[#721428]'
+                    : 'bg-white/15 hover:bg-white/25 text-white border border-white/20'
+                }`}
+              >
+                <ArrowUpRight className="w-3.5 h-3.5 stroke-[2.5]" />
+                <span>Sell USDT</span>
+              </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* 2. Main Actions Selector: Buy USDT / Sell USDT */}
-      <section className="bg-white rounded-2xl border border-gray-200/90 shadow-xs p-1 select-none">
-        <div className="grid grid-cols-2 gap-1 bg-stone-100 p-1 rounded-xl border border-stone-200/60">
+        {/* Segment Tabs: Buy USDT and Sell USDT (Matches Wallet Overview & Add funds UI) */}
+        <div className="grid grid-cols-2 gap-1 bg-stone-100 p-1 rounded-xl mt-3 border border-stone-200/60">
           <button
             type="button"
             onClick={() => {
               triggerHaptic('light');
               setActiveAction('buy');
             }}
-            className={`py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+            className={`py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
               activeAction === 'buy'
-                ? 'bg-[#721428] text-white shadow-xs'
-                : 'text-stone-700 hover:text-stone-900 hover:bg-stone-200/60'
+                ? 'bg-white text-gray-900 shadow-xs'
+                : 'text-gray-500 hover:text-gray-900'
             }`}
           >
-            <ArrowDownLeft className="w-3.5 h-3.5" />
+            <ArrowDownLeft className={`w-3.5 h-3.5 ${activeAction === 'buy' ? 'text-[#721428]' : 'text-gray-400'}`} />
             <span>Buy USDT</span>
           </button>
 
@@ -374,17 +408,17 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
               triggerHaptic('light');
               setActiveAction('sell');
             }}
-            className={`py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+            className={`py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
               activeAction === 'sell'
-                ? 'bg-[#721428] text-white shadow-xs'
-                : 'text-stone-700 hover:text-stone-900 hover:bg-stone-200/60'
+                ? 'bg-white text-gray-900 shadow-xs'
+                : 'text-gray-500 hover:text-gray-900'
             }`}
           >
-            <ArrowUpRight className="w-3.5 h-3.5" />
+            <ArrowUpRight className={`w-3.5 h-3.5 ${activeAction === 'sell' ? 'text-[#721428]' : 'text-gray-400'}`} />
             <span>Sell USDT</span>
           </button>
         </div>
-      </section>
+      </div>
 
       {/* 3. Buy USDT Form */}
       {activeAction === 'buy' && (
