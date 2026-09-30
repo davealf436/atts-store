@@ -30,6 +30,7 @@ import {
   createP2POrder,
 } from '../services/p2p';
 import { TelegramUser, WalletTransaction } from '../types';
+import { SuccessCheckmarkAnimation } from './SuccessCheckmarkAnimation';
 
 interface P2PScreenProps {
   onNavigateToWallet?: () => void;
@@ -870,24 +871,22 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
       {pendingApprovalModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity"
+            className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity duration-300"
             onClick={() => setPendingApprovalModal(null)}
           />
-          <div className="relative w-full max-w-sm bg-white rounded-2xl border border-stone-200 p-5 z-10 shadow-xl flex flex-col animate-in zoom-in-95 duration-150">
-            <div className="w-12 h-12 rounded-full bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center mx-auto mb-3">
-              <Clock className="w-6 h-6 stroke-[2.2]" />
+          <div className="relative w-full max-w-sm bg-white rounded-2xl border border-stone-200 p-5 z-10 shadow-xl flex flex-col animate-in zoom-in-95 duration-200">
+            {/* Subtle Animated Checkmark Feedback */}
+            <div className="mb-2">
+              <SuccessCheckmarkAnimation
+                size="md"
+                color="emerald"
+                title="Order Submitted Successfully!"
+                subtitle={`Pending admin verification for your ${pendingApprovalModal.type === 'buy' ? 'Buy' : 'Sell'} order`}
+              />
             </div>
 
-            <h3 className="text-sm font-bold text-center text-gray-900">
-              Pending Admin Approval
-            </h3>
-
-            <p className="text-xs text-center text-stone-600 mt-1 mb-4 leading-relaxed">
-              Your {pendingApprovalModal.type === 'buy' ? 'Buy' : 'Sell'} order has been registered and is pending verification.
-            </p>
-
             {/* Order Details summary */}
-            <div className="p-3 rounded-xl bg-stone-50 border border-stone-200 space-y-2 text-xs mb-4">
+            <div className="p-3 rounded-xl bg-stone-50 border border-stone-200 space-y-2 text-xs mb-4 mt-2">
               <div className="flex justify-between">
                 <span className="text-stone-500">Order ID:</span>
                 <span className="font-mono font-bold text-stone-900">

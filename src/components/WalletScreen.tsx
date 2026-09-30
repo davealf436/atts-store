@@ -25,6 +25,7 @@ import {
   ETB_TO_USDT_RATE
 } from '../services/wallet';
 import { triggerHaptic, triggerNotificationHaptic, openTelegramSupport } from '../services/telegram';
+import { SuccessCheckmarkAnimation } from './SuccessCheckmarkAnimation';
 
 interface WalletScreenProps {
   user: TelegramUser;
@@ -217,10 +218,11 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
         amountETB: result.transaction.amountETB,
       });
 
-      // Clear deposit inputs
+      // Clear deposit inputs and switch to overview to show success animation
       setReferenceInput('');
       handleClearScreenshot();
       setWallet(getWalletState());
+      setActiveTab('overview');
     }, 700);
   };
 
@@ -353,23 +355,33 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
 
       {/* Admin Notification Preview Banner (if recently submitted) */}
       {submittedNotification && (
-        <div className="bg-amber-50/90 border border-amber-300 rounded-2xl p-4 shadow-sm animate-in fade-in zoom-in-95 duration-200">
+        <div className="bg-white border border-stone-200/90 rounded-2xl p-4 shadow-sm animate-in fade-in zoom-in-95 duration-300">
           <div className="flex items-start justify-between gap-2 mb-2">
-            <div className="flex items-center gap-2 text-amber-900 font-bold text-xs">
-              <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping" />
-              <span>Top-Up Submitted • Pending Admin Review</span>
+            <div className="flex items-center gap-2 text-emerald-800 font-bold text-xs">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+              <span>Deposit Request Submitted</span>
             </div>
             <button
               type="button"
               onClick={() => setSubmittedNotification(null)}
-              className="text-amber-700 hover:text-amber-900 p-0.5 cursor-pointer"
+              className="text-stone-400 hover:text-stone-700 p-0.5 cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
 
-          <p className="text-xs text-amber-800 mb-3 leading-relaxed">
-            Your deposit of <strong>{formatETB(submittedNotification.amountETB)}</strong> has been registered. The admin will verify the reference code and approve your balance via the formatted command:
+          {/* Subtle Success Checkmark Animation */}
+          <div className="my-2.5 py-1">
+            <SuccessCheckmarkAnimation
+              size="md"
+              color="emerald"
+              title="Deposit Submitted Successfully!"
+              subtitle={`Pending admin verification for ${formatETB(submittedNotification.amountETB)}`}
+            />
+          </div>
+
+          <p className="text-xs text-stone-600 mb-3 leading-relaxed text-center">
+            Your payment receipt has been registered. The admin will verify the reference code and approve your balance:
           </p>
 
           {/* Formatted Admin Command Code block */}
