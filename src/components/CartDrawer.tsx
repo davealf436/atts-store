@@ -184,7 +184,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <CheckCircle2 className="w-8 h-8 stroke-[2.2]" />
             </div>
 
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-extrabold uppercase tracking-wider mb-2">
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10.5px] font-bold mb-2">
               Instant Payment Successful
             </span>
 
@@ -273,7 +273,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   <Wallet className="w-3.5 h-3.5" />
                 </div>
                 <div>
-                  <span className="text-[10px] font-bold text-[#721428] uppercase tracking-wider block">
+                  <span className="text-[10px] font-bold text-[#721428] block">
                     Your ATH Wallet
                   </span>
                   <span className="text-xs font-black text-gray-900">
@@ -302,7 +302,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 className="p-3 bg-gray-50 rounded-xl border border-gray-200/80 flex items-start gap-3 shadow-2xs"
               >
                 <div className="flex-1 min-w-0">
-                  <span className="text-[10px] font-bold text-[#721428] uppercase tracking-wider block">
+                  <span className="text-[10px] font-bold text-[#721428] block">
                     {item.product.brand}
                   </span>
                   <h4 className="text-xs font-bold text-gray-900 truncate">

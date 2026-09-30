@@ -112,7 +112,7 @@ export const OrdersScreen: React.FC<OrdersScreenProps> = ({ onBrowseProducts }) 
                   <div className="flex items-center gap-2 min-w-0">
                     <Key className="w-3.5 h-3.5 text-[#721428] shrink-0" />
                     <div className="min-w-0">
-                      <span className="text-[9px] font-bold text-stone-400 uppercase tracking-wider block">
+                      <span className="text-[9.5px] font-semibold text-stone-500 block">
                         License Key / Activation Code
                       </span>
                       <span className="text-xs font-mono font-bold text-stone-900 truncate block">

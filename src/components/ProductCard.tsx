@@ -35,7 +35,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <div>
           {/* Header Row: Badge & Brand */}
           <div className="flex items-center justify-between gap-2 mb-1.5">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-gray-700 bg-gray-100 px-2 py-0.5 rounded">
+            <span className="text-[10.5px] font-bold text-gray-700 bg-gray-100 px-2 py-0.5 rounded">
               {product.brand}
             </span>
             {product.badge && (
@@ -73,7 +73,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <div className="pt-2.5 border-t border-gray-100 flex items-center justify-between gap-3">
           {showPricePlaceholder ? (
             <div className="min-w-0">
-              <span className="text-[10px] uppercase font-semibold text-gray-500 block">
+              <span className="text-[10px] font-semibold text-gray-500 block">
                 Starting from
               </span>
               <span className="text-xs font-bold text-gray-900 truncate block">

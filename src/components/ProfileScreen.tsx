@@ -121,7 +121,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
               <Wallet className="w-4 h-4" />
             </div>
             <div>
-              <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#F0D5DA]/90 block">
+              <span className="text-[11px] font-semibold text-[#F0D5DA]/90 block">
                 ATH Wallet Balance
               </span>
               <span className="text-base font-black text-white">
@@ -159,14 +159,14 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
 
         <div className="grid grid-cols-2 gap-2 text-xs">
           <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-150">
-            <span className="text-[10px] text-gray-500 font-semibold block uppercase">Status</span>
+            <span className="text-[10px] text-gray-500 font-semibold block">Status</span>
             <span className="font-bold text-emerald-700 flex items-center gap-1 mt-0.5">
               <span>Connected</span>
             </span>
           </div>
 
           <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-150">
-            <span className="text-[10px] text-gray-500 font-semibold block uppercase">Protocol</span>
+            <span className="text-[10px] text-gray-500 font-semibold block">Protocol</span>
             <span className="font-bold text-gray-800 mt-0.5 block">TMA v7.0+</span>
           </div>
         </div>

@@ -241,7 +241,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-700 bg-gray-100 px-2 py-0.5 rounded">
+              <span className="text-[10.5px] font-bold text-gray-700 bg-gray-100 px-2 py-0.5 rounded">
                 ATH P2P Desk
               </span>
             </div>

@@ -28,7 +28,7 @@ export const P2PScreen: React.FC = () => {
         {/* Indicative Rate Reference */}
         <div className="grid grid-cols-2 gap-2.5 p-3 bg-gray-50 rounded-lg border border-gray-200/80">
           <div>
-            <span className="text-[10px] font-bold uppercase text-gray-500 block">
+            <span className="text-[10.5px] font-semibold text-gray-500 block">
               Indicative Buy USDT
             </span>
             <span className="text-xs sm:text-sm font-bold text-gray-900 mt-0.5 block">
@@ -36,7 +36,7 @@ export const P2PScreen: React.FC = () => {
             </span>
           </div>
           <div>
-            <span className="text-[10px] font-bold uppercase text-gray-500 block">
+            <span className="text-[10.5px] font-semibold text-gray-500 block">
               Indicative Sell USDT
             </span>
             <span className="text-xs sm:text-sm font-bold text-gray-900 mt-0.5 block">
@@ -87,7 +87,7 @@ export const P2PScreen: React.FC = () => {
 
       {/* P2P Workflow & Safeguards */}
       <section className="bg-white border border-gray-200/90 rounded-xl p-4 shadow-xs space-y-3">
-        <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider flex items-center gap-1.5">
+        <h3 className="text-xs font-bold text-gray-900 flex items-center gap-1.5">
           <ShieldCheck className="w-3.5 h-3.5 text-[#721428]" />
           <span>How P2P Trading Works</span>
         </h3>

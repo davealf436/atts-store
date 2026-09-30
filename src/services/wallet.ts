@@ -89,7 +89,7 @@ export const formatAdminNotification = (
   const now = new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
   const usernameDisplay = user.username ? `@${user.username}` : user.first_name;
 
-  return `🔔 <b>NEW ATH WALLET TOP-UP SUBMITTED</b>
+  return `🔔 <b>New ATH Wallet Top-Up Submitted</b>
 
 👤 <b>User:</b> ${usernameDisplay} (ID: <code>${user.id}</code>)
 💰 <b>Amount:</b> ${formatETB(amountETB)} (≈ ${usdtVal} USDT)

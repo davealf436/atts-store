@@ -51,7 +51,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           {/* Title & Tag */}
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-700 bg-gray-100 px-2 py-0.5 rounded">
+              <span className="text-[10.5px] font-bold text-gray-700 bg-gray-100 px-2 py-0.5 rounded">
                 {product.brand}
               </span>
               {product.badge && (
@@ -70,7 +70,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
           {/* Price Box */}
           <div className="p-3 bg-gray-50 rounded-lg border border-gray-200/80">
-            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-0.5">
+            <span className="text-[10px] font-semibold text-gray-500 block mb-0.5">
               Indicative Pricing Placeholder
             </span>
             <span className="text-sm sm:text-base font-bold text-gray-900 block">
@@ -83,7 +83,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
           {/* Description */}
           <div>
-            <h4 className="text-[11px] font-bold text-gray-900 uppercase tracking-wider mb-1">
+            <h4 className="text-xs font-bold text-gray-900 mb-1">
               Overview
             </h4>
             <p className="text-xs text-gray-600 leading-relaxed">
@@ -93,7 +93,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
           {/* Features */}
           <div>
-            <h4 className="text-[11px] font-bold text-gray-900 uppercase tracking-wider mb-2">
+            <h4 className="text-xs font-bold text-gray-900 mb-2">
               Included Specifications
             </h4>
             <ul className="space-y-1.5">

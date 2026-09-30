@@ -33,7 +33,7 @@ export const CompactProductCard: React.FC<CompactProductCardProps> = ({
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 mb-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500">
+            <span className="text-[10.5px] font-bold text-gray-600">
               {product.brand}
             </span>
             {product.badge && (
