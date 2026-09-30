@@ -128,6 +128,7 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
   const [showAllOrders, setShowAllOrders] = useState<boolean>(false);
   const [orderFilter, setOrderFilter] = useState<'all' | 'buy' | 'sell' | 'pending'>('all');
   const [pendingApprovalModal, setPendingApprovalModal] = useState<P2POrder | null>(null);
+  const [showBuyConfirmModal, setShowBuyConfirmModal] = useState<boolean>(false);
 
   // Sync wallet state and orders reactively
   useEffect(() => {
@@ -161,7 +162,7 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
   const calculatedSellETB = parsedSellUSDT > 0 ? (parsedSellUSDT * P2P_SELL_RATE).toFixed(2) : '0.00';
   const currentPayout = PAYOUT_METHODS.find((p) => p.id === sellPayoutMethod) || PAYOUT_METHODS[0];
 
-  // Buy submission handler
+  // Buy submission handler (triggers confirmation modal to prevent accidental purchase)
   const handleBuySubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -183,6 +184,12 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
       return;
     }
 
+    triggerHaptic('medium');
+    setShowBuyConfirmModal(true);
+  };
+
+  // Execution after user explicitly confirms in modal
+  const executeBuyOrder = () => {
     setIsSubmitting(true);
     triggerHaptic('medium');
 
@@ -228,10 +235,11 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
       });
 
       setIsSubmitting(false);
+      setShowBuyConfirmModal(false);
       triggerNotificationHaptic('success');
       setPendingApprovalModal(newOrder);
       setDestinationAddress('');
-    }, 700);
+    }, 600);
   };
 
   // Sell submission handler
@@ -963,6 +971,131 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
           </div>
         )}
       </section>
+
+      {/* Modal 0: Confirm Buy USDT Purchase (Prevents accidental purchase) */}
+      {showBuyConfirmModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity duration-300"
+            onClick={() => !isSubmitting && setShowBuyConfirmModal(false)}
+          />
+          <div className="relative w-full max-w-sm bg-white rounded-2xl border border-stone-200 p-5 z-10 shadow-2xl flex flex-col animate-in zoom-in-95 duration-200 select-none">
+            {/* Header */}
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 rounded-xl bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center shrink-0 shadow-2xs">
+                <ShieldCheck className="w-5 h-5 stroke-[2]" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <h3 className="text-sm font-bold text-gray-900 leading-tight">
+                  Confirm USDT Purchase
+                </h3>
+                <p className="text-[11px] text-gray-500 mt-0.5">
+                  Review transaction details before confirming
+                </p>
+              </div>
+              <button
+                type="button"
+                disabled={isSubmitting}
+                onClick={() => {
+                  triggerHaptic('light');
+                  setShowBuyConfirmModal(false);
+                }}
+                className="p-1 rounded-lg text-stone-400 hover:text-stone-600 transition-colors cursor-pointer disabled:opacity-40"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Order Details summary */}
+            <div className="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-2.5 text-xs mb-3">
+              <div className="flex items-center justify-between">
+                <span className="text-stone-500 font-medium">You Pay:</span>
+                <span className="font-bold text-[#721428] text-sm tabular-nums">
+                  {formatETB(parsedBuyETB)}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <span className="text-stone-500 font-medium">You Receive:</span>
+                <span className="font-bold text-emerald-700 text-sm tabular-nums">
+                  {calculatedBuyUSDT} USDT
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between pt-1 border-t border-stone-200/80">
+                <span className="text-stone-500 font-medium">Exchange Rate:</span>
+                <span className="font-medium text-stone-700">
+                  1 USDT = {P2P_BUY_RATE.toFixed(2)} ETB
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <span className="text-stone-500 font-medium">Payment Source:</span>
+                <span className="font-semibold text-stone-900">
+                  Wallet Balance
+                </span>
+              </div>
+
+              <div className="pt-1 border-t border-stone-200/80">
+                <span className="text-[10px] text-stone-500 font-medium block mb-1">
+                  Recipient Destination (Binance ID / USDT):
+                </span>
+                <span className="font-mono font-bold text-stone-900 text-xs break-all bg-white px-2.5 py-1.5 rounded-lg border border-stone-200 block">
+                  {destinationAddress.trim()}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between pt-1 border-t border-stone-200/80">
+                <span className="text-stone-500 font-medium">Balance After:</span>
+                <span className="font-semibold text-stone-700 tabular-nums">
+                  {formatETB(wallet.balanceETB - parsedBuyETB)}
+                </span>
+              </div>
+            </div>
+
+            {/* Confirmation Alert Note */}
+            <div className="mb-4 p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-[11px] flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+              <span>
+                Funds will be deducted immediately from your ATH Store wallet. Please verify your address carefully.
+              </span>
+            </div>
+
+            {/* Action buttons */}
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                disabled={isSubmitting}
+                onClick={() => {
+                  triggerHaptic('light');
+                  setShowBuyConfirmModal(false);
+                }}
+                className="py-2.5 px-3 rounded-xl border border-stone-300 bg-white hover:bg-stone-50 text-stone-700 font-bold text-xs transition-colors cursor-pointer disabled:opacity-50 text-center"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={isSubmitting}
+                onClick={executeBuyOrder}
+                className="py-2.5 px-3 rounded-xl bg-[#721428] hover:bg-[#5A0E1E] active:bg-[#470A17] text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer active:scale-[0.98] disabled:opacity-50 text-center"
+              >
+                {isSubmitting ? (
+                  <>
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                    <span>Processing...</span>
+                  </>
+                ) : (
+                  <>
+                    <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                    <span>Confirm & Buy</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Modal 1: Pending Admin Approval Confirmation */}
       {pendingApprovalModal && (
