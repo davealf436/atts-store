@@ -3,6 +3,7 @@ import {
   ArrowDownLeft,
   ArrowUpRight,
   ArrowRightLeft,
+  ArrowLeftRight,
   Check,
   Copy,
   Clock,
@@ -284,70 +285,69 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
 
   return (
     <div className="space-y-3.5 pb-6">
-      {/* 1. Burgundy Card Panel: Main P2P Hero / Rate Panel */}
-      <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#721428] via-[#5D0E20] to-[#420A16] text-white p-4 sm:p-5 shadow-sm border border-[#8F1F38]/60">
-        {/* Subtle decorative radial ambient glow */}
-        <div className="absolute -top-12 -right-12 w-44 h-44 bg-rose-500/10 rounded-full blur-2xl pointer-events-none" />
-        <div className="absolute -bottom-12 -left-12 w-40 h-40 bg-amber-400/10 rounded-full blur-2xl pointer-events-none" />
+      {/* 1. Burgundy Card Panel: Main Exchange Desk Rate Panel (Matches Wallet Card Styling) */}
+      <div className="bg-white rounded-2xl border border-gray-200/90 shadow-xs p-3.5 select-none">
+        <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-[#721428] via-[#5A0E1E] to-[#3B0712] p-4 text-white shadow-md">
+          {/* Subtle gold grid overlay matching Wallet card */}
+          <div
+            className="absolute inset-0 opacity-10 pointer-events-none"
+            style={{
+              backgroundImage: 'radial-gradient(circle at 1px 1px, #C59F43 1px, transparent 0)',
+              backgroundSize: '16px 16px',
+            }}
+          />
 
-        <div className="relative z-10">
-          {/* Header Title & Subtitle */}
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight leading-tight">
-                Exchange Desk
-              </h1>
-              <p className="text-xs text-white/80 font-medium mt-0.5">
-                Buy or sell USDT with ETB.
-              </p>
-            </div>
-
-            {/* Quick Wallet Balance Pill */}
-            <div className="text-right shrink-0">
-              <span className="text-[10px] uppercase tracking-wider font-semibold text-white/70 block mb-0.5">
-                Wallet Balance
-              </span>
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/15 border border-white/20 backdrop-blur-xs">
-                <Wallet className="w-3 h-3 text-amber-300" />
-                <span className="text-xs font-bold text-white tracking-tight">
-                  {formatETB(wallet.balanceETB)}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Clean Compact Rate Row (Exchange Terminal Style) */}
-          <div className="mt-3.5 bg-black/25 backdrop-blur-xs rounded-xl border border-white/15 overflow-hidden shadow-xs">
-            <div className="grid grid-cols-2 divide-x divide-white/15">
-              {/* BUY USDT Column */}
-              <div className="py-2.5 px-3 flex flex-col justify-between">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-300/90">
-                  BUY USDT
-                </span>
-                <div className="text-base sm:text-lg font-black text-white tracking-tight tabular-nums mt-0.5 leading-tight">
-                  {P2P_BUY_RATE.toFixed(2)} <span className="text-xs font-bold text-white/80">ETB</span>
-                </div>
-                <span className="text-[10px] text-white/60 font-medium mt-0.5">
-                  1 USDT
-                </span>
+          <div className="relative z-10">
+            {/* Header: Title & Subtitle on left, P2P/Exchange Icon Badge on right */}
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight leading-tight">
+                  Exchange Desk
+                </h1>
+                <p className="text-xs text-white/80 font-medium mt-0.5">
+                  Buy or sell USDT with ETB.
+                </p>
               </div>
 
-              {/* SELL USDT Column */}
-              <div className="py-2.5 px-3 flex flex-col justify-between">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-amber-300/90">
-                  SELL USDT
-                </span>
-                <div className="text-base sm:text-lg font-black text-white tracking-tight tabular-nums mt-0.5 leading-tight">
-                  {P2P_SELL_RATE.toFixed(2)} <span className="text-xs font-bold text-white/80">ETB</span>
+              {/* P2P / Exchange Icon Badge (Replacing Wallet Balance area) */}
+              <div className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white shrink-0 shadow-xs">
+                <ArrowLeftRight className="w-5 h-5 text-amber-300 stroke-[2.2]" />
+              </div>
+            </div>
+
+            {/* Clean Compact Rate Row (Exchange Terminal Style) */}
+            <div className="mt-3.5 bg-black/25 backdrop-blur-xs rounded-xl border border-white/15 overflow-hidden shadow-xs">
+              <div className="grid grid-cols-2 divide-x divide-white/15">
+                {/* BUY USDT Column */}
+                <div className="py-2.5 px-3 flex flex-col justify-between">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-300/90">
+                    BUY USDT
+                  </span>
+                  <div className="text-base sm:text-lg font-black text-white tracking-tight tabular-nums mt-0.5 leading-tight">
+                    {P2P_BUY_RATE.toFixed(2)} <span className="text-xs font-bold text-white/80">ETB</span>
+                  </div>
+                  <span className="text-[10px] text-white/60 font-medium mt-0.5">
+                    1 USDT
+                  </span>
                 </div>
-                <span className="text-[10px] text-white/60 font-medium mt-0.5">
-                  1 USDT
-                </span>
+
+                {/* SELL USDT Column */}
+                <div className="py-2.5 px-3 flex flex-col justify-between">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-amber-300/90">
+                    SELL USDT
+                  </span>
+                  <div className="text-base sm:text-lg font-black text-white tracking-tight tabular-nums mt-0.5 leading-tight">
+                    {P2P_SELL_RATE.toFixed(2)} <span className="text-xs font-bold text-white/80">ETB</span>
+                  </div>
+                  <span className="text-[10px] text-white/60 font-medium mt-0.5">
+                    1 USDT
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
       {/* 2. Main Actions Selector: Buy USDT / Sell USDT */}
       <section className="bg-white rounded-2xl border border-gray-200/90 shadow-xs p-1 select-none">
