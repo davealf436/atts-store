@@ -349,7 +349,7 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
           </div>
         </div>
 
-        {/* Segment Tabs: Buy USDT and Sell USDT (Matches Wallet Overview & Add funds UI) */}
+        {/* Segment Tabs: Buy USDT and Sell USDT with Burgundy Active UI */}
         <div className="grid grid-cols-2 gap-1 bg-stone-100 p-1 rounded-xl mt-3 border border-stone-200/60">
           <button
             type="button"
@@ -359,11 +359,11 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
             }}
             className={`py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
               activeAction === 'buy'
-                ? 'bg-white text-gray-900 shadow-xs'
-                : 'text-gray-500 hover:text-gray-900'
+                ? 'bg-[#721428] text-white shadow-xs'
+                : 'text-stone-600 hover:text-stone-900'
             }`}
           >
-            <ArrowDownLeft className={`w-3.5 h-3.5 ${activeAction === 'buy' ? 'text-[#721428]' : 'text-gray-400'}`} />
+            <ArrowDownLeft className={`w-3.5 h-3.5 ${activeAction === 'buy' ? 'text-white' : 'text-stone-400'}`} />
             <span>Buy USDT</span>
           </button>
 
@@ -375,11 +375,11 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
             }}
             className={`py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
               activeAction === 'sell'
-                ? 'bg-white text-gray-900 shadow-xs'
-                : 'text-gray-500 hover:text-gray-900'
+                ? 'bg-[#721428] text-white shadow-xs'
+                : 'text-stone-600 hover:text-stone-900'
             }`}
           >
-            <ArrowUpRight className={`w-3.5 h-3.5 ${activeAction === 'sell' ? 'text-[#721428]' : 'text-gray-400'}`} />
+            <ArrowUpRight className={`w-3.5 h-3.5 ${activeAction === 'sell' ? 'text-white' : 'text-stone-400'}`} />
             <span>Sell USDT</span>
           </button>
         </div>
