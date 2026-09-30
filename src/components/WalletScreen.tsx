@@ -53,7 +53,7 @@ const PAYMENT_METHODS: PaymentMethodOption[] = [
     accountNumber: '0934313020',
     accountLabel: 'Telebirr Phone Number',
     recipientName: 'Dawit',
-    description: '0934313020 | Dawit',
+    description: 'Instant mobile app & USSD (*127#)',
   },
   {
     id: 'cbe',
@@ -63,7 +63,7 @@ const PAYMENT_METHODS: PaymentMethodOption[] = [
     accountNumber: '1000638416151',
     accountLabel: 'CBE Account Number',
     recipientName: 'Dawit',
-    description: '1000638416151 | Dawit',
+    description: 'CBE Mobile Banking & CBE Birr',
   },
   {
     id: 'awash',
@@ -73,7 +73,7 @@ const PAYMENT_METHODS: PaymentMethodOption[] = [
     accountNumber: '013201369124500',
     accountLabel: 'Awash Account Number',
     recipientName: 'Dawit',
-    description: '013201369124500 | Dawit',
+    description: 'Awash Online & Mobile App',
   },
   {
     id: 'usdt',
@@ -83,7 +83,7 @@ const PAYMENT_METHODS: PaymentMethodOption[] = [
     accountNumber: '874067761',
     accountLabel: 'Binance ID (Pay ID)',
     recipientName: 'ABYSSINIAVENDOR',
-    description: 'Binance ID: 874067761 | ABYSSINIAVENDOR',
+    description: 'Binance Pay instant transfer',
   },
 ];
 
@@ -96,7 +96,7 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
   const [showAllActivity, setShowAllActivity] = useState(false);
 
   // Deposit state
-  const [selectedMethod, setSelectedMethod] = useState<DepositMethodId>('telebirr');
+  const [selectedMethod, setSelectedMethod] = useState<DepositMethodId | null>(null);
   const [selectedAmount, setSelectedAmount] = useState<number>(1000);
   const [customAmount, setCustomAmount] = useState<string>('');
   const [isCustom, setIsCustom] = useState<boolean>(false);
@@ -173,10 +173,17 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
   };
 
   const effectiveAmount = isCustom ? (parseInt(customAmount, 10) || 0) : selectedAmount;
-  const currentMethod = PAYMENT_METHODS.find((m) => m.id === selectedMethod) || PAYMENT_METHODS[0];
+  const currentMethod = selectedMethod
+    ? PAYMENT_METHODS.find((m) => m.id === selectedMethod) || null
+    : null;
 
   const handleSubmitDeposit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!selectedMethod || !currentMethod) {
+      triggerNotificationHaptic('error');
+      alert('Please select a payment method first.');
+      return;
+    }
     if (effectiveAmount < 50) {
       triggerNotificationHaptic('error');
       alert('Minimum deposit amount is 50 ETB.');
@@ -192,8 +199,7 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
     triggerHaptic('medium');
 
     setTimeout(() => {
-      const activeMethodConfig = PAYMENT_METHODS.find((m) => m.id === selectedMethod);
-      const methodName = activeMethodConfig ? activeMethodConfig.name : 'Telebirr';
+      const methodName = currentMethod.name;
 
       const result = submitDeposit(
         effectiveAmount,
@@ -667,76 +673,84 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
               })}
             </div>
 
-            {/* Payment Details for Selected Method */}
-            <div className="mt-3.5 p-3.5 rounded-xl bg-stone-50 border border-stone-200">
-              <div className="flex items-center justify-between mb-2.5 pb-2 border-b border-stone-200/80">
-                <span className="text-[11px] font-bold text-stone-900 flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-[#721428]" />
-                  <span>Payment Details • {currentMethod.name}</span>
-                </span>
-                <span className="text-[10px] font-semibold text-[#721428] bg-[#FAF0F2] px-2 py-0.5 rounded-md border border-[#F0D5DA]">
-                  {currentMethod.badge}
-                </span>
-              </div>
+            {/* Payment Details for Selected Method (Shown ONLY after clicking) */}
+            {currentMethod ? (
+              <div className="mt-3.5 p-3.5 rounded-xl bg-stone-50 border border-stone-200 animate-in fade-in-50 duration-150">
+                <div className="flex items-center justify-between mb-2.5 pb-2 border-b border-stone-200/80">
+                  <span className="text-[11px] font-bold text-stone-900 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-[#721428]" />
+                    <span>Payment Details • {currentMethod.name}</span>
+                  </span>
+                  <span className="text-[10px] font-semibold text-[#721428] bg-[#FAF0F2] px-2 py-0.5 rounded-md border border-[#F0D5DA]">
+                    {currentMethod.badge}
+                  </span>
+                </div>
 
-              <div className="space-y-2">
-                {/* Deposit Amount */}
-                <div className="flex items-center justify-between text-xs py-0.5">
-                  <span className="text-stone-500 font-medium">Deposit Amount:</span>
-                  <div className="text-right">
-                    <span className="font-bold text-stone-900">
-                      {formatETB(effectiveAmount)}
-                    </span>
-                    {selectedMethod === 'usdt' && (
-                      <span className="text-stone-500 text-[11px] ml-1 font-semibold">
-                        (≈ {etbToUsdt(effectiveAmount)})
+                <div className="space-y-2">
+                  {/* Deposit Amount */}
+                  <div className="flex items-center justify-between text-xs py-0.5">
+                    <span className="text-stone-500 font-medium">Deposit Amount:</span>
+                    <div className="text-right">
+                      <span className="font-bold text-stone-900">
+                        {formatETB(effectiveAmount)}
                       </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Recipient Name */}
-                <div className="flex items-center justify-between text-xs py-0.5">
-                  <span className="text-stone-500 font-medium">Recipient Name:</span>
-                  <span className="font-bold text-stone-900">{currentMethod.recipientName}</span>
-                </div>
-
-                {/* Account / Binance ID with Copy button */}
-                <div className="flex items-center justify-between text-xs py-1.5 border-t border-stone-200/70 mt-1">
-                  <div className="min-w-0 pr-2">
-                    <span className="text-stone-500 text-[10.5px] font-medium block">
-                      {currentMethod.accountLabel}:
-                    </span>
-                    <span className="font-mono font-bold text-stone-900 text-xs sm:text-sm tracking-tight select-all">
-                      {currentMethod.accountNumber}
-                    </span>
+                      {selectedMethod === 'usdt' && (
+                        <span className="text-stone-500 text-[11px] ml-1 font-semibold">
+                          (≈ {etbToUsdt(effectiveAmount)})
+                        </span>
+                      )}
+                    </div>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => handleCopy(currentMethod.accountNumber, currentMethod.id)}
-                    className={`py-1.5 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs shrink-0 ${
-                      copiedItem === currentMethod.id
-                        ? 'bg-emerald-600 text-white'
-                        : 'bg-[#721428] hover:bg-[#5A0E1E] text-white active:scale-95'
-                    }`}
-                    title={`Copy ${currentMethod.accountLabel}`}
-                  >
-                    {copiedItem === currentMethod.id ? (
-                      <>
-                        <Check className="w-3.5 h-3.5 stroke-[2.5]" />
-                        <span>Copied!</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="w-3.5 h-3.5" />
-                        <span>Copy</span>
-                      </>
-                    )}
-                  </button>
+                  {/* Recipient Name */}
+                  <div className="flex items-center justify-between text-xs py-0.5">
+                    <span className="text-stone-500 font-medium">Recipient Name:</span>
+                    <span className="font-bold text-stone-900">{currentMethod.recipientName}</span>
+                  </div>
+
+                  {/* Account / Binance ID with Copy button */}
+                  <div className="flex items-center justify-between text-xs py-1.5 border-t border-stone-200/70 mt-1">
+                    <div className="min-w-0 pr-2">
+                      <span className="text-stone-500 text-[10.5px] font-medium block">
+                        {currentMethod.accountLabel}:
+                      </span>
+                      <span className="font-mono font-bold text-stone-900 text-xs sm:text-sm tracking-tight select-all">
+                        {currentMethod.accountNumber}
+                      </span>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleCopy(currentMethod.accountNumber, currentMethod.id)}
+                      className={`py-1.5 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs shrink-0 ${
+                        copiedItem === currentMethod.id
+                          ? 'bg-emerald-600 text-white'
+                          : 'bg-[#721428] hover:bg-[#5A0E1E] text-white active:scale-95'
+                      }`}
+                      title={`Copy ${currentMethod.accountLabel}`}
+                    >
+                      {copiedItem === currentMethod.id ? (
+                        <>
+                          <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                          <span>Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3.5 h-3.5" />
+                          <span>Copy</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="mt-3 py-2.5 px-3 rounded-xl bg-stone-50/80 border border-dashed border-stone-200 text-center">
+                <span className="text-[11px] text-stone-500 font-medium">
+                  Tap any payment method above to view payment details
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Step 3: Payment Verification */}
