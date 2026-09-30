@@ -21,21 +21,9 @@ export interface P2POrder {
   status: P2POrderStatus;
 }
 
-const P2P_STORAGE_KEY = 'ath_p2p_orders_v2';
+const P2P_STORAGE_KEY = 'ath_p2p_orders_v1';
 
 const SEED_P2P_ORDERS: P2POrder[] = [
-  {
-    id: 'P2P-620481',
-    type: 'buy',
-    amountUSDT: 10.00,
-    amountETB: 1425.00,
-    rate: P2P_BUY_RATE,
-    paymentMethod: 'Wallet Balance',
-    destinationAddress: '874067761 (Binance Pay)',
-    reference: 'WLT-P2P-620481',
-    date: 'Sep 30, 2026 • 09:15 AM',
-    status: 'pending',
-  },
   {
     id: 'P2P-849201',
     type: 'buy',
@@ -52,7 +40,7 @@ const SEED_P2P_ORDERS: P2POrder[] = [
     id: 'P2P-731940',
     type: 'sell',
     amountUSDT: 20.00,
-    amountETB: 2810.00,
+    amountETB: 2800.00,
     rate: P2P_SELL_RATE,
     paymentMethod: 'Telebirr',
     accountNumber: '0934313020',
@@ -62,17 +50,16 @@ const SEED_P2P_ORDERS: P2POrder[] = [
     status: 'approved',
   },
   {
-    id: 'P2P-519283',
-    type: 'sell',
-    amountUSDT: 50.00,
-    amountETB: 7025.00,
-    rate: P2P_SELL_RATE,
-    paymentMethod: 'CBE',
-    accountNumber: '1000293847291',
-    accountName: 'Dawit',
-    reference: 'CBE-991204',
-    date: 'Sep 27, 2026 • 02:10 PM',
-    status: 'rejected',
+    id: 'P2P-620481',
+    type: 'buy',
+    amountUSDT: 10.00,
+    amountETB: 1425.00,
+    rate: P2P_BUY_RATE,
+    paymentMethod: 'Wallet Balance',
+    destinationAddress: '874067761 (Binance Pay)',
+    reference: 'WLT-P2P-620481',
+    date: 'Sep 30, 2026 • 09:15 AM',
+    status: 'pending',
   },
 ];
 
