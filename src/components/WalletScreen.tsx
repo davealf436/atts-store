@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   Wallet,
   ArrowDownLeft,
+  ArrowUpRight,
   Copy,
   Check,
   Upload,
@@ -10,6 +11,7 @@ import {
   Eye,
   EyeOff,
   CheckCircle2,
+  ReceiptText,
   Send,
   X
 } from 'lucide-react';
@@ -76,6 +78,7 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
   const [wallet, setWallet] = useState(getWalletState());
   const [showUsdt, setShowUsdt] = useState(true);
   const [activeTab, setActiveTab] = useState<'overview' | 'deposit'>('overview');
+  const [showAllActivity, setShowAllActivity] = useState(false);
 
   // Deposit state
   const [selectedMethod, setSelectedMethod] = useState<DepositMethodId>('telebirr');
@@ -486,6 +489,89 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
               </div>
             </div>
           </div>
+
+          {/* Recent Activity Section */}
+          <div className="bg-white rounded-2xl border border-gray-200/90 shadow-xs p-4">
+            <div className="flex items-center justify-between mb-2.5 pb-2 border-b border-gray-100">
+              <h3 className="text-xs font-bold text-gray-900">
+                Recent Activity
+              </h3>
+              {wallet.transactions.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('light');
+                    setShowAllActivity(true);
+                  }}
+                  className="text-[11px] font-semibold text-[#721428] hover:text-[#5A0E1E] flex items-center gap-1 transition-colors cursor-pointer"
+                >
+                  <span>View All</span>
+                  <span aria-hidden="true">→</span>
+                </button>
+              )}
+            </div>
+
+            {wallet.transactions.length === 0 ? (
+              <div className="py-6 px-4 text-center select-none">
+                <div className="w-9 h-9 rounded-xl bg-stone-100 text-stone-400 flex items-center justify-center mx-auto mb-2">
+                  <ReceiptText className="w-4 h-4" />
+                </div>
+                <p className="text-xs font-bold text-stone-800 mb-0.5">
+                  No wallet activity yet
+                </p>
+                <p className="text-[11px] text-stone-500">
+                  Your deposits and purchases will appear here
+                </p>
+              </div>
+            ) : (
+              <div className="divide-y divide-gray-100">
+                {wallet.transactions.slice(0, 3).map((tx) => {
+                  const isDeposit = tx.type === 'deposit';
+
+                  return (
+                    <div
+                      key={tx.id}
+                      className="py-2.5 first:pt-1 last:pb-1 flex items-center justify-between gap-3"
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div
+                          className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 border ${
+                            isDeposit
+                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200/80'
+                              : 'bg-[#FAF0F2] text-[#721428] border-[#F0D5DA]/80'
+                          }`}
+                        >
+                          {isDeposit ? (
+                            <ArrowDownLeft className="w-3.5 h-3.5 stroke-[2.5]" />
+                          ) : (
+                            <ArrowUpRight className="w-3.5 h-3.5 stroke-[2.5]" />
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <span className="text-xs font-bold text-stone-900 block truncate">
+                            {tx.description}
+                          </span>
+                          <span className="text-[10px] text-stone-400 block truncate mt-0.5">
+                            {tx.date}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="text-right shrink-0">
+                        <span
+                          className={`text-xs font-bold block ${
+                            isDeposit ? 'text-emerald-700' : 'text-stone-900'
+                          }`}
+                        >
+                          {isDeposit ? `+${formatETB(tx.amountETB)}` : `−${formatETB(tx.amountETB)}`}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
       )}
 
@@ -711,6 +797,88 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
             </button>
           </div>
         </form>
+      )}
+
+      {/* Full Activity History Modal */}
+      {showAllActivity && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity"
+            onClick={() => setShowAllActivity(false)}
+          />
+          <div className="relative w-full max-w-sm bg-white rounded-2xl border border-stone-200 p-4 z-10 shadow-xl max-h-[80vh] flex flex-col animate-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <h3 className="text-xs font-bold text-gray-900">
+                All Wallet Activity ({wallet.transactions.length})
+              </h3>
+              <button
+                type="button"
+                onClick={() => setShowAllActivity(false)}
+                className="p-1 rounded-lg text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="overflow-y-auto divide-y divide-gray-100 py-1 flex-1">
+              {wallet.transactions.map((tx) => {
+                const isDeposit = tx.type === 'deposit';
+                return (
+                  <div
+                    key={tx.id}
+                    className="py-2.5 flex items-center justify-between gap-3"
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div
+                        className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 border ${
+                          isDeposit
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200/80'
+                            : 'bg-[#FAF0F2] text-[#721428] border-[#F0D5DA]/80'
+                        }`}
+                      >
+                        {isDeposit ? (
+                          <ArrowDownLeft className="w-3.5 h-3.5 stroke-[2.5]" />
+                        ) : (
+                          <ArrowUpRight className="w-3.5 h-3.5 stroke-[2.5]" />
+                        )}
+                      </div>
+                      <div className="min-w-0">
+                        <span className="text-xs font-bold text-stone-900 block truncate">
+                          {tx.description}
+                        </span>
+                        <div className="text-[10px] text-stone-400 flex items-center gap-1.5 mt-0.5">
+                          <span>{tx.date}</span>
+                          <span>•</span>
+                          <span>{tx.method}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="text-right shrink-0">
+                      <span
+                        className={`text-xs font-bold block ${
+                          isDeposit ? 'text-emerald-700' : 'text-stone-900'
+                        }`}
+                      >
+                        {isDeposit ? `+${formatETB(tx.amountETB)}` : `−${formatETB(tx.amountETB)}`}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="pt-3 border-t border-gray-100">
+              <button
+                type="button"
+                onClick={() => setShowAllActivity(false)}
+                className="w-full py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs cursor-pointer transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

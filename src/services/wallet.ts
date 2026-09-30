@@ -2,37 +2,48 @@ import { WalletState, WalletTransaction, TelegramUser } from '../types';
 
 export const ETB_TO_USDT_RATE = 140; // 1 USDT = 140 ETB
 
-const WALLET_STORAGE_KEY = 'ath_wallet_storage_v1';
+const WALLET_STORAGE_KEY = 'ath_wallet_storage_v2';
 
 const INITIAL_TRANSACTIONS: WalletTransaction[] = [
   {
     id: 'tx-seed-1',
     type: 'deposit',
-    amountETB: 2500,
-    amountUSDT: 17.86,
+    amountETB: 1500,
+    amountUSDT: 10.71,
     method: 'Telebirr',
-    description: 'Wallet Top-Up via Telebirr',
-    date: 'Sep 28, 2026 • 14:20',
+    description: 'Wallet Deposit',
+    date: 'Sep 29, 2026 • 14:20',
     status: 'completed',
     reference: 'TLB948201948',
-    adminCommand: '/send 984572019 2500 ETB approved TLB948201948',
+    adminCommand: '/send 984572019 1500 ETB approved TLB948201948',
   },
   {
     id: 'tx-seed-2',
     type: 'purchase',
-    amountETB: 1000,
-    amountUSDT: 7.14,
+    amountETB: 700,
+    amountUSDT: 5.0,
     method: 'Wallet Balance',
-    description: 'Instant Checkout • Telegram Premium 6M',
-    date: 'Sep 28, 2026 • 15:45',
+    description: 'TradingView Premium',
+    date: 'Sep 29, 2026 • 15:10',
     status: 'completed',
-    reference: 'ATH-ORD-849201',
+    reference: 'ATH-ORD-TV-849',
+  },
+  {
+    id: 'tx-seed-3',
+    type: 'purchase',
+    amountETB: 300,
+    amountUSDT: 2.14,
+    method: 'Wallet Balance',
+    description: 'Telegram Premium',
+    date: 'Sep 29, 2026 • 16:30',
+    status: 'completed',
+    reference: 'ATH-ORD-TG-301',
   },
 ];
 
 const INITIAL_WALLET: WalletState = {
-  balanceETB: 1500,
-  totalDepositedETB: 2500,
+  balanceETB: 500,
+  totalDepositedETB: 1500,
   totalSpentETB: 1000,
   transactions: INITIAL_TRANSACTIONS,
 };
