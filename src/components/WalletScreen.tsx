@@ -255,7 +255,7 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-[11px] font-semibold tracking-normal text-[#F0D5DA]/90">
-                  ATH Store Wallet Balance
+                  Wallet Balance
                 </span>
                 <button
                   type="button"
