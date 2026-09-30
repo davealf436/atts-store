@@ -14,7 +14,18 @@ import { CartDrawer } from './components/CartDrawer';
 import { initTelegramApp, getInitialTelegramUser } from './services/telegram';
 
 export const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<NavigationTab>('home');
+  const getInitialTab = (): NavigationTab => {
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash.toLowerCase().replace('#', '');
+      if (hash === 'wallet') return 'wallet';
+      if (hash === 'orders') return 'orders';
+      if (hash === 'home') return 'home';
+      if (hash === 'p2p') return 'p2p';
+    }
+    return 'p2p';
+  };
+
+  const [activeTab, setActiveTab] = useState<NavigationTab>(getInitialTab);
   const [currentView, setCurrentView] = useState<'main' | 'profile' | 'settings'>('main');
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -22,10 +33,29 @@ export const App: React.FC = () => {
 
   const telegramUser = getInitialTelegramUser();
 
-  // Initialize Telegram WebApp viewport & safe-area config
+  // Initialize Telegram WebApp viewport & safe-area config, and sync hash
   useEffect(() => {
     initTelegramApp();
+
+    const handleHash = () => {
+      const hash = window.location.hash.toLowerCase().replace('#', '');
+      if (hash === 'wallet' || hash === 'p2p' || hash === 'orders' || hash === 'home') {
+        setCurrentView('main');
+        setActiveTab(hash as NavigationTab);
+      }
+    };
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
   }, []);
+
+  const handleSelectTab = (tab: NavigationTab) => {
+    setCurrentView('main');
+    setActiveTab(tab);
+    if (typeof window !== 'undefined') {
+      window.location.hash = tab;
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   // Cart Management
   const handleAddToCart = (product: Product) => {
@@ -59,9 +89,7 @@ export const App: React.FC = () => {
   };
 
   const handleOpenWallet = () => {
-    setCurrentView('main');
-    setActiveTab('wallet');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    handleSelectTab('wallet');
   };
 
   const cartTotalCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
@@ -91,11 +119,7 @@ export const App: React.FC = () => {
             <ProfileScreen
               onBack={() => setCurrentView('main')}
               onNavigateToWallet={handleOpenWallet}
-              onNavigateToOrders={() => {
-                setCurrentView('main');
-                setActiveTab('orders');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
+              onNavigateToOrders={() => handleSelectTab('orders')}
             />
           )}
 
@@ -114,35 +138,26 @@ export const App: React.FC = () => {
                   products={PRODUCTS}
                   onViewProduct={(product) => setSelectedProduct(product)}
                   onAddToCart={handleAddToCart}
-                  onNavigateToP2P={() => {
-                    setActiveTab('p2p');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
+                  onNavigateToP2P={() => handleSelectTab('p2p')}
                 />
               )}
 
               {activeTab === 'p2p' && (
                 <P2PScreen
                   user={telegramUser}
-                  onNavigateToWallet={() => {
-                    setActiveTab('wallet');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
+                  onNavigateToWallet={() => handleSelectTab('wallet')}
                 />
               )}
 
               {activeTab === 'wallet' && (
                 <WalletScreen
                   user={telegramUser}
-                  onNavigateToShop={() => {
-                    setActiveTab('home');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
+                  onNavigateToShop={() => handleSelectTab('home')}
                 />
               )}
 
               {activeTab === 'orders' && (
-                <OrdersScreen onBrowseProducts={() => setActiveTab('home')} />
+                <OrdersScreen onBrowseProducts={() => handleSelectTab('home')} />
               )}
             </>
           )}
@@ -151,11 +166,7 @@ export const App: React.FC = () => {
         {/* Fixed Bottom Navigation (Home · P2P · Wallet · My Orders) */}
         <BottomNav
           activeTab={currentView !== 'main' ? (currentView as any) : activeTab}
-          onSelectTab={(tab) => {
-            setCurrentView('main');
-            setActiveTab(tab);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
+          onSelectTab={handleSelectTab}
         />
 
         {/* Product Detail Modal / Sheet */}
