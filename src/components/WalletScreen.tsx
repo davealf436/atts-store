@@ -320,7 +320,7 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
           </div>
         </div>
 
-        {/* Segment Tabs: Overview and Add Funds in Standard Caps */}
+        {/* Segment Tabs: Overview and Add Funds with Burgundy Active UI */}
         <div className="grid grid-cols-2 gap-1 bg-stone-100 p-1 rounded-xl mt-3 border border-stone-200/60">
           <button
             type="button"
@@ -328,10 +328,10 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
               triggerHaptic('light');
               setActiveTab('overview');
             }}
-            className={`py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+            className={`py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               activeTab === 'overview'
-                ? 'bg-white text-stone-900 shadow-xs'
-                : 'text-stone-500 hover:text-stone-800'
+                ? 'bg-[#721428] text-white shadow-xs'
+                : 'text-stone-600 hover:text-stone-900'
             }`}
           >
             Overview
@@ -342,10 +342,10 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
               triggerHaptic('light');
               setActiveTab('deposit');
             }}
-            className={`py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+            className={`py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               activeTab === 'deposit'
                 ? 'bg-[#721428] text-white shadow-xs'
-                : 'text-stone-500 hover:text-stone-800'
+                : 'text-stone-600 hover:text-stone-900'
             }`}
           >
             Add Funds

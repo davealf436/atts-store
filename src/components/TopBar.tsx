@@ -328,7 +328,7 @@ export const TopBar: React.FC<TopBarProps> = ({
             aria-label="Your Cart"
             title="Your Cart"
           >
-            <ShoppingCart className="w-4.5 h-4.5 text-[#721428]" strokeWidth={1.8} />
+            <ShoppingCart className="w-4.5 h-4.5" strokeWidth={1.8} />
             {cartCount > 0 && (
               <span className="absolute -top-1 -right-1 min-w-[17px] h-4 px-1 rounded-full bg-[#721428] text-white font-bold text-[9.5px] flex items-center justify-center leading-none shadow-xs border border-white">
                 {cartCount}

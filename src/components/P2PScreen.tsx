@@ -310,9 +310,9 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
                 </p>
               </div>
 
-              {/* P2P / Exchange Icon Badge (Replacing Wallet Balance area) */}
+              {/* P2P / Exchange Icon Badge (Matches Wallet icon style) */}
               <div className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white shrink-0 shadow-xs">
-                <ArrowLeftRight className="w-5 h-5 text-amber-300 stroke-[2.2]" />
+                <ArrowLeftRight className="w-5 h-5 stroke-[2]" />
               </div>
             </div>
 
@@ -397,7 +397,7 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
                   <Wallet className="w-4 h-4" />
                 </div>
                 <div>
-                  <span className="text-[10px] text-stone-500 font-semibold block uppercase tracking-wider">
+                  <span className="text-[10px] text-stone-500 font-semibold block">
                     Payment Method
                   </span>
                   <span className="text-xs font-bold text-stone-900">
