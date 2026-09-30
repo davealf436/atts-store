@@ -232,7 +232,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
       </section>
 
-      {/* P2P Platform Entry Point Card */}
+      {/* Exchange Desk Entry Point Card */}
       <section className="bg-white border border-gray-200/90 rounded-xl p-4 shadow-xs">
         <div className="flex items-start gap-3">
           <div className="w-9 h-9 rounded-lg bg-[#FAF0F2] text-[#721428] flex items-center justify-center shrink-0 border border-[#F0D5DA]">
@@ -242,14 +242,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <span className="text-[10.5px] font-bold text-gray-700 bg-gray-100 px-2 py-0.5 rounded">
-                ATH P2P Desk
+                Exchange Desk
               </span>
             </div>
             <h3 className="text-sm font-bold text-gray-900 tracking-tight mb-1">
-              P2P Currency Platform
+              Exchange Desk
             </h3>
             <p className="text-xs text-gray-600 leading-relaxed mb-3">
-              Peer-to-peer exchange for USDT and Ethiopian Birr (ETB) with verified instant transfers.
+              Direct exchange for USDT and Ethiopian Birr (ETB) with verified instant transfers.
             </p>
 
             <button
@@ -259,7 +259,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               }}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-900 text-xs font-bold transition-all active:scale-[0.98]"
             >
-              <span>Explore P2P Platform</span>
+              <span>Explore Exchange Desk</span>
               <ArrowRight className="w-3.5 h-3.5 text-gray-700" />
             </button>
           </div>
