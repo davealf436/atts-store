@@ -410,7 +410,7 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
       {/* Tab 1: Overview Screen */}
       {activeTab === 'overview' && (
         <div className="space-y-3.5">
-          {/* Instant 1-Second Checkout Card */}
+          {/* Instant Wallet Checkout Card */}
           <div className="bg-white rounded-2xl border border-gray-200/90 shadow-xs p-4">
             <div className="flex items-start gap-3">
               <div className="w-10 h-10 rounded-xl bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center shrink-0">
@@ -418,10 +418,10 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="text-xs font-bold text-gray-900 mb-0.5">
-                  Instant 1-Second Wallet Checkout
+                  Instant Wallet Checkout
                 </h3>
                 <p className="text-[11px] text-gray-600 leading-relaxed mb-3">
-                  Pre-fund your ATH Store Wallet balance once. Whenever you want TradingView, FXReplay, or Telegram Premium, choose <strong>Pay with Wallet Balance</strong> in your cart for immediate license dispatch without submitting manual payment receipts.
+                  Keep funds in your ATH Wallet and pay for trading tools instantly. No repeated payment steps or manual receipt submissions.
                 </p>
 
                 <div className="flex items-center gap-2">
