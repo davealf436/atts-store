@@ -228,7 +228,7 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-[11px] font-semibold tracking-normal text-[#F0D5DA]/90">
-                  Available ATH Balance
+                  ATH Store Wallet Balance
                 </span>
                 <button
                   type="button"
@@ -266,7 +266,7 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
           </div>
 
           {/* Quick Action Bar inside Hero Card */}
-          <div className="relative z-10 grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-white/15">
+          <div className="relative z-10 grid grid-cols-2 gap-2 mt-3.5 pt-3 border-t border-white/15">
             <button
               type="button"
               onClick={() => {
@@ -276,7 +276,7 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
               className="py-2 px-3 rounded-lg bg-white text-[#721428] hover:bg-stone-100 font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs active:scale-[0.98] cursor-pointer"
             >
               <ArrowDownLeft className="w-3.5 h-3.5 stroke-[2.5]" />
-              <span>Top-Up Balance</span>
+              <span>Add Funds</span>
             </button>
 
             <button
@@ -288,52 +288,52 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
               className="py-2 px-3 rounded-lg bg-white/15 hover:bg-white/25 text-white font-bold text-xs flex items-center justify-center gap-1.5 border border-white/20 transition-all active:scale-[0.98] cursor-pointer"
             >
               <Zap className="w-3.5 h-3.5 text-[#F7D388]" />
-              <span>Spend in Store</span>
+              <span>Explore Tools</span>
             </button>
           </div>
         </div>
 
-        {/* 3 Quick Stats Cards in Standard Caps */}
-        <div className="grid grid-cols-3 gap-2 mt-3">
-          <div className="p-2.5 rounded-xl bg-stone-50 border border-stone-200/80">
-            <span className="text-[10px] font-semibold text-stone-500 block mb-0.5">
+        {/* 3 Quick Stats Cards in Standard Caps (Tightened) */}
+        <div className="grid grid-cols-3 gap-1.5 mt-2.5">
+          <div className="px-2 py-1.5 rounded-lg bg-stone-50 border border-stone-200/80">
+            <span className="text-[9.5px] font-semibold text-stone-500 block leading-tight mb-0.5">
               Available
             </span>
-            <div className="text-xs font-bold text-[#721428] truncate">
+            <div className="text-xs font-bold text-[#721428] truncate leading-tight">
               {formatETB(wallet.balanceETB)}
             </div>
-            <span className="text-[9px] text-stone-400 block truncate">
+            <span className="text-[9px] text-stone-400 block truncate leading-tight mt-0.5">
               {etbToUsdt(wallet.balanceETB)}
             </span>
           </div>
 
-          <div className="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200/70">
-            <span className="text-[10px] font-semibold text-emerald-800 block mb-0.5">
+          <div className="px-2 py-1.5 rounded-lg bg-emerald-50/70 border border-emerald-200/70">
+            <span className="text-[9.5px] font-semibold text-emerald-800 block leading-tight mb-0.5">
               Deposited
             </span>
-            <div className="text-xs font-bold text-emerald-700 truncate">
+            <div className="text-xs font-bold text-emerald-700 truncate leading-tight">
               {formatETB(wallet.totalDepositedETB)}
             </div>
-            <span className="text-[9px] text-emerald-600/80 block truncate">
+            <span className="text-[9px] text-emerald-600/80 block truncate leading-tight mt-0.5">
               Lifetime total
             </span>
           </div>
 
-          <div className="p-2.5 rounded-xl bg-stone-50 border border-stone-200/80">
-            <span className="text-[10px] font-semibold text-stone-500 block mb-0.5">
+          <div className="px-2 py-1.5 rounded-lg bg-stone-50 border border-stone-200/80">
+            <span className="text-[9.5px] font-semibold text-stone-500 block leading-tight mb-0.5">
               Total Spent
             </span>
-            <div className="text-xs font-bold text-stone-800 truncate">
+            <div className="text-xs font-bold text-stone-800 truncate leading-tight">
               {formatETB(wallet.totalSpentETB)}
             </div>
-            <span className="text-[9px] text-stone-400 block truncate">
-              Instant checkouts
+            <span className="text-[9px] text-stone-400 block truncate leading-tight mt-0.5">
+              Tool checkouts
             </span>
           </div>
         </div>
 
-        {/* Segment Tabs: Overview and Deposit ETB in Standard Caps */}
-        <div className="grid grid-cols-2 gap-1 bg-stone-100 p-1 rounded-xl mt-3 border border-stone-200/60">
+        {/* Segment Tabs: Overview and Add Funds in Standard Caps */}
+        <div className="grid grid-cols-2 gap-1 bg-stone-100 p-1 rounded-xl mt-2.5 border border-stone-200/60">
           <button
             type="button"
             onClick={() => {
@@ -360,7 +360,7 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
                 : 'text-stone-500 hover:text-stone-800'
             }`}
           >
-            Deposit ETB
+            Add Funds
           </button>
         </div>
       </div>
@@ -457,7 +457,7 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
                   Instant 1-Second Wallet Checkout
                 </h3>
                 <p className="text-[11px] text-gray-600 leading-relaxed mb-3">
-                  Pre-fund your ATH wallet balance once. Whenever you want TradingView, FXReplay, or Telegram Premium, choose <strong>Pay with Wallet Balance</strong> in your cart for immediate license dispatch without submitting manual payment receipts.
+                  Pre-fund your ATH Store Wallet balance once. Whenever you want TradingView, FXReplay, or Telegram Premium, choose <strong>Pay with Wallet Balance</strong> in your cart for immediate license dispatch without submitting manual payment receipts.
                 </p>
 
                 <div className="flex items-center gap-2">
@@ -480,7 +480,7 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
                     }}
                     className="py-2 px-3 rounded-lg bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 text-xs font-bold transition-colors cursor-pointer"
                   >
-                    Browse Catalog
+                    Explore Tools
                   </button>
                 </div>
               </div>
