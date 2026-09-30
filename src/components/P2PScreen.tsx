@@ -1,134 +1,1046 @@
-import React from 'react';
-import { ShieldCheck, AlertCircle } from 'lucide-react';
-import { triggerHaptic } from '../services/telegram';
+import React, { useState, useEffect } from 'react';
+import {
+  ArrowDownLeft,
+  ArrowUpRight,
+  ArrowRightLeft,
+  Check,
+  Copy,
+  Clock,
+  CheckCircle2,
+  XCircle,
+  X,
+  Wallet,
+  ChevronRight,
+  ShieldCheck,
+  AlertCircle,
+  RefreshCw,
+  Building2,
+  Smartphone,
+  Info,
+} from 'lucide-react';
+import { triggerHaptic, triggerNotificationHaptic } from '../services/telegram';
+import { getWalletState, saveWalletState, formatETB } from '../services/wallet';
+import {
+  P2P_BUY_RATE,
+  P2P_SELL_RATE,
+  P2POrder,
+  P2POrderType,
+  P2POrderStatus,
+  getP2POrders,
+  createP2POrder,
+} from '../services/p2p';
+import { TelegramUser, WalletTransaction } from '../types';
 
-export const P2PScreen: React.FC = () => {
+interface P2PScreenProps {
+  onNavigateToWallet?: () => void;
+  user?: TelegramUser;
+}
+
+type SellPayoutMethod = 'telebirr' | 'cbe' | 'awash';
+
+interface PayoutOption {
+  id: SellPayoutMethod;
+  name: string;
+  accountLabel: string;
+  placeholder: string;
+  icon: 'phone' | 'bank';
+}
+
+const PAYOUT_METHODS: PayoutOption[] = [
+  {
+    id: 'telebirr',
+    name: 'Telebirr',
+    accountLabel: 'Telebirr Phone Number',
+    placeholder: '09XXXXXXXX',
+    icon: 'phone',
+  },
+  {
+    id: 'cbe',
+    name: 'CBE',
+    accountLabel: 'CBE Account Number',
+    placeholder: '1000XXXXXXXXX',
+    icon: 'bank',
+  },
+  {
+    id: 'awash',
+    name: 'Awash Bank',
+    accountLabel: 'Awash Account Number',
+    placeholder: '013XXXXXXXXXXX',
+    icon: 'bank',
+  },
+];
+
+const BUY_PRESET_AMOUNTS = [250, 500, 1000, 2500];
+const SELL_PRESET_AMOUNTS = [10, 25, 50, 100];
+
+export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }) => {
+  const [activeAction, setActiveAction] = useState<P2POrderType>('buy');
+  const [wallet, setWallet] = useState(getWalletState());
+  const [orders, setOrders] = useState<P2POrder[]>(getP2POrders());
+
+  // Buy state
+  const [buyAmountETB, setBuyAmountETB] = useState<string>('1000');
+  const [destinationAddress, setDestinationAddress] = useState<string>('');
+
+  // Sell state
+  const [sellAmountUSDT, setSellAmountUSDT] = useState<string>('20');
+  const [sellPayoutMethod, setSellPayoutMethod] = useState<SellPayoutMethod>('telebirr');
+  const [sellAccountNumber, setSellAccountNumber] = useState<string>('');
+  const [sellAccountName, setSellAccountName] = useState<string>(user?.first_name || '');
+  const [sellTxReference, setSellTxReference] = useState<string>('');
+
+  // UI feedback & modals
+  const [copiedItem, setCopiedItem] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [showAllOrders, setShowAllOrders] = useState<boolean>(false);
+  const [orderFilter, setOrderFilter] = useState<'all' | 'buy' | 'sell' | 'pending'>('all');
+  const [pendingApprovalModal, setPendingApprovalModal] = useState<P2POrder | null>(null);
+
+  // Sync wallet state and orders reactively
+  useEffect(() => {
+    const handleWalletUpdate = () => setWallet(getWalletState());
+    const handleOrdersUpdate = () => setOrders(getP2POrders());
+
+    window.addEventListener('ath_wallet_updated', handleWalletUpdate);
+    window.addEventListener('p2p_orders_updated', handleOrdersUpdate);
+
+    return () => {
+      window.removeEventListener('ath_wallet_updated', handleWalletUpdate);
+      window.removeEventListener('p2p_orders_updated', handleOrdersUpdate);
+    };
+  }, []);
+
+  const handleCopy = (text: string, label: string) => {
+    triggerHaptic('light');
+    navigator.clipboard.writeText(text);
+    setCopiedItem(label);
+    setTimeout(() => setCopiedItem(null), 2000);
+  };
+
+  // Calculations
+  const parsedBuyETB = parseFloat(buyAmountETB) || 0;
+  const calculatedBuyUSDT = parsedBuyETB > 0 ? (parsedBuyETB / P2P_BUY_RATE).toFixed(2) : '0.00';
+
+  const parsedSellUSDT = parseFloat(sellAmountUSDT) || 0;
+  const calculatedSellETB = parsedSellUSDT > 0 ? (parsedSellUSDT * P2P_SELL_RATE).toFixed(2) : '0.00';
+
+  // Buy submission handler
+  const handleBuySubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (parsedBuyETB < 50) {
+      triggerNotificationHaptic('error');
+      alert('Minimum buy order is 50 ETB.');
+      return;
+    }
+
+    if (parsedBuyETB > wallet.balanceETB) {
+      triggerNotificationHaptic('error');
+      alert(`Insufficient wallet balance. You have ${formatETB(wallet.balanceETB)} available.`);
+      return;
+    }
+
+    if (!destinationAddress.trim()) {
+      triggerNotificationHaptic('error');
+      alert('Please enter your Binance ID or USDT destination address.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    triggerHaptic('medium');
+
+    setTimeout(() => {
+      // Deduct from wallet balance
+      const newBalance = wallet.balanceETB - parsedBuyETB;
+      const txId = `tx-p2p-${Date.now().toString().slice(-6)}`;
+      const now = new Date();
+      const dateFormatted =
+        now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) +
+        ' • ' +
+        now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+
+      const newTx: WalletTransaction = {
+        id: txId,
+        type: 'purchase',
+        amountETB: parsedBuyETB,
+        amountUSDT: parseFloat(calculatedBuyUSDT),
+        method: 'Wallet Balance',
+        description: `P2P Buy: ${calculatedBuyUSDT} USDT`,
+        date: dateFormatted,
+        status: 'completed',
+        reference: `BUY-${destinationAddress.slice(0, 10)}`,
+      };
+
+      const updatedWallet = {
+        ...wallet,
+        balanceETB: newBalance,
+        totalSpentETB: wallet.totalSpentETB + parsedBuyETB,
+        transactions: [newTx, ...wallet.transactions],
+      };
+      saveWalletState(updatedWallet);
+
+      // Create P2P order
+      const newOrder = createP2POrder({
+        type: 'buy',
+        amountUSDT: parseFloat(calculatedBuyUSDT),
+        amountETB: parsedBuyETB,
+        rate: P2P_BUY_RATE,
+        paymentMethod: 'Wallet Balance',
+        destinationAddress: destinationAddress.trim(),
+        reference: txId,
+      });
+
+      setIsSubmitting(false);
+      triggerNotificationHaptic('success');
+      setPendingApprovalModal(newOrder);
+      setDestinationAddress('');
+    }, 700);
+  };
+
+  // Sell submission handler
+  const handleSellSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (parsedSellUSDT < 2) {
+      triggerNotificationHaptic('error');
+      alert('Minimum sell order is 2 USDT.');
+      return;
+    }
+
+    if (!sellAccountNumber.trim()) {
+      triggerNotificationHaptic('error');
+      alert('Please enter your receiving account / phone number.');
+      return;
+    }
+
+    if (!sellAccountName.trim()) {
+      triggerNotificationHaptic('error');
+      alert('Please enter the recipient account name.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    triggerHaptic('medium');
+
+    setTimeout(() => {
+      const selectedPayout = PAYOUT_METHODS.find((p) => p.id === sellPayoutMethod);
+      const newOrder = createP2POrder({
+        type: 'sell',
+        amountUSDT: parsedSellUSDT,
+        amountETB: parseFloat(calculatedSellETB),
+        rate: P2P_SELL_RATE,
+        paymentMethod: selectedPayout?.name || 'Telebirr',
+        accountNumber: sellAccountNumber.trim(),
+        accountName: sellAccountName.trim(),
+        reference: sellTxReference.trim() || undefined,
+      });
+
+      setIsSubmitting(false);
+      triggerNotificationHaptic('success');
+      setPendingApprovalModal(newOrder);
+      setSellAccountNumber('');
+      setSellTxReference('');
+    }, 700);
+  };
+
+  const getStatusBadge = (status: P2POrderStatus) => {
+    switch (status) {
+      case 'approved':
+        return (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+            <CheckCircle2 className="w-2.5 h-2.5 stroke-[2.5]" />
+            <span>Approved</span>
+          </span>
+        );
+      case 'rejected':
+        return (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+            <XCircle className="w-2.5 h-2.5 stroke-[2.5]" />
+            <span>Rejected</span>
+          </span>
+        );
+      case 'pending':
+      default:
+        return (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
+            <Clock className="w-2.5 h-2.5 stroke-[2.5]" />
+            <span>Pending</span>
+          </span>
+        );
+    }
+  };
+
+  const filteredOrders = orders.filter((o) => {
+    if (orderFilter === 'buy') return o.type === 'buy';
+    if (orderFilter === 'sell') return o.type === 'sell';
+    if (orderFilter === 'pending') return o.status === 'pending';
+    return true;
+  });
+
   return (
-    <div className="space-y-3.5 pb-4">
-      {/* Platform Header */}
-      <section className="bg-white border border-gray-200/90 rounded-xl p-4 sm:p-5 shadow-xs">
-        <div className="flex items-center gap-2.5 mb-2">
-          <div className="w-7.5 h-7.5 rounded-lg bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center font-bold text-xs shrink-0">
-            ATH
+    <div className="space-y-3.5 pb-6">
+      {/* 1. Burgundy Card Panel: Main P2P Hero / Rate Panel */}
+      <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#721428] via-[#5D0E20] to-[#420A16] text-white p-4 sm:p-5 shadow-sm border border-[#8F1F38]/60">
+        {/* Subtle decorative radial ambient glow */}
+        <div className="absolute -top-12 -right-12 w-44 h-44 bg-rose-500/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -bottom-12 -left-12 w-40 h-40 bg-amber-400/10 rounded-full blur-2xl pointer-events-none" />
+
+        <div className="relative z-10">
+          {/* Header Title & Subtitle */}
+          <div className="flex items-start justify-between gap-3 mb-4">
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-white/10 text-white/90 text-[10.5px] font-semibold mb-1.5 backdrop-blur-xs border border-white/10">
+                <ArrowRightLeft className="w-3 h-3 text-amber-300" />
+                <span>Direct Exchange Desk</span>
+              </div>
+              <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                P2P
+              </h1>
+              <p className="text-xs text-white/80 font-medium mt-0.5">
+                Buy or sell USDT with ETB.
+              </p>
+            </div>
+
+            {/* Quick Wallet Balance Pill */}
+            <div className="text-right shrink-0">
+              <span className="text-[10px] uppercase tracking-wider font-semibold text-white/70 block mb-0.5">
+                Available Balance
+              </span>
+              <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/15 border border-white/20 backdrop-blur-xs">
+                <Wallet className="w-3 h-3 text-amber-300" />
+                <span className="text-xs font-bold text-white tracking-tight">
+                  {formatETB(wallet.balanceETB)}
+                </span>
+              </div>
+            </div>
           </div>
+
+          {/* Rates Display: Buy USDT & Sell USDT */}
+          <div className="grid grid-cols-2 gap-2.5 pt-1">
+            {/* Buy Rate */}
+            <div className="p-3 rounded-xl bg-white/10 border border-white/15 backdrop-blur-xs flex flex-col justify-between">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-[10.5px] font-semibold text-white/75">
+                  Buy USDT Rate
+                </span>
+                <span className="w-4.5 h-4.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold flex items-center justify-center">
+                  ↓
+                </span>
+              </div>
+              <div className="text-sm sm:text-base font-black text-white tracking-tight">
+                1 USDT = {P2P_BUY_RATE.toFixed(2)} ETB
+              </div>
+              <span className="text-[9.5px] text-white/60 mt-1 block">
+                Instant delivery
+              </span>
+            </div>
+
+            {/* Sell Rate */}
+            <div className="p-3 rounded-xl bg-white/10 border border-white/15 backdrop-blur-xs flex flex-col justify-between">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-[10.5px] font-semibold text-white/75">
+                  Sell USDT Rate
+                </span>
+                <span className="w-4.5 h-4.5 rounded-full bg-amber-400/20 text-amber-300 text-[10px] font-bold flex items-center justify-center">
+                  ↑
+                </span>
+              </div>
+              <div className="text-sm sm:text-base font-black text-white tracking-tight">
+                1 USDT = {P2P_SELL_RATE.toFixed(2)} ETB
+              </div>
+              <span className="text-[9.5px] text-white/60 mt-1 block">
+                Telebirr, CBE & Awash
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 2. Main Actions Selector: Buy USDT / Sell USDT */}
+      <section className="bg-white rounded-2xl border border-gray-200/90 shadow-xs p-1 select-none">
+        <div className="grid grid-cols-2 gap-1 bg-stone-100 p-1 rounded-xl border border-stone-200/60">
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic('light');
+              setActiveAction('buy');
+            }}
+            className={`py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+              activeAction === 'buy'
+                ? 'bg-[#721428] text-white shadow-xs'
+                : 'text-stone-700 hover:text-stone-900 hover:bg-stone-200/60'
+            }`}
+          >
+            <ArrowDownLeft className="w-3.5 h-3.5" />
+            <span>Buy USDT</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic('light');
+              setActiveAction('sell');
+            }}
+            className={`py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+              activeAction === 'sell'
+                ? 'bg-[#721428] text-white shadow-xs'
+                : 'text-stone-700 hover:text-stone-900 hover:bg-stone-200/60'
+            }`}
+          >
+            <ArrowUpRight className="w-3.5 h-3.5" />
+            <span>Sell USDT</span>
+          </button>
+        </div>
+      </section>
+
+      {/* 3. Buy USDT Form */}
+      {activeAction === 'buy' && (
+        <form onSubmit={handleBuySubmit} className="space-y-3.5 animate-in fade-in-50 duration-150">
+          {/* Card: Payment Method (Wallet Balance only) & Amount */}
+          <div className="bg-white rounded-2xl border border-gray-200/90 shadow-xs p-4 select-none">
+            {/* Payment Method Notice */}
+            <div className="mb-3.5 p-3 rounded-xl bg-stone-50 border border-stone-200 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center shrink-0">
+                  <Wallet className="w-4 h-4" />
+                </div>
+                <div>
+                  <span className="text-[10px] text-stone-500 font-semibold block uppercase tracking-wider">
+                    Payment Method
+                  </span>
+                  <span className="text-xs font-bold text-stone-900">
+                    Wallet Balance only
+                  </span>
+                </div>
+              </div>
+
+              <div className="text-right">
+                <span className="text-[10px] text-stone-500 font-semibold block">
+                  Available
+                </span>
+                <span className="text-xs font-bold text-[#721428]">
+                  {formatETB(wallet.balanceETB)}
+                </span>
+              </div>
+            </div>
+
+            {/* If balance is lower than entered amount */}
+            {parsedBuyETB > wallet.balanceETB && (
+              <div className="mb-3 p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 flex items-center justify-between text-xs">
+                <div className="flex items-center gap-1.5">
+                  <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+                  <span className="text-[11px] font-medium">
+                    Insufficient balance ({formatETB(wallet.balanceETB)})
+                  </span>
+                </div>
+                {onNavigateToWallet && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      triggerHaptic('light');
+                      onNavigateToWallet();
+                    }}
+                    className="text-[11px] font-bold text-[#721428] hover:underline underline-offset-2 shrink-0 cursor-pointer ml-2"
+                  >
+                    Top Up →
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* Quick Presets */}
+            <div className="mb-2.5">
+              <label className="text-[10.5px] font-semibold text-stone-600 block mb-1">
+                Quick Select Amount (ETB):
+              </label>
+              <div className="grid grid-cols-4 gap-2">
+                {BUY_PRESET_AMOUNTS.map((amt) => (
+                  <button
+                    key={amt}
+                    type="button"
+                    onClick={() => {
+                      triggerHaptic('light');
+                      setBuyAmountETB(amt.toString());
+                    }}
+                    className={`py-2 px-1 rounded-xl text-xs font-bold transition-all border cursor-pointer ${
+                      buyAmountETB === amt.toString()
+                        ? 'bg-[#721428] text-white border-[#721428] shadow-xs scale-[1.02]'
+                        : 'bg-stone-50 text-stone-700 border-stone-200 hover:bg-stone-100'
+                    }`}
+                  >
+                    <span>{amt}</span>
+                    <span className="block text-[9px] font-medium opacity-80">ETB</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Amount input */}
+            <div className="mb-3">
+              <div className="flex items-center justify-between mb-1">
+                <label className="text-[10.5px] font-semibold text-stone-700">
+                  Enter ETB Amount
+                </label>
+                {wallet.balanceETB > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      triggerHaptic('light');
+                      setBuyAmountETB(wallet.balanceETB.toString());
+                    }}
+                    className="text-[10.5px] font-bold text-[#721428] hover:underline cursor-pointer"
+                  >
+                    Use Max ({formatETB(wallet.balanceETB)})
+                  </button>
+                )}
+              </div>
+              <div className="relative flex items-center">
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={buyAmountETB}
+                  onChange={(e) => setBuyAmountETB(e.target.value.replace(/[^0-9.]/g, ''))}
+                  placeholder="e.g. 1000"
+                  className="w-full h-11 px-3.5 pr-16 rounded-xl border border-stone-200 bg-stone-50 focus:bg-white focus:border-[#721428] focus:outline-none text-sm font-bold text-stone-900 transition-colors"
+                />
+                <span className="absolute right-3.5 text-xs font-bold text-stone-400">
+                  ETB
+                </span>
+              </div>
+            </div>
+
+            {/* Calculated USDT Output */}
+            <div className="p-3 rounded-xl bg-stone-50 border border-stone-200/80 flex items-center justify-between">
+              <span className="text-xs text-stone-600 font-medium">
+                You Receive:
+              </span>
+              <div className="text-right">
+                <span className="text-base font-black text-emerald-700 tracking-tight">
+                  {calculatedBuyUSDT} USDT
+                </span>
+                <span className="text-[10px] text-stone-400 block">
+                  @ {P2P_BUY_RATE.toFixed(2)} ETB/USDT
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Card: Receiving USDT Destination Address */}
+          <div className="bg-white rounded-2xl border border-gray-200/90 shadow-xs p-4 select-none">
+            <h3 className="text-xs font-bold text-gray-900 mb-2">
+              USDT Destination
+            </h3>
+            <div>
+              <label className="text-[10.5px] font-semibold text-stone-700 block mb-1">
+                Binance ID or TRC-20 Address <span className="text-rose-500">*</span>
+              </label>
+              <input
+                type="text"
+                required
+                value={destinationAddress}
+                onChange={(e) => setDestinationAddress(e.target.value)}
+                placeholder="e.g. Binance Pay ID: 874067761 or T..."
+                className="w-full h-10 px-3 rounded-xl border border-stone-200 bg-stone-50 focus:bg-white focus:border-[#721428] focus:outline-none text-xs font-medium text-stone-900 transition-colors"
+              />
+              <span className="text-[10px] text-stone-500 mt-1 block">
+                USDT will be credited to this address after approval.
+              </span>
+            </div>
+
+            {/* Submit Buy Button */}
+            <button
+              type="submit"
+              disabled={isSubmitting || parsedBuyETB > wallet.balanceETB || parsedBuyETB <= 0}
+              className="mt-4 w-full h-11 rounded-xl bg-[#721428] hover:bg-[#5A0E1E] active:bg-[#470A17] text-white font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-xs cursor-pointer active:scale-[0.98] disabled:opacity-50"
+            >
+              {isSubmitting ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <span>Submitting Buy Order...</span>
+                </>
+              ) : (
+                <>
+                  <ArrowDownLeft className="w-4 h-4" />
+                  <span>Buy {calculatedBuyUSDT} USDT ({formatETB(parsedBuyETB)})</span>
+                </>
+              )}
+            </button>
+          </div>
+        </form>
+      )}
+
+      {/* 4. Sell USDT Form */}
+      {activeAction === 'sell' && (
+        <form onSubmit={handleSellSubmit} className="space-y-3.5 animate-in fade-in-50 duration-150">
+          {/* Card: Amount to Sell */}
+          <div className="bg-white rounded-2xl border border-gray-200/90 shadow-xs p-4 select-none">
+            {/* Quick Presets */}
+            <div className="mb-2.5">
+              <label className="text-[10.5px] font-semibold text-stone-600 block mb-1">
+                Quick Select Amount (USDT):
+              </label>
+              <div className="grid grid-cols-4 gap-2">
+                {SELL_PRESET_AMOUNTS.map((amt) => (
+                  <button
+                    key={amt}
+                    type="button"
+                    onClick={() => {
+                      triggerHaptic('light');
+                      setSellAmountUSDT(amt.toString());
+                    }}
+                    className={`py-2 px-1 rounded-xl text-xs font-bold transition-all border cursor-pointer ${
+                      sellAmountUSDT === amt.toString()
+                        ? 'bg-[#721428] text-white border-[#721428] shadow-xs scale-[1.02]'
+                        : 'bg-stone-50 text-stone-700 border-stone-200 hover:bg-stone-100'
+                    }`}
+                  >
+                    <span>{amt}</span>
+                    <span className="block text-[9px] font-medium opacity-80">USDT</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Enter USDT Amount */}
+            <div className="mb-3">
+              <label className="text-[10.5px] font-semibold text-stone-700 block mb-1">
+                Enter USDT Amount to Sell
+              </label>
+              <div className="relative flex items-center">
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  value={sellAmountUSDT}
+                  onChange={(e) => setSellAmountUSDT(e.target.value.replace(/[^0-9.]/g, ''))}
+                  placeholder="e.g. 20"
+                  className="w-full h-11 px-3.5 pr-20 rounded-xl border border-stone-200 bg-stone-50 focus:bg-white focus:border-[#721428] focus:outline-none text-sm font-bold text-stone-900 transition-colors"
+                />
+                <span className="absolute right-3.5 text-xs font-bold text-stone-400">
+                  USDT
+                </span>
+              </div>
+            </div>
+
+            {/* Calculated ETB Output */}
+            <div className="p-3 rounded-xl bg-stone-50 border border-stone-200/80 flex items-center justify-between">
+              <span className="text-xs text-stone-600 font-medium">
+                You Receive:
+              </span>
+              <div className="text-right">
+                <span className="text-base font-black text-[#721428] tracking-tight">
+                  {formatETB(parseFloat(calculatedSellETB) || 0)}
+                </span>
+                <span className="text-[10px] text-stone-400 block">
+                  @ {P2P_SELL_RATE.toFixed(2)} ETB/USDT
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Card: Receiving Method & Account Details */}
+          <div className="bg-white rounded-2xl border border-gray-200/90 shadow-xs p-4 select-none">
+            <h3 className="text-xs font-bold text-gray-900 mb-2">
+              Receive Payment Via
+            </h3>
+
+            {/* Payout method selector */}
+            <div className="grid grid-cols-3 gap-2 mb-3.5">
+              {PAYOUT_METHODS.map((method) => {
+                const isSelected = sellPayoutMethod === method.id;
+                return (
+                  <button
+                    key={method.id}
+                    type="button"
+                    onClick={() => {
+                      triggerHaptic('light');
+                      setSellPayoutMethod(method.id);
+                    }}
+                    className={`p-2.5 rounded-xl border text-center transition-all cursor-pointer ${
+                      isSelected
+                        ? 'border-[#721428] bg-[#FAF0F2]/80 text-[#721428] ring-1 ring-[#721428] shadow-xs'
+                        : 'border-stone-200 bg-stone-50/70 hover:bg-stone-100 text-stone-700'
+                    }`}
+                  >
+                    <div className="flex justify-center mb-1">
+                      {method.icon === 'phone' ? (
+                        <Smartphone className="w-4 h-4" />
+                      ) : (
+                        <Building2 className="w-4 h-4" />
+                      )}
+                    </div>
+                    <span className="text-xs font-bold block">{method.name}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Account / Phone input */}
+            <div className="space-y-3">
+              <div>
+                <label className="text-[10.5px] font-semibold text-stone-700 block mb-1">
+                  {PAYOUT_METHODS.find((p) => p.id === sellPayoutMethod)?.accountLabel}{' '}
+                  <span className="text-rose-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={sellAccountNumber}
+                  onChange={(e) => setSellAccountNumber(e.target.value)}
+                  placeholder={
+                    PAYOUT_METHODS.find((p) => p.id === sellPayoutMethod)?.placeholder
+                  }
+                  className="w-full h-10 px-3 rounded-xl border border-stone-200 bg-stone-50 focus:bg-white focus:border-[#721428] focus:outline-none text-xs font-medium text-stone-900 transition-colors"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10.5px] font-semibold text-stone-700 block mb-1">
+                  Account Holder Full Name <span className="text-rose-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={sellAccountName}
+                  onChange={(e) => setSellAccountName(e.target.value)}
+                  placeholder="Full Name as registered with bank"
+                  className="w-full h-10 px-3 rounded-xl border border-stone-200 bg-stone-50 focus:bg-white focus:border-[#721428] focus:outline-none text-xs font-medium text-stone-900 transition-colors"
+                />
+              </div>
+            </div>
+
+            {/* Transfer USDT Desk Destination */}
+            <div className="mt-3.5 p-3 rounded-xl bg-stone-50 border border-stone-200">
+              <span className="text-[10.5px] font-bold text-stone-800 block mb-1.5">
+                Send USDT to Desk:
+              </span>
+              <div className="flex items-center justify-between text-xs py-1">
+                <div>
+                  <span className="text-[10px] text-stone-500 block">Binance Pay ID:</span>
+                  <span className="font-mono font-bold text-stone-900 text-xs sm:text-sm">
+                    874067761
+                  </span>
+                  <span className="text-[10px] text-stone-500 block">
+                    Name: ABYSSINIAVENDOR
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleCopy('874067761', 'binance_id')}
+                  className={`py-1.5 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+                    copiedItem === 'binance_id'
+                      ? 'bg-emerald-600 text-white'
+                      : 'bg-[#721428] hover:bg-[#5A0E1E] text-white active:scale-95'
+                  }`}
+                >
+                  {copiedItem === 'binance_id' ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                      <span>Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>Copy ID</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {/* Tx Reference */}
+              <div className="mt-2.5 pt-2 border-t border-stone-200/80">
+                <label className="text-[10px] font-semibold text-stone-600 block mb-1">
+                  Transaction Reference / Order ID (Optional):
+                </label>
+                <input
+                  type="text"
+                  value={sellTxReference}
+                  onChange={(e) => setSellTxReference(e.target.value)}
+                  placeholder="e.g. Binance Order # or TxID"
+                  className="w-full h-9 px-3 rounded-lg border border-stone-200 bg-white focus:border-[#721428] focus:outline-none text-xs font-medium text-stone-900"
+                />
+              </div>
+            </div>
+
+            {/* Submit Sell Button */}
+            <button
+              type="submit"
+              disabled={isSubmitting || parsedSellUSDT <= 0}
+              className="mt-4 w-full h-11 rounded-xl bg-[#721428] hover:bg-[#5A0E1E] active:bg-[#470A17] text-white font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-xs cursor-pointer active:scale-[0.98] disabled:opacity-50"
+            >
+              {isSubmitting ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <span>Submitting Sell Order...</span>
+                </>
+              ) : (
+                <>
+                  <ArrowUpRight className="w-4 h-4" />
+                  <span>Sell {parsedSellUSDT} USDT ({formatETB(parseFloat(calculatedSellETB) || 0)})</span>
+                </>
+              )}
+            </button>
+          </div>
+        </form>
+      )}
+
+      {/* 5. Recent Activity Section with View All → */}
+      <section className="bg-white rounded-2xl border border-gray-200/90 shadow-xs p-4 select-none">
+        <div className="flex items-center justify-between mb-3">
           <div>
-            <h2 className="text-sm font-bold text-gray-900 tracking-tight leading-none">
-              ATH P2P Platform
-            </h2>
+            <h3 className="text-xs font-bold text-gray-900 tracking-tight">
+              Recent Activity
+            </h3>
             <span className="text-[10px] text-gray-500 font-medium">
-              Direct Peer-to-Peer Desk
+              Your P2P buy and sell orders
             </span>
           </div>
-        </div>
 
-        <p className="text-xs text-gray-600 leading-relaxed mb-3.5">
-          Safe peer-to-peer exchange between USDT and Ethiopian Birr (ETB). Verified transfers with Telebirr and CBE verification.
-        </p>
-
-        {/* Indicative Rate Reference */}
-        <div className="grid grid-cols-2 gap-2.5 p-3 bg-gray-50 rounded-lg border border-gray-200/80">
-          <div>
-            <span className="text-[10.5px] font-semibold text-gray-500 block">
-              Indicative Buy USDT
-            </span>
-            <span className="text-xs sm:text-sm font-bold text-gray-900 mt-0.5 block">
-              ~141.50 ETB
-            </span>
-          </div>
-          <div>
-            <span className="text-[10.5px] font-semibold text-gray-500 block">
-              Indicative Sell USDT
-            </span>
-            <span className="text-xs sm:text-sm font-bold text-gray-900 mt-0.5 block">
-              ~140.20 ETB
-            </span>
-          </div>
-        </div>
-      </section>
-
-      {/* Trade Options Preview */}
-      <section className="grid grid-cols-2 gap-2.5">
-        <div className="bg-white border border-gray-200/90 rounded-xl p-3.5 flex flex-col justify-between shadow-2xs">
-          <div>
-            <div className="w-6.5 h-6.5 rounded-md bg-emerald-50 text-emerald-700 flex items-center justify-center mb-2 border border-emerald-100">
-              <span className="font-bold text-xs">₮</span>
-            </div>
-            <h3 className="text-xs font-bold text-gray-900 mb-0.5">Buy USDT</h3>
-            <p className="text-[10.5px] text-gray-500 leading-snug">
-              Deposit ETB via Telebirr or CBE and receive USDT to your wallet.
-            </p>
-          </div>
           <button
-            onClick={() => triggerHaptic('light')}
-            className="mt-3 w-full py-1.5 px-2 bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] hover:bg-[#F3E2E6] text-xs font-bold rounded-lg text-center transition-colors"
+            type="button"
+            onClick={() => {
+              triggerHaptic('light');
+              setShowAllOrders(true);
+            }}
+            className="text-xs font-bold text-[#721428] hover:text-[#5A0E1E] transition-colors flex items-center gap-0.5 cursor-pointer"
           >
-            Buy Desk (Preview)
+            <span>View All</span>
+            <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
 
-        <div className="bg-white border border-gray-200/90 rounded-xl p-3.5 flex flex-col justify-between shadow-2xs">
-          <div>
-            <div className="w-6.5 h-6.5 rounded-md bg-[#FAF0F2] text-[#721428] flex items-center justify-center mb-2 border border-[#F0D5DA]">
-              <span className="font-bold text-xs">ETB</span>
+        {orders.length === 0 ? (
+          <div className="py-6 text-center text-stone-400 text-xs">
+            No P2P activity yet.
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {orders.slice(0, 3).map((order) => (
+              <div
+                key={order.id}
+                className="p-3 rounded-xl bg-stone-50/70 border border-stone-200/70 flex items-center justify-between transition-colors hover:bg-stone-50"
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div
+                    className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border ${
+                      order.type === 'buy'
+                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                        : 'bg-amber-50 text-amber-800 border-amber-200'
+                    }`}
+                  >
+                    {order.type === 'buy' ? (
+                      <ArrowDownLeft className="w-4 h-4" />
+                    ) : (
+                      <ArrowUpRight className="w-4 h-4" />
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs font-bold text-stone-900">
+                        {order.type === 'buy' ? 'Buy USDT' : 'Sell USDT'}
+                      </span>
+                      <span className="text-[10.5px] text-stone-400 font-mono">
+                        #{order.id}
+                      </span>
+                    </div>
+                    <span className="text-[10px] text-stone-500 block truncate">
+                      {order.date} • {order.paymentMethod}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="text-right shrink-0 pl-2">
+                  <div className="text-xs font-bold text-stone-900">
+                    {order.type === 'buy' ? '+' : '-'}
+                    {order.amountUSDT.toFixed(2)} USDT
+                  </div>
+                  <div className="flex items-center justify-end gap-1 mt-0.5">
+                    <span className="text-[10px] text-stone-500 font-medium">
+                      {formatETB(order.amountETB)}
+                    </span>
+                    {getStatusBadge(order.status)}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Modal 1: Pending Admin Approval Confirmation */}
+      {pendingApprovalModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity"
+            onClick={() => setPendingApprovalModal(null)}
+          />
+          <div className="relative w-full max-w-sm bg-white rounded-2xl border border-stone-200 p-5 z-10 shadow-xl flex flex-col animate-in zoom-in-95 duration-150">
+            <div className="w-12 h-12 rounded-full bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center mx-auto mb-3">
+              <Clock className="w-6 h-6 stroke-[2.2]" />
             </div>
-            <h3 className="text-xs font-bold text-gray-900 mb-0.5">Sell USDT</h3>
-            <p className="text-[10.5px] text-gray-500 leading-snug">
-              Transfer USDT and receive ETB directly to your local bank.
+
+            <h3 className="text-sm font-bold text-center text-gray-900">
+              Pending Admin Approval
+            </h3>
+
+            <p className="text-xs text-center text-stone-600 mt-1 mb-4 leading-relaxed">
+              Your {pendingApprovalModal.type === 'buy' ? 'Buy' : 'Sell'} order has been registered and is pending verification.
             </p>
+
+            {/* Order Details summary */}
+            <div className="p-3 rounded-xl bg-stone-50 border border-stone-200 space-y-2 text-xs mb-4">
+              <div className="flex justify-between">
+                <span className="text-stone-500">Order ID:</span>
+                <span className="font-mono font-bold text-stone-900">
+                  #{pendingApprovalModal.id}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-stone-500">Order Type:</span>
+                <span className="font-bold text-stone-900">
+                  {pendingApprovalModal.type === 'buy' ? 'Buy USDT' : 'Sell USDT'}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-stone-500">Amount USDT:</span>
+                <span className="font-bold text-emerald-700">
+                  {pendingApprovalModal.amountUSDT.toFixed(2)} USDT
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-stone-500">Amount ETB:</span>
+                <span className="font-bold text-[#721428]">
+                  {formatETB(pendingApprovalModal.amountETB)}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-stone-500">Method:</span>
+                <span className="font-semibold text-stone-900">
+                  {pendingApprovalModal.paymentMethod}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-stone-500">Status:</span>
+                <div>{getStatusBadge(pendingApprovalModal.status)}</div>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic('light');
+                setPendingApprovalModal(null);
+              }}
+              className="w-full py-2.5 px-4 rounded-xl bg-[#721428] hover:bg-[#5A0E1E] text-white text-xs font-bold transition-all shadow-xs cursor-pointer text-center"
+            >
+              Done
+            </button>
           </div>
-          <button
-            onClick={() => triggerHaptic('light')}
-            className="mt-3 w-full py-1.5 px-2 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-bold rounded-lg text-center transition-colors"
-          >
-            Sell Desk (Preview)
-          </button>
         </div>
-      </section>
+      )}
 
-      {/* P2P Workflow & Safeguards */}
-      <section className="bg-white border border-gray-200/90 rounded-xl p-4 shadow-xs space-y-3">
-        <h3 className="text-xs font-bold text-gray-900 flex items-center gap-1.5">
-          <ShieldCheck className="w-3.5 h-3.5 text-[#721428]" />
-          <span>How P2P Trading Works</span>
-        </h3>
+      {/* Modal 2: View All Recent Activity History */}
+      {showAllOrders && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity"
+            onClick={() => setShowAllOrders(false)}
+          />
+          <div className="relative w-full max-w-sm bg-white rounded-2xl border border-stone-200 p-4 z-10 shadow-xl max-h-[85vh] flex flex-col animate-in zoom-in-95 duration-150">
+            {/* Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-stone-100">
+              <div>
+                <h3 className="text-sm font-bold text-gray-900">P2P Order History</h3>
+                <span className="text-[10px] text-gray-500">
+                  {orders.length} total recorded orders
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAllOrders(false)}
+                className="p-1 rounded-lg text-stone-400 hover:text-stone-600 transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
 
-        <div className="space-y-2 text-xs text-gray-600">
-          <div className="flex items-start gap-2.5">
-            <div className="w-4.5 h-4.5 rounded-full bg-[#FAF0F2] text-[#721428] flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5 border border-[#F0D5DA]">
-              1
+            {/* Filter Tabs */}
+            <div className="grid grid-cols-4 gap-1 p-1 bg-stone-100 rounded-lg my-3 border border-stone-200/60">
+              {(['all', 'buy', 'sell', 'pending'] as const).map((filter) => (
+                <button
+                  key={filter}
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('light');
+                    setOrderFilter(filter);
+                  }}
+                  className={`py-1 rounded text-[10px] font-bold capitalize transition-colors cursor-pointer ${
+                    orderFilter === filter
+                      ? 'bg-white text-stone-900 shadow-2xs'
+                      : 'text-stone-500 hover:text-stone-800'
+                  }`}
+                >
+                  {filter}
+                </button>
+              ))}
             </div>
-            <div className="leading-snug">
-              <strong className="text-gray-900 font-bold">USDT Order:</strong> The seller's crypto order is placed and verified before the trade begins.
-            </div>
-          </div>
 
-          <div className="flex items-start gap-2.5">
-            <div className="w-4.5 h-4.5 rounded-full bg-[#FAF0F2] text-[#721428] flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5 border border-[#F0D5DA]">
-              2
-            </div>
-            <div className="leading-snug">
-              <strong className="text-gray-900 font-bold">Direct ETB Transfer:</strong> Buyer sends local currency via Telebirr or CBE Birr.
-            </div>
-          </div>
+            {/* Orders list */}
+            <div className="overflow-y-auto space-y-2 flex-1 pr-0.5">
+              {filteredOrders.length === 0 ? (
+                <div className="py-8 text-center text-xs text-stone-400">
+                  No orders match this filter.
+                </div>
+              ) : (
+                filteredOrders.map((order) => (
+                  <div
+                    key={order.id}
+                    className="p-3 rounded-xl bg-stone-50 border border-stone-200/70 space-y-1.5"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <span
+                          className={`w-2 h-2 rounded-full ${
+                            order.type === 'buy' ? 'bg-emerald-500' : 'bg-amber-500'
+                          }`}
+                        />
+                        <span className="text-xs font-bold text-stone-900">
+                          {order.type === 'buy' ? 'Buy USDT' : 'Sell USDT'}
+                        </span>
+                        <span className="text-[10.5px] font-mono text-stone-500">
+                          #{order.id}
+                        </span>
+                      </div>
+                      <div>{getStatusBadge(order.status)}</div>
+                    </div>
 
-          <div className="flex items-start gap-2.5">
-            <div className="w-4.5 h-4.5 rounded-full bg-[#FAF0F2] text-[#721428] flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5 border border-[#F0D5DA]">
-              3
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-stone-500 font-medium">
+                        {order.amountUSDT.toFixed(2)} USDT
+                      </span>
+                      <span className="font-bold text-[#721428]">
+                        {formatETB(order.amountETB)}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between text-[10px] text-stone-400 border-t border-stone-200/50 pt-1">
+                      <span>{order.paymentMethod}</span>
+                      <span>{order.date}</span>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
-            <div className="leading-snug">
-              <strong className="text-gray-900 font-bold">Release:</strong> Once payment is confirmed, USDT is released directly to the buyer's destination wallet.
-            </div>
+
+            <button
+              type="button"
+              onClick={() => setShowAllOrders(false)}
+              className="mt-3 w-full py-2 px-3 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-bold transition-colors cursor-pointer text-center"
+            >
+              Close
+            </button>
           </div>
         </div>
-
-        {/* Phase notice */}
-        <div className="p-2.5 bg-[#FAF0F2]/70 border border-[#F0D5DA] rounded-lg text-xs text-[#721428] flex items-start gap-2 pt-2">
-          <AlertCircle className="w-3.5 h-3.5 shrink-0 text-[#721428] mt-0.5" />
-          <p className="text-[10.5px] leading-relaxed">
-            <strong>Initial UI Foundation:</strong> Interactive order matching, live merchant ads, and wallet connections will be enabled in the next stage.
-          </p>
-        </div>
-      </section>
+      )}
     </div>
   );
 };

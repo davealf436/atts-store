@@ -121,7 +121,15 @@ export const App: React.FC = () => {
                 />
               )}
 
-              {activeTab === 'p2p' && <P2PScreen />}
+              {activeTab === 'p2p' && (
+                <P2PScreen
+                  user={telegramUser}
+                  onNavigateToWallet={() => {
+                    setActiveTab('wallet');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                />
+              )}
 
               {activeTab === 'wallet' && (
                 <WalletScreen
