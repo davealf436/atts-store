@@ -199,7 +199,7 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
     }
     if (!referenceInput.trim()) {
       triggerNotificationHaptic('error');
-      alert('Please enter your transaction reference or SMS code.');
+      alert('Please enter your transaction reference.');
       return;
     }
     if (!screenshotPreview) {
@@ -796,10 +796,10 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
               </h3>
             </div>
 
-            {/* Input: Transaction Reference / SMS Code in Standard Caps */}
+            {/* Input: Transaction Reference in Standard Caps */}
             <div className="mb-3">
               <label className="text-[10.5px] font-semibold text-stone-700 block mb-1">
-                Transaction Reference / SMS Code <span className="text-rose-500">*</span>
+                Transaction Reference <span className="text-rose-500">*</span>
               </label>
               <input
                 type="text"
@@ -810,7 +810,7 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
                 className="w-full h-10 px-3 rounded-xl border border-stone-200 bg-stone-50 focus:bg-white focus:border-[#721428] focus:outline-none text-xs font-medium text-stone-900 transition-colors"
               />
               <span className="text-[10px] text-stone-500 mt-1 block">
-                Paste the transaction ID received from your mobile banking SMS or confirmation receipt.
+                Paste the transaction reference ID received from your mobile banking confirmation receipt.
               </span>
             </div>
 
