@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Product } from '../types';
 import { ProductBrandVisual } from './ProductBrandVisual';
 import {
@@ -12,10 +12,12 @@ import {
   Award,
   CreditCard,
   ChevronRight,
+  Heart,
 } from 'lucide-react';
 import { triggerHaptic, triggerNotificationHaptic } from '../services/telegram';
 import { formatETB } from '../services/wallet';
 import { toast } from '../services/toast';
+import { isFavorite, toggleFavorite, subscribeToFavorites } from '../services/favorites';
 
 interface ProductPageProps {
   product: Product;
@@ -87,6 +89,25 @@ export const ProductPage: React.FC<ProductPageProps> = ({
   const [selectedPlanId, setSelectedPlanId] = useState<'1m' | '3m' | 'annual'>('1m');
   const selectedPlan = plans.find((p) => p.id === selectedPlanId) || plans[0];
 
+  const [isLiked, setIsLiked] = useState<boolean>(() => isFavorite(product.id));
+
+  useEffect(() => {
+    const unsubscribe = subscribeToFavorites((favIds) => {
+      setIsLiked(favIds.includes(product.id));
+    });
+    return unsubscribe;
+  }, [product.id]);
+
+  const handleToggleFavorite = () => {
+    triggerHaptic('medium');
+    const nowSaved = toggleFavorite(product.id);
+    if (nowSaved) {
+      toast.success('Added to Saved', `${product.name} added to your saved list.`);
+    } else {
+      toast.info('Removed from Saved', `${product.name} removed from your saved list.`);
+    }
+  };
+
   const handleSelectPlan = (planId: '1m' | '3m' | 'annual') => {
     triggerHaptic('light');
     setSelectedPlanId(planId);
@@ -109,7 +130,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
 
   return (
     <div className="space-y-4 pb-28 select-none animate-in fade-in duration-200">
-      {/* 1. Top Header with Simple Back Button */}
+      {/* 1. Top Header with Simple Back Button and Favorite action */}
       <div className="flex items-center justify-between pb-1">
         <button
           type="button"
@@ -124,10 +145,27 @@ export const ProductPage: React.FC<ProductPageProps> = ({
           <span>Back</span>
         </button>
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-2">
           <span className="text-[10.5px] font-bold text-stone-500 bg-stone-100 px-2.5 py-1 rounded-lg uppercase tracking-wider">
             {product.brand}
           </span>
+          <button
+            type="button"
+            onClick={handleToggleFavorite}
+            className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all shadow-2xs border cursor-pointer active:scale-90 ${
+              isLiked
+                ? 'bg-rose-50 border-rose-200 text-rose-600'
+                : 'bg-white border-stone-200 text-stone-400 hover:text-stone-700'
+            }`}
+            aria-label={isLiked ? 'Remove from Saved' : 'Save to Favorites'}
+            title={isLiked ? 'Remove from Saved' : 'Save to Favorites'}
+          >
+            <Heart
+              className={`w-4 h-4 transition-transform ${
+                isLiked ? 'fill-rose-500 text-rose-500 scale-110' : 'stroke-[2]'
+              }`}
+            />
+          </button>
         </div>
       </div>
 

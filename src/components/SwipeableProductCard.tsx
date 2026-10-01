@@ -1,18 +1,50 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Product } from '../types';
 import { ProductPhotoLogo } from './ProductPhotoLogo';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Heart } from 'lucide-react';
 import { triggerHaptic } from '../services/telegram';
+import { isFavorite, toggleFavorite, subscribeToFavorites } from '../services/favorites';
+import { toast } from '../services/toast';
 
 interface SwipeableProductCardProps {
   product: Product;
   onView: (product: Product) => void;
+  isSaved?: boolean;
+  onToggleSave?: (productId: string) => void;
 }
 
 export const SwipeableProductCard: React.FC<SwipeableProductCardProps> = ({
   product,
   onView,
+  isSaved: controlledIsSaved,
+  onToggleSave,
 }) => {
+  const [internalIsSaved, setInternalIsSaved] = useState<boolean>(() => isFavorite(product.id));
+
+  useEffect(() => {
+    if (controlledIsSaved !== undefined) return;
+    const unsubscribe = subscribeToFavorites((favIds) => {
+      setInternalIsSaved(favIds.includes(product.id));
+    });
+    return unsubscribe;
+  }, [product.id, controlledIsSaved]);
+
+  const isLiked = controlledIsSaved !== undefined ? controlledIsSaved : internalIsSaved;
+
+  const handleToggleFavorite = () => {
+    triggerHaptic('medium');
+    if (onToggleSave) {
+      onToggleSave(product.id);
+    } else {
+      const nowSaved = toggleFavorite(product.id);
+      if (nowSaved) {
+        toast.success('Added to Saved', `${product.name} added to your saved list.`);
+      } else {
+        toast.info('Removed from Saved', `${product.name} removed from your saved list.`);
+      }
+    }
+  };
+
   const handleClick = () => {
     triggerHaptic('light');
     onView(product);
@@ -50,7 +82,7 @@ export const SwipeableProductCard: React.FC<SwipeableProductCardProps> = ({
       aria-label={`View options for ${product.name}`}
     >
       <div>
-        {/* Large Product Logo/Image Area with subtle badge overlay */}
+        {/* Large Product Logo/Image Area with subtle badge overlay & Heart action */}
         <div
           className={`relative w-full h-32 xs:h-36 rounded-xl overflow-hidden flex items-center justify-center shadow-inner ${containerBg}`}
         >
@@ -77,6 +109,30 @@ export const SwipeableProductCard: React.FC<SwipeableProductCardProps> = ({
               </span>
             </div>
           )}
+
+          {/* Favorite Heart Button */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleToggleFavorite();
+            }}
+            className={`absolute top-2 right-2 z-20 w-7.5 h-7.5 rounded-full flex items-center justify-center transition-all shadow-xs cursor-pointer active:scale-90 ${
+              isLiked
+                ? 'bg-white text-rose-600 shadow-md ring-1 ring-rose-200'
+                : isLightBg
+                ? 'bg-stone-100/90 hover:bg-white text-stone-400 hover:text-rose-500 border border-stone-200'
+                : 'bg-black/40 hover:bg-black/60 text-white/80 hover:text-white backdrop-blur-xs border border-white/20'
+            }`}
+            aria-label={isLiked ? `Remove ${product.name} from saved items` : `Save ${product.name} to favorites`}
+            title={isLiked ? 'Remove from Saved' : 'Save to Favorites'}
+          >
+            <Heart
+              className={`w-3.5 h-3.5 transition-transform ${
+                isLiked ? 'fill-rose-500 text-rose-500 scale-110' : 'stroke-[2.2]'
+              }`}
+            />
+          </button>
         </div>
 
         {/* Product Name at the bottom of the image area (No price, no description) */}

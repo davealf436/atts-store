@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Product } from '../types';
 import { ProductBrandVisual } from './ProductBrandVisual';
-import { ArrowRight, Check } from 'lucide-react';
+import { ArrowRight, Check, Heart } from 'lucide-react';
 import { triggerHaptic } from '../services/telegram';
+import { isFavorite, toggleFavorite, subscribeToFavorites } from '../services/favorites';
+import { toast } from '../services/toast';
 
 interface ProductCardProps {
   product: Product;
   onView: (product: Product) => void;
   ctaVariant?: 'options' | 'details'; // 'options' on Home, 'details' on Products
   showPricePlaceholder?: boolean;
+  isSaved?: boolean;
+  onToggleSave?: (productId: string) => void;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
@@ -16,7 +20,35 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onView,
   ctaVariant = 'details',
   showPricePlaceholder = false,
+  isSaved: controlledIsSaved,
+  onToggleSave,
 }) => {
+  const [internalIsSaved, setInternalIsSaved] = useState<boolean>(() => isFavorite(product.id));
+
+  useEffect(() => {
+    if (controlledIsSaved !== undefined) return;
+    const unsubscribe = subscribeToFavorites((favIds) => {
+      setInternalIsSaved(favIds.includes(product.id));
+    });
+    return unsubscribe;
+  }, [product.id, controlledIsSaved]);
+
+  const isLiked = controlledIsSaved !== undefined ? controlledIsSaved : internalIsSaved;
+
+  const handleToggleFavorite = () => {
+    triggerHaptic('medium');
+    if (onToggleSave) {
+      onToggleSave(product.id);
+    } else {
+      const nowSaved = toggleFavorite(product.id);
+      if (nowSaved) {
+        toast.success('Added to Saved', `${product.name} added to your saved list.`);
+      } else {
+        toast.info('Removed from Saved', `${product.name} removed from your saved list.`);
+      }
+    }
+  };
+
   const isOptionsCTA = ctaVariant === 'options';
 
   return (
@@ -27,8 +59,29 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       }}
       className="group bg-white border border-gray-200/90 rounded-xl overflow-hidden shadow-xs hover:border-gray-300 hover:shadow-sm transition-all duration-150 cursor-pointer flex flex-col justify-between"
     >
-      {/* 1. Large visual / logo area (Style C with real logos) */}
-      <ProductBrandVisual product={product} />
+      {/* 1. Large visual / logo area with Heart action */}
+      <div className="relative">
+        <ProductBrandVisual product={product} />
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleToggleFavorite();
+          }}
+          className={`absolute top-2.5 right-2.5 z-20 w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-xs cursor-pointer active:scale-90 ${
+            isLiked
+              ? 'bg-white text-rose-600 shadow-md ring-1 ring-rose-200'
+              : 'bg-black/40 hover:bg-black/60 text-white/80 hover:text-white backdrop-blur-xs border border-white/20'
+          }`}
+          aria-label={isLiked ? `Remove ${product.name} from saved items` : `Save ${product.name} to favorites`}
+        >
+          <Heart
+            className={`w-4 h-4 transition-transform ${
+              isLiked ? 'fill-rose-500 text-rose-500 scale-110' : 'stroke-[2.2]'
+            }`}
+          />
+        </button>
+      </div>
 
       {/* 2. Card Content Body */}
       <div className="p-4 flex-1 flex flex-col justify-between">

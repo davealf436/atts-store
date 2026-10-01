@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Product } from '../types';
 import { SwipeableProductCard } from './SwipeableProductCard';
-import { ArrowRight, ArrowLeftRight, ShieldCheck, Zap } from 'lucide-react';
+import { ArrowRight, ArrowLeftRight, ShieldCheck, Zap, Heart, Compass } from 'lucide-react';
 import { triggerHaptic } from '../services/telegram';
 import { AthLogo } from './AthLogo';
+import { getFavoriteIds, subscribeToFavorites } from '../services/favorites';
 
 interface HomeScreenProps {
   products: Product[];
@@ -17,6 +18,18 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onViewProduct,
   onNavigateToP2P,
 }) => {
+  const [homeTab, setHomeTab] = useState<'all' | 'saved'>('all');
+  const [favoriteIds, setFavoriteIds] = useState<string[]>(getFavoriteIds);
+
+  useEffect(() => {
+    const unsubscribe = subscribeToFavorites((ids) => {
+      setFavoriteIds(ids);
+    });
+    return unsubscribe;
+  }, []);
+
+  const savedProducts = products.filter((p) => favoriteIds.includes(p.id));
+
   // Display products in the exact requested order:
   // 1. TradingView Premium
   // 2. TradingView Essential
@@ -154,140 +167,291 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
       </section>
 
-      {/* Featured Tools Section with Horizontal Swipeable Cards */}
-      <section id="featured-tools" className="space-y-2.5 scroll-mt-16">
-        <div className="flex items-center justify-between px-0.5">
-          <div>
-            <h3 className="text-sm font-bold text-gray-900 tracking-tight flex items-center gap-1.5">
-              <span>Featured Tools</span>
-              <span className="text-[10px] font-semibold text-gray-400">· Swipe</span>
-            </h3>
-            <p className="text-[11px] text-gray-500">
-              Select a tool to explore subscription options
-            </p>
-          </div>
-        </div>
+      {/* Category / Saved Tab Switcher */}
+      <section className="flex items-center gap-2 p-1 bg-stone-100/90 rounded-xl border border-stone-200/80">
+        <button
+          type="button"
+          onClick={() => {
+            triggerHaptic('light');
+            setHomeTab('all');
+          }}
+          className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+            homeTab === 'all'
+              ? 'bg-white text-stone-900 shadow-2xs border border-stone-200/80'
+              : 'text-stone-500 hover:text-stone-800'
+          }`}
+        >
+          <Compass className="w-3.5 h-3.5" />
+          <span>All Tools</span>
+        </button>
 
-        {/* Horizontal Swipeable Track (Ordered: 1. TV Premium, 2. TV Essential, 3. FXReplay Pro) */}
-        <div className="flex gap-3 overflow-x-auto pb-2 pt-0.5 -mx-3.5 px-3.5 snap-x snap-mandatory scrollbar-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-          {orderedProducts.map((product) => (
-            <SwipeableProductCard
-              key={product.id}
-              product={product}
-              onView={onViewProduct}
-            />
-          ))}
-        </div>
+        <button
+          type="button"
+          onClick={() => {
+            triggerHaptic('light');
+            setHomeTab('saved');
+          }}
+          className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+            homeTab === 'saved'
+              ? 'bg-white text-[#721428] shadow-2xs border border-stone-200/80'
+              : 'text-stone-500 hover:text-stone-800'
+          }`}
+        >
+          <Heart className={`w-3.5 h-3.5 ${favoriteIds.length > 0 ? 'fill-rose-500 text-rose-500' : ''}`} />
+          <span>Saved</span>
+          {favoriteIds.length > 0 && (
+            <span className="ml-0.5 px-1.5 py-0.2 rounded-full text-[10px] font-extrabold bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]">
+              {favoriteIds.length}
+            </span>
+          )}
+        </button>
       </section>
 
-      {/* Journaling Tools Section with Exact Same Horizontal Swipeable Cards */}
-      <section className="space-y-2.5">
-        <div className="flex items-center justify-between px-0.5">
-          <div>
-            <h3 className="text-sm font-bold text-gray-900 tracking-tight flex items-center gap-1.5">
-              <span>Journaling Tools</span>
-              <span className="text-[10px] font-semibold text-gray-400">· Swipe</span>
-            </h3>
-            <p className="text-[11px] text-gray-500">
-              Track executions, psychology &amp; backtesting systems
-            </p>
-          </div>
-        </div>
-
-        {/* Horizontal Swipeable Track (Ordered: 1. Abyssinia Journal, 2. Backtesting Journal, 3. Notion Template Journal — Free) */}
-        <div className="flex gap-3 overflow-x-auto pb-2 pt-0.5 -mx-3.5 px-3.5 snap-x snap-mandatory scrollbar-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-          {orderedJournalProducts.map((product) => (
-            <SwipeableProductCard
-              key={product.id}
-              product={product}
-              onView={onViewProduct}
-            />
-          ))}
-        </div>
-      </section>
-
-      {/* Premium Subscriptions Section (Ordered: 1. Telegram Premium, 2. Google AI) */}
-      <section className="space-y-2.5">
-        <div className="flex items-center justify-between px-0.5">
-          <div>
-            <h3 className="text-sm font-bold text-gray-900 tracking-tight flex items-center gap-1.5">
-              <span>Premium Subscriptions</span>
-              <span className="text-[10px] font-semibold text-gray-400">· Swipe</span>
-            </h3>
-            <p className="text-[11px] text-gray-500">
-              Official productivity, communication &amp; AI licenses
-            </p>
-          </div>
-        </div>
-
-        {/* Horizontal Swipeable Track */}
-        <div className="flex gap-3 overflow-x-auto pb-2 pt-0.5 -mx-3.5 px-3.5 snap-x snap-mandatory scrollbar-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-          {orderedSubscriptionProducts.map((product) => (
-            <SwipeableProductCard
-              key={product.id}
-              product={product}
-              onView={onViewProduct}
-            />
-          ))}
-        </div>
-      </section>
-
-      {/* Exchange Desk Entry Point Card */}
-      <section className="bg-white border border-gray-200/90 rounded-xl p-4 shadow-xs">
-        <div className="flex items-start gap-3">
-          <div className="w-9 h-9 rounded-lg bg-[#FAF0F2] text-[#721428] flex items-center justify-center shrink-0 border border-[#F0D5DA]">
-            <ArrowLeftRight className="w-4.5 h-4.5 stroke-[2.2]" />
-          </div>
-
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10.5px] font-bold text-gray-700 bg-gray-100 px-2 py-0.5 rounded">
-                Exchange Desk
-              </span>
+      {/* ─── SAVED VIEW (When Saved Tab is Active) ─── */}
+      {homeTab === 'saved' && (
+        <section className="space-y-3 animate-in fade-in duration-150">
+          <div className="flex items-center justify-between px-0.5">
+            <div>
+              <h3 className="text-sm font-bold text-gray-900 tracking-tight flex items-center gap-1.5">
+                <Heart className="w-4 h-4 fill-rose-500 text-rose-500" />
+                <span>Your Saved Tools</span>
+                <span className="text-[10px] font-semibold text-gray-400">· {savedProducts.length} items</span>
+              </h3>
+              <p className="text-[11px] text-gray-500">
+                Bookmarked platforms and licenses for fast access
+              </p>
             </div>
-            <h3 className="text-sm font-bold text-gray-900 tracking-tight mb-1">
-              Exchange Desk
-            </h3>
-            <p className="text-xs text-gray-600 leading-relaxed mb-3">
-              Direct exchange for USDT and Ethiopian Birr (ETB) with verified instant transfers.
-            </p>
 
-            <button
-              onClick={() => {
-                triggerHaptic('medium');
-                onNavigateToP2P();
-              }}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-900 text-xs font-bold transition-all active:scale-[0.98]"
-            >
-              <span>Explore Exchange Desk</span>
-              <ArrowRight className="w-3.5 h-3.5 text-gray-700" />
-            </button>
+            {savedProducts.length > 0 && (
+              <button
+                type="button"
+                onClick={() => {
+                  triggerHaptic('light');
+                  setHomeTab('all');
+                }}
+                className="text-[11px] font-bold text-[#721428] hover:underline cursor-pointer"
+              >
+                Browse Store
+              </button>
+            )}
           </div>
-        </div>
-      </section>
 
-      {/* Key Guarantees / Service Notes */}
-      <section className="grid grid-cols-2 gap-2.5">
-        <div className="p-3 bg-white border border-gray-200/80 rounded-xl text-left shadow-2xs">
-          <div className="w-6.5 h-6.5 rounded-md bg-[#FAF0F2] text-[#721428] flex items-center justify-center mb-1.5 border border-[#F0D5DA]">
-            <ShieldCheck className="w-3.5 h-3.5" />
-          </div>
-          <h4 className="text-xs font-bold text-gray-900 mb-0.5">Verified Accounts</h4>
-          <p className="text-[10.5px] text-gray-500 leading-snug">
-            Authentic subscriptions with active warranty.
-          </p>
-        </div>
+          {savedProducts.length > 0 ? (
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
+              {savedProducts.map((product) => (
+                <div key={`saved-grid-${product.id}`} className="w-full">
+                  <SwipeableProductCard
+                    product={product}
+                    onView={onViewProduct}
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="py-12 px-4 rounded-2xl bg-white border border-stone-200/90 text-center flex flex-col items-center justify-center space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-150 flex items-center justify-center text-rose-500">
+                <Heart className="w-6 h-6 stroke-[1.8]" />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-stone-900">No Saved Items Yet</h4>
+                <p className="text-xs text-stone-500 max-w-xs mx-auto mt-1 leading-relaxed">
+                  Tap the heart icon on any tool card in the store to save it here for fast access.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  triggerHaptic('light');
+                  setHomeTab('all');
+                }}
+                className="px-4 py-2 rounded-xl bg-[#721428] hover:bg-[#5A0E1E] text-white text-xs font-bold transition-all active:scale-[0.98] shadow-xs cursor-pointer inline-flex items-center gap-1.5"
+              >
+                <Compass className="w-3.5 h-3.5" />
+                <span>Explore All Tools</span>
+              </button>
+            </div>
+          )}
+        </section>
+      )}
 
-        <div className="p-3 bg-white border border-gray-200/80 rounded-xl text-left shadow-2xs">
-          <div className="w-6.5 h-6.5 rounded-md bg-[#FAF0F2] text-[#721428] flex items-center justify-center mb-1.5 border border-[#F0D5DA]">
-            <Zap className="w-3.5 h-3.5" />
-          </div>
-          <h4 className="text-xs font-bold text-gray-900 mb-0.5">Direct Telegram</h4>
-          <p className="text-[10.5px] text-gray-500 leading-snug">
-            Dispatched directly inside ATH.
-          </p>
-        </div>
-      </section>
+      {/* ─── ALL TOOLS VIEW (When All Tools Tab is Active) ─── */}
+      {homeTab === 'all' && (
+        <>
+          {/* Optional Saved Items Highlight Section if user has favorited items */}
+          {savedProducts.length > 0 && (
+            <section className="space-y-2.5">
+              <div className="flex items-center justify-between px-0.5">
+                <div>
+                  <h3 className="text-sm font-bold text-gray-900 tracking-tight flex items-center gap-1.5">
+                    <Heart className="w-4 h-4 fill-rose-500 text-rose-500" />
+                    <span>Saved Items</span>
+                    <span className="text-[10px] font-semibold text-gray-400">· {savedProducts.length} saved</span>
+                  </h3>
+                  <p className="text-[11px] text-gray-500">
+                    Your bookmarked subscriptions
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('light');
+                    setHomeTab('saved');
+                  }}
+                  className="text-[11px] font-bold text-[#721428] hover:underline cursor-pointer"
+                >
+                  View All ({savedProducts.length})
+                </button>
+              </div>
+
+              {/* Horizontal Track of Saved Items */}
+              <div className="flex gap-3 overflow-x-auto pb-2 pt-0.5 -mx-3.5 px-3.5 snap-x snap-mandatory scrollbar-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+                {savedProducts.map((product) => (
+                  <SwipeableProductCard
+                    key={`saved-track-${product.id}`}
+                    product={product}
+                    onView={onViewProduct}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Featured Tools Section with Horizontal Swipeable Cards */}
+          <section id="featured-tools" className="space-y-2.5 scroll-mt-16">
+            <div className="flex items-center justify-between px-0.5">
+              <div>
+                <h3 className="text-sm font-bold text-gray-900 tracking-tight flex items-center gap-1.5">
+                  <span>Featured Tools</span>
+                  <span className="text-[10px] font-semibold text-gray-400">· Swipe</span>
+                </h3>
+                <p className="text-[11px] text-gray-500">
+                  Select a tool to explore subscription options
+                </p>
+              </div>
+            </div>
+
+            {/* Horizontal Swipeable Track (Ordered: 1. TV Premium, 2. TV Essential, 3. FXReplay Pro) */}
+            <div className="flex gap-3 overflow-x-auto pb-2 pt-0.5 -mx-3.5 px-3.5 snap-x snap-mandatory scrollbar-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+              {orderedProducts.map((product) => (
+                <SwipeableProductCard
+                  key={product.id}
+                  product={product}
+                  onView={onViewProduct}
+                />
+              ))}
+            </div>
+          </section>
+
+          {/* Journaling Tools Section with Exact Same Horizontal Swipeable Cards */}
+          <section className="space-y-2.5">
+            <div className="flex items-center justify-between px-0.5">
+              <div>
+                <h3 className="text-sm font-bold text-gray-900 tracking-tight flex items-center gap-1.5">
+                  <span>Journaling Tools</span>
+                  <span className="text-[10px] font-semibold text-gray-400">· Swipe</span>
+                </h3>
+                <p className="text-[11px] text-gray-500">
+                  Track executions, psychology &amp; backtesting systems
+                </p>
+              </div>
+            </div>
+
+            {/* Horizontal Swipeable Track (Ordered: 1. Abyssinia Journal, 2. Backtesting Journal, 3. Notion Template Journal — Free) */}
+            <div className="flex gap-3 overflow-x-auto pb-2 pt-0.5 -mx-3.5 px-3.5 snap-x snap-mandatory scrollbar-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+              {orderedJournalProducts.map((product) => (
+                <SwipeableProductCard
+                  key={product.id}
+                  product={product}
+                  onView={onViewProduct}
+                />
+              ))}
+            </div>
+          </section>
+
+          {/* Premium Subscriptions Section (Ordered: 1. Telegram Premium, 2. Google AI) */}
+          <section className="space-y-2.5">
+            <div className="flex items-center justify-between px-0.5">
+              <div>
+                <h3 className="text-sm font-bold text-gray-900 tracking-tight flex items-center gap-1.5">
+                  <span>Premium Subscriptions</span>
+                  <span className="text-[10px] font-semibold text-gray-400">· Swipe</span>
+                </h3>
+                <p className="text-[11px] text-gray-500">
+                  Official productivity, communication &amp; AI licenses
+                </p>
+              </div>
+            </div>
+
+            {/* Horizontal Swipeable Track */}
+            <div className="flex gap-3 overflow-x-auto pb-2 pt-0.5 -mx-3.5 px-3.5 snap-x snap-mandatory scrollbar-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+              {orderedSubscriptionProducts.map((product) => (
+                <SwipeableProductCard
+                  key={product.id}
+                  product={product}
+                  onView={onViewProduct}
+                />
+              ))}
+            </div>
+          </section>
+
+          {/* Exchange Desk Entry Point Card */}
+          <section className="bg-white border border-gray-200/90 rounded-xl p-4 shadow-xs">
+            <div className="flex items-start gap-3">
+              <div className="w-9 h-9 rounded-lg bg-[#FAF0F2] text-[#721428] flex items-center justify-center shrink-0 border border-[#F0D5DA]">
+                <ArrowLeftRight className="w-4.5 h-4.5 stroke-[2.2]" />
+              </div>
+
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-[10.5px] font-bold text-gray-700 bg-gray-100 px-2 py-0.5 rounded">
+                    Exchange Desk
+                  </span>
+                </div>
+                <h3 className="text-sm font-bold text-gray-900 tracking-tight mb-1">
+                  Exchange Desk
+                </h3>
+                <p className="text-xs text-gray-600 leading-relaxed mb-3">
+                  Direct exchange for USDT and Ethiopian Birr (ETB) with verified instant transfers.
+                </p>
+
+                <button
+                  onClick={() => {
+                    triggerHaptic('medium');
+                    onNavigateToP2P();
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-900 text-xs font-bold transition-all active:scale-[0.98] cursor-pointer"
+                >
+                  <span>Explore Exchange Desk</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-gray-700" />
+                </button>
+              </div>
+            </div>
+          </section>
+
+          {/* Key Guarantees / Service Notes */}
+          <section className="grid grid-cols-2 gap-2.5">
+            <div className="p-3 bg-white border border-gray-200/80 rounded-xl text-left shadow-2xs">
+              <div className="w-6.5 h-6.5 rounded-md bg-[#FAF0F2] text-[#721428] flex items-center justify-center mb-1.5 border border-[#F0D5DA]">
+                <ShieldCheck className="w-3.5 h-3.5" />
+              </div>
+              <h4 className="text-xs font-bold text-gray-900 mb-0.5">Verified Accounts</h4>
+              <p className="text-[10.5px] text-gray-500 leading-snug">
+                Authentic subscriptions with active warranty.
+              </p>
+            </div>
+
+            <div className="p-3 bg-white border border-gray-200/80 rounded-xl text-left shadow-2xs">
+              <div className="w-6.5 h-6.5 rounded-md bg-[#FAF0F2] text-[#721428] flex items-center justify-center mb-1.5 border border-[#F0D5DA]">
+                <Zap className="w-3.5 h-3.5" />
+              </div>
+              <h4 className="text-xs font-bold text-gray-900 mb-0.5">Direct Telegram</h4>
+              <p className="text-[10.5px] text-gray-500 leading-snug">
+                Dispatched directly inside ATH.
+              </p>
+            </div>
+          </section>
+        </>
+      )}
     </div>
   );
 };
