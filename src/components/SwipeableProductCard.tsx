@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Product } from '../types';
 import { ProductPhotoLogo } from './ProductPhotoLogo';
-import { ArrowRight, Heart } from 'lucide-react';
+import { ArrowRight, Star } from 'lucide-react';
 import { triggerHaptic } from '../services/telegram';
 import { isFavorite, toggleFavorite, subscribeToFavorites } from '../services/favorites';
 import { toast } from '../services/toast';
@@ -110,7 +110,7 @@ export const SwipeableProductCard: React.FC<SwipeableProductCardProps> = ({
             </div>
           )}
 
-          {/* Favorite Heart Button */}
+          {/* Favorite Star Button */}
           <button
             type="button"
             onClick={(e) => {
@@ -119,17 +119,17 @@ export const SwipeableProductCard: React.FC<SwipeableProductCardProps> = ({
             }}
             className={`absolute top-2 right-2 z-20 w-7.5 h-7.5 rounded-full flex items-center justify-center transition-all shadow-xs cursor-pointer active:scale-90 ${
               isLiked
-                ? 'bg-white text-rose-600 shadow-md ring-1 ring-rose-200'
+                ? 'bg-white text-amber-500 shadow-md ring-1 ring-amber-200'
                 : isLightBg
-                ? 'bg-stone-100/90 hover:bg-white text-stone-400 hover:text-rose-500 border border-stone-200'
+                ? 'bg-stone-100/90 hover:bg-white text-stone-400 hover:text-amber-500 border border-stone-200'
                 : 'bg-black/40 hover:bg-black/60 text-white/80 hover:text-white backdrop-blur-xs border border-white/20'
             }`}
             aria-label={isLiked ? `Remove ${product.name} from saved items` : `Save ${product.name} to favorites`}
             title={isLiked ? 'Remove from Saved' : 'Save to Favorites'}
           >
-            <Heart
+            <Star
               className={`w-3.5 h-3.5 transition-transform ${
-                isLiked ? 'fill-rose-500 text-rose-500 scale-110' : 'stroke-[2.2]'
+                isLiked ? 'fill-amber-400 text-amber-500 scale-110' : 'stroke-[2.2]'
               }`}
             />
           </button>

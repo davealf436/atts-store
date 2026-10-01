@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Product } from '../types';
 import { SwipeableProductCard } from './SwipeableProductCard';
-import { ArrowRight, ArrowLeftRight, ShieldCheck, Zap, Heart, Compass } from 'lucide-react';
+import { ArrowRight, ArrowLeftRight, ShieldCheck, Zap, Bookmark, Compass, Star } from 'lucide-react';
 import { triggerHaptic } from '../services/telegram';
 import { AthLogo } from './AthLogo';
 import { getFavoriteIds, subscribeToFavorites } from '../services/favorites';
@@ -197,7 +197,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               : 'text-stone-500 hover:text-stone-800'
           }`}
         >
-          <Heart className={`w-3.5 h-3.5 ${favoriteIds.length > 0 ? 'fill-rose-500 text-rose-500' : ''}`} />
+          <Bookmark className={`w-3.5 h-3.5 ${favoriteIds.length > 0 ? 'fill-[#721428] text-[#721428]' : ''}`} />
           <span>Saved</span>
           {favoriteIds.length > 0 && (
             <span className="ml-0.5 px-1.5 py-0.2 rounded-full text-[10px] font-extrabold bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]">
@@ -213,7 +213,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <div className="flex items-center justify-between px-0.5">
             <div>
               <h3 className="text-sm font-bold text-gray-900 tracking-tight flex items-center gap-1.5">
-                <Heart className="w-4 h-4 fill-rose-500 text-rose-500" />
+                <Bookmark className="w-4 h-4 fill-[#721428] text-[#721428]" />
                 <span>Your Saved Tools</span>
                 <span className="text-[10px] font-semibold text-gray-400">· {savedProducts.length} items</span>
               </h3>
@@ -249,13 +249,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             </div>
           ) : (
             <div className="py-12 px-4 rounded-2xl bg-white border border-stone-200/90 text-center flex flex-col items-center justify-center space-y-3">
-              <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-150 flex items-center justify-center text-rose-500">
-                <Heart className="w-6 h-6 stroke-[1.8]" />
+              <div className="w-12 h-12 rounded-2xl bg-[#FAF0F2] border border-[#F0D5DA] flex items-center justify-center text-[#721428]">
+                <Bookmark className="w-6 h-6 stroke-[1.8]" />
               </div>
               <div>
                 <h4 className="text-sm font-bold text-stone-900">No Saved Items Yet</h4>
                 <p className="text-xs text-stone-500 max-w-xs mx-auto mt-1 leading-relaxed">
-                  Tap the heart icon on any tool card in the store to save it here for fast access.
+                  Tap the star icon on any tool card in the store to save it here for fast access.
                 </p>
               </div>
               <button
@@ -283,7 +283,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               <div className="flex items-center justify-between px-0.5">
                 <div>
                   <h3 className="text-sm font-bold text-gray-900 tracking-tight flex items-center gap-1.5">
-                    <Heart className="w-4 h-4 fill-rose-500 text-rose-500" />
+                    <Bookmark className="w-4 h-4 fill-[#721428] text-[#721428]" />
                     <span>Saved Items</span>
                     <span className="text-[10px] font-semibold text-gray-400">· {savedProducts.length} saved</span>
                   </h3>

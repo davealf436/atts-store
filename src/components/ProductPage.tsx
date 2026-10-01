@@ -12,7 +12,7 @@ import {
   Award,
   CreditCard,
   ChevronRight,
-  Heart,
+  Star,
 } from 'lucide-react';
 import { triggerHaptic, triggerNotificationHaptic } from '../services/telegram';
 import { formatETB } from '../services/wallet';
@@ -154,15 +154,15 @@ export const ProductPage: React.FC<ProductPageProps> = ({
             onClick={handleToggleFavorite}
             className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all shadow-2xs border cursor-pointer active:scale-90 ${
               isLiked
-                ? 'bg-rose-50 border-rose-200 text-rose-600'
-                : 'bg-white border-stone-200 text-stone-400 hover:text-stone-700'
+                ? 'bg-amber-50 border-amber-200 text-amber-500'
+                : 'bg-white border-stone-200 text-stone-400 hover:text-amber-500'
             }`}
             aria-label={isLiked ? 'Remove from Saved' : 'Save to Favorites'}
             title={isLiked ? 'Remove from Saved' : 'Save to Favorites'}
           >
-            <Heart
+            <Star
               className={`w-4 h-4 transition-transform ${
-                isLiked ? 'fill-rose-500 text-rose-500 scale-110' : 'stroke-[2]'
+                isLiked ? 'fill-amber-400 text-amber-500 scale-110' : 'stroke-[2]'
               }`}
             />
           </button>

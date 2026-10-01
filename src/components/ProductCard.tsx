@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Product } from '../types';
 import { ProductBrandVisual } from './ProductBrandVisual';
-import { ArrowRight, Check, Heart } from 'lucide-react';
+import { ArrowRight, Check, Star } from 'lucide-react';
 import { triggerHaptic } from '../services/telegram';
 import { isFavorite, toggleFavorite, subscribeToFavorites } from '../services/favorites';
 import { toast } from '../services/toast';
@@ -59,7 +59,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       }}
       className="group bg-white border border-gray-200/90 rounded-xl overflow-hidden shadow-xs hover:border-gray-300 hover:shadow-sm transition-all duration-150 cursor-pointer flex flex-col justify-between"
     >
-      {/* 1. Large visual / logo area with Heart action */}
+      {/* 1. Large visual / logo area with Star action */}
       <div className="relative">
         <ProductBrandVisual product={product} />
         <button
@@ -70,14 +70,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           }}
           className={`absolute top-2.5 right-2.5 z-20 w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-xs cursor-pointer active:scale-90 ${
             isLiked
-              ? 'bg-white text-rose-600 shadow-md ring-1 ring-rose-200'
+              ? 'bg-white text-amber-500 shadow-md ring-1 ring-amber-200'
               : 'bg-black/40 hover:bg-black/60 text-white/80 hover:text-white backdrop-blur-xs border border-white/20'
           }`}
           aria-label={isLiked ? `Remove ${product.name} from saved items` : `Save ${product.name} to favorites`}
         >
-          <Heart
+          <Star
             className={`w-4 h-4 transition-transform ${
-              isLiked ? 'fill-rose-500 text-rose-500 scale-110' : 'stroke-[2.2]'
+              isLiked ? 'fill-amber-400 text-amber-500 scale-110' : 'stroke-[2.2]'
             }`}
           />
         </button>
