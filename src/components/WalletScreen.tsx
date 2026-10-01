@@ -179,6 +179,12 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
     ? PAYMENT_METHODS.find((m) => m.id === selectedMethod) || null
     : null;
 
+  const isDepositFormValid =
+    Boolean(selectedMethod && currentMethod) &&
+    effectiveAmount >= 50 &&
+    referenceInput.trim().length > 0 &&
+    Boolean(screenshotPreview);
+
   const handleSubmitDeposit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedMethod || !currentMethod) {
@@ -194,6 +200,11 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
     if (!referenceInput.trim()) {
       triggerNotificationHaptic('error');
       alert('Please enter your transaction reference or SMS code.');
+      return;
+    }
+    if (!screenshotPreview) {
+      triggerNotificationHaptic('error');
+      alert('Please upload your payment transfer screenshot.');
       return;
     }
 
@@ -806,7 +817,7 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
             {/* Screenshot Upload with Preview */}
             <div className="mb-4">
               <label className="text-[10.5px] font-semibold text-stone-700 block mb-1">
-                Upload Payment Screenshot (Optional)
+                Upload Payment Screenshot <span className="text-rose-500 font-bold">*</span>
               </label>
 
               <input
@@ -825,7 +836,7 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
                 >
                   <Upload className="w-5 h-5 text-stone-400 group-hover:text-[#721428] mb-1 transition-colors" />
                   <span className="text-xs font-bold text-stone-700 group-hover:text-[#721428]">
-                    Click to upload screenshot receipt
+                    Click to upload screenshot receipt *
                   </span>
                   <span className="text-[10px] text-stone-400 mt-0.5">
                     JPG, PNG or WEBP (Max 8MB)
@@ -863,18 +874,33 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={isSubmitting}
-              className="w-full h-11 rounded-xl bg-[#721428] hover:bg-[#5A0E1E] active:bg-[#470A17] text-white font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-xs cursor-pointer active:scale-[0.98] disabled:opacity-50"
+              disabled={isSubmitting || !isDepositFormValid}
+              className={`w-full h-11 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all ${
+                isDepositFormValid
+                  ? 'bg-[#721428] hover:bg-[#5A0E1E] active:bg-[#470A17] text-white shadow-xs cursor-pointer active:scale-[0.98]'
+                  : 'bg-stone-100 text-stone-400 border border-stone-200 cursor-not-allowed shadow-none'
+              }`}
             >
               {isSubmitting ? (
                 <>
                   <RefreshCw className="w-4 h-4 animate-spin" />
                   <span>Registering Deposit...</span>
                 </>
+              ) : !selectedMethod ? (
+                <span>Select Payment Method *</span>
+              ) : effectiveAmount < 50 ? (
+                <span>Min. Deposit is 50 ETB</span>
+              ) : !referenceInput.trim() ? (
+                <span>Enter Transaction Reference *</span>
+              ) : !screenshotPreview ? (
+                <>
+                  <Upload className="w-4 h-4" />
+                  <span>Upload Payment Screenshot *</span>
+                </>
               ) : (
                 <>
                   <ArrowDownLeft className="w-4 h-4" />
-                  <span>Submit Deposit</span>
+                  <span>Submit Deposit ({formatETB(effectiveAmount)})</span>
                 </>
               )}
             </button>
