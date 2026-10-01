@@ -129,6 +129,7 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
   const [orderFilter, setOrderFilter] = useState<'all' | 'buy' | 'sell' | 'pending'>('all');
   const [pendingApprovalModal, setPendingApprovalModal] = useState<P2POrder | null>(null);
   const [showBuyConfirmModal, setShowBuyConfirmModal] = useState<boolean>(false);
+  const [showSellConfirmModal, setShowSellConfirmModal] = useState<boolean>(false);
 
   // Sync wallet state and orders reactively
   useEffect(() => {
@@ -161,6 +162,13 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
   const parsedSellUSDT = parseFloat(sellAmountUSDT) || 0;
   const calculatedSellETB = parsedSellUSDT > 0 ? (parsedSellUSDT * P2P_SELL_RATE).toFixed(2) : '0.00';
   const currentPayout = PAYOUT_METHODS.find((p) => p.id === sellPayoutMethod) || PAYOUT_METHODS[0];
+  const isSellAmountValid = parsedSellUSDT >= 2;
+  const isSellValid =
+    isSellAmountValid &&
+    sellAccountNumber.trim().length > 0 &&
+    sellAccountName.trim().length > 0 &&
+    sellTxReference.trim().length > 0 &&
+    Boolean(sellScreenshotPreview);
 
   // Buy submission handler (triggers confirmation modal to prevent accidental purchase)
   const handleBuySubmit = (e: React.FormEvent) => {
@@ -242,7 +250,7 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
     }, 600);
   };
 
-  // Sell submission handler
+  // Sell submission handler (triggers confirmation modal to prevent accidental sell)
   const handleSellSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -264,6 +272,24 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
       return;
     }
 
+    if (!sellTxReference.trim()) {
+      triggerNotificationHaptic('error');
+      alert('Please enter your Transaction Reference / Order ID.');
+      return;
+    }
+
+    if (!sellScreenshotPreview) {
+      triggerNotificationHaptic('error');
+      alert('Please upload your payment transfer screenshot.');
+      return;
+    }
+
+    triggerHaptic('medium');
+    setShowSellConfirmModal(true);
+  };
+
+  // Execution after user explicitly confirms in modal
+  const executeSellOrder = () => {
     setIsSubmitting(true);
     triggerHaptic('medium');
 
@@ -277,17 +303,19 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
         paymentMethod: selectedPayout?.name || 'Telebirr',
         accountNumber: sellAccountNumber.trim(),
         accountName: sellAccountName.trim(),
-        reference: sellTxReference.trim() || undefined,
+        reference: sellTxReference.trim(),
         screenshot: sellScreenshotPreview || undefined,
       });
 
       setIsSubmitting(false);
+      setShowSellConfirmModal(false);
       triggerNotificationHaptic('success');
       setPendingApprovalModal(newOrder);
       setSellAccountNumber('');
+      setSellAccountName('');
       setSellTxReference('');
       handleClearSellScreenshot();
-    }, 700);
+    }, 600);
   };
 
   const getStatusBadge = (status: P2POrderStatus) => {
@@ -798,10 +826,11 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
               {/* Tx Reference */}
               <div className="mt-2.5 pt-2 border-t border-stone-200/80">
                 <label className="text-[10px] font-semibold text-stone-600 block mb-1">
-                  Transaction Reference / Order ID:
+                  Transaction Reference / Order ID <span className="text-rose-500 font-bold">*</span>
                 </label>
                 <input
                   type="text"
+                  required
                   value={sellTxReference}
                   onChange={(e) => setSellTxReference(e.target.value)}
                   placeholder="e.g. Binance Order # or TxID"
@@ -812,7 +841,7 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
               {/* Upload Payment Screenshot Feature */}
               <div className="mt-2.5 pt-2 border-t border-stone-200/80">
                 <label className="text-[10px] font-semibold text-stone-600 block mb-1">
-                  Upload Payment Screenshot:
+                  Upload Payment Screenshot <span className="text-rose-500 font-bold">*</span>
                 </label>
 
                 <input
@@ -831,7 +860,7 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
                   >
                     <Upload className="w-4 h-4 text-stone-400 group-hover:text-[#721428] mb-1 transition-colors" />
                     <span className="text-xs font-bold text-stone-700 group-hover:text-[#721428]">
-                      Click to upload transfer screenshot
+                      Click to upload transfer screenshot *
                     </span>
                     <span className="text-[9.5px] text-stone-400 mt-0.5">
                       JPG, PNG or WEBP (Max 8MB)
@@ -870,13 +899,42 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
             {/* Submit Sell Button */}
             <button
               type="submit"
-              disabled={isSubmitting || parsedSellUSDT <= 0}
-              className="mt-4 w-full h-11 rounded-xl bg-[#721428] hover:bg-[#5A0E1E] active:bg-[#470A17] text-white font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-xs cursor-pointer active:scale-[0.98] disabled:opacity-50"
+              disabled={isSubmitting || !isSellValid}
+              className={`mt-4 w-full h-11 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all ${
+                isSellValid
+                  ? 'bg-[#721428] hover:bg-[#5A0E1E] active:bg-[#470A17] text-white shadow-xs cursor-pointer active:scale-[0.98]'
+                  : 'bg-stone-100 text-stone-400 border border-stone-200 cursor-not-allowed shadow-none'
+              }`}
             >
               {isSubmitting ? (
                 <>
                   <RefreshCw className="w-4 h-4 animate-spin" />
                   <span>Submitting Sell Order...</span>
+                </>
+              ) : parsedSellUSDT < 2 ? (
+                <>
+                  <ArrowUpRight className="w-4 h-4" />
+                  <span>Min. Sell is 2 USDT</span>
+                </>
+              ) : !sellAccountNumber.trim() ? (
+                <>
+                  <ArrowUpRight className="w-4 h-4" />
+                  <span>Enter {currentPayout.name} Number *</span>
+                </>
+              ) : !sellAccountName.trim() ? (
+                <>
+                  <ArrowUpRight className="w-4 h-4" />
+                  <span>Enter Account Holder Name *</span>
+                </>
+              ) : !sellTxReference.trim() ? (
+                <>
+                  <ArrowUpRight className="w-4 h-4" />
+                  <span>Enter Transaction Reference / Order ID *</span>
+                </>
+              ) : !sellScreenshotPreview ? (
+                <>
+                  <Upload className="w-4 h-4" />
+                  <span>Upload Payment Screenshot *</span>
                 </>
               ) : (
                 <>
@@ -1089,6 +1147,154 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
                   <>
                     <Check className="w-3.5 h-3.5 stroke-[2.5]" />
                     <span>Confirm & Buy</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal 0.5: Confirm Sell USDT Order (Prevents accidental sell) */}
+      {showSellConfirmModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity duration-300"
+            onClick={() => !isSubmitting && setShowSellConfirmModal(false)}
+          />
+          <div className="relative w-full max-w-sm bg-white rounded-2xl border border-stone-200 p-5 z-10 shadow-2xl flex flex-col animate-in zoom-in-95 duration-200 select-none">
+            {/* Header */}
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 rounded-xl bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center shrink-0 shadow-2xs">
+                <ShieldCheck className="w-5 h-5 stroke-[2]" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <h3 className="text-sm font-bold text-gray-900 leading-tight">
+                  Confirm USDT Sale
+                </h3>
+                <p className="text-[11px] text-gray-500 mt-0.5">
+                  Review sale and payout details before confirming
+                </p>
+              </div>
+              <button
+                type="button"
+                disabled={isSubmitting}
+                onClick={() => {
+                  triggerHaptic('light');
+                  setShowSellConfirmModal(false);
+                }}
+                className="p-1 rounded-lg text-stone-400 hover:text-stone-600 transition-colors cursor-pointer disabled:opacity-40"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Order Details summary */}
+            <div className="p-3.5 rounded-xl bg-stone-50 border border-stone-200 space-y-2.5 text-xs mb-3">
+              <div className="flex items-center justify-between">
+                <span className="text-stone-500 font-medium">You Sell:</span>
+                <span className="font-bold text-[#721428] text-sm tabular-nums">
+                  {parsedSellUSDT.toFixed(2)} USDT
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <span className="text-stone-500 font-medium">You Receive:</span>
+                <span className="font-bold text-emerald-700 text-sm tabular-nums">
+                  {formatETB(parseFloat(calculatedSellETB) || 0)}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between pt-1 border-t border-stone-200/80">
+                <span className="text-stone-500 font-medium">Exchange Rate:</span>
+                <span className="font-medium text-stone-700">
+                  1 USDT = {P2P_SELL_RATE.toFixed(2)} ETB
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <span className="text-stone-500 font-medium">Payout Method:</span>
+                <span className="font-semibold text-stone-900">
+                  {currentPayout.name}
+                </span>
+              </div>
+
+              <div className="pt-1 border-t border-stone-200/80">
+                <span className="text-[10px] text-stone-500 font-medium block mb-1">
+                  Receiving Account & Name:
+                </span>
+                <div className="bg-white px-2.5 py-1.5 rounded-lg border border-stone-200">
+                  <div className="font-mono font-bold text-stone-900 text-xs">
+                    {sellAccountNumber.trim()}
+                  </div>
+                  <div className="text-[11px] text-stone-600 font-medium">
+                    {sellAccountName.trim()}
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-1 border-t border-stone-200/80">
+                <span className="text-[10px] text-stone-500 font-medium block mb-1">
+                  Transaction Reference / Order ID:
+                </span>
+                <span className="font-mono font-bold text-stone-900 text-xs break-all bg-white px-2.5 py-1 rounded border border-stone-200 block">
+                  {sellTxReference.trim()}
+                </span>
+              </div>
+
+              {sellScreenshotPreview && (
+                <div className="flex items-center justify-between pt-1 border-t border-stone-200/80">
+                  <span className="text-stone-500 font-medium">Payment Screenshot:</span>
+                  <div className="flex items-center gap-1.5">
+                    <img
+                      src={sellScreenshotPreview}
+                      alt="Receipt preview"
+                      className="w-5 h-5 rounded object-cover border border-stone-300"
+                    />
+                    <span className="text-[10px] text-emerald-600 font-bold flex items-center gap-0.5">
+                      <CheckCircle2 className="w-3 h-3" /> Attached
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Confirmation Alert Note */}
+            <div className="mb-4 p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-[11px] flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+              <span>
+                Please ensure you sent the exact USDT to Desk Binance ID 874067761. Payout will be sent to your account upon verification.
+              </span>
+            </div>
+
+            {/* Action buttons */}
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                disabled={isSubmitting}
+                onClick={() => {
+                  triggerHaptic('light');
+                  setShowSellConfirmModal(false);
+                }}
+                className="py-2.5 px-3 rounded-xl border border-stone-300 bg-white hover:bg-stone-50 text-stone-700 font-bold text-xs transition-colors cursor-pointer disabled:opacity-50 text-center"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={isSubmitting}
+                onClick={executeSellOrder}
+                className="py-2.5 px-3 rounded-xl bg-[#721428] hover:bg-[#5A0E1E] active:bg-[#470A17] text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer active:scale-[0.98] disabled:opacity-50 text-center"
+              >
+                {isSubmitting ? (
+                  <>
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                    <span>Processing...</span>
+                  </>
+                ) : (
+                  <>
+                    <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                    <span>Confirm & Sell</span>
                   </>
                 )}
               </button>
