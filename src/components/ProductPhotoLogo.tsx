@@ -30,7 +30,7 @@ export const ProductPhotoLogo: React.FC<ProductPhotoLogoProps> = ({
   if (productId === 'abyssinia-journal') {
     return (
       <div
-        className={`relative overflow-hidden shrink-0 flex items-center justify-center select-none shadow-2xs ${sizeClasses[size]} ${className}`}
+        className={`relative overflow-hidden shrink-0 flex items-center justify-center select-none ${size === 'banner' ? '' : 'shadow-2xs'} ${sizeClasses[size]} ${className}`}
         style={{ backgroundColor: '#FFFFFF' }}
         title="Abyssinia Journal"
       >
@@ -213,7 +213,7 @@ export const ProductPhotoLogo: React.FC<ProductPhotoLogoProps> = ({
   if (productId === 'notion-template-journal') {
     return (
       <div
-        className={`relative overflow-hidden shrink-0 flex items-center justify-center select-none shadow-2xs ${sizeClasses[size]} ${className}`}
+        className={`relative overflow-hidden shrink-0 flex items-center justify-center select-none ${size === 'banner' ? '' : 'shadow-2xs'} ${sizeClasses[size]} ${className}`}
         style={{ backgroundColor: '#FFFFFF' }}
         title="Notion Template Journal"
       >
@@ -304,7 +304,7 @@ export const ProductPhotoLogo: React.FC<ProductPhotoLogoProps> = ({
   if (productId === 'google-ai') {
     return (
       <div
-        className={`relative overflow-hidden shrink-0 flex items-center justify-center select-none shadow-2xs ${sizeClasses[size]} ${className}`}
+        className={`relative overflow-hidden shrink-0 flex items-center justify-center select-none ${size === 'banner' ? '' : 'shadow-2xs'} ${sizeClasses[size]} ${className}`}
         style={{ backgroundColor: '#FFFFFF' }}
         title="Google AI"
       >

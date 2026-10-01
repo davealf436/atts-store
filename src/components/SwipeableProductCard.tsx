@@ -28,15 +28,15 @@ export const SwipeableProductCard: React.FC<SwipeableProductCardProps> = ({
   const isLightBg = isAbyssiniaJournal || isNotion || isGoogleAI;
 
   const containerBg = isAbyssiniaJournal
-    ? 'bg-white border border-gray-150'
+    ? 'bg-white'
     : isBacktestingJournal
     ? 'bg-black'
     : isNotion
-    ? 'bg-white border border-gray-150'
+    ? 'bg-white'
     : isTelegram
     ? 'bg-[#24A1DE]'
     : isGoogleAI
-    ? 'bg-white border border-gray-150'
+    ? 'bg-white'
     : isFXReplay
     ? 'bg-[#070D18]'
     : 'bg-black';
@@ -52,7 +52,9 @@ export const SwipeableProductCard: React.FC<SwipeableProductCardProps> = ({
       <div>
         {/* Large Product Logo/Image Area with subtle badge overlay */}
         <div
-          className={`relative w-full h-32 xs:h-36 rounded-xl overflow-hidden flex items-center justify-center shadow-inner ${containerBg}`}
+          className={`relative w-full h-32 xs:h-36 rounded-xl overflow-hidden flex items-center justify-center ${
+            isLightBg ? '' : 'shadow-inner'
+          } ${containerBg}`}
         >
           {/* Official brand logo centered & scaled */}
           <div className="w-full h-full p-3.5 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">

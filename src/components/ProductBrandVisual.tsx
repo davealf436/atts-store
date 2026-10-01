@@ -66,7 +66,7 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
         />
         <div className="relative z-10 flex flex-col items-center">
           <div className="flex items-center gap-2.5 mb-2">
-            <ProductPhotoLogo productId={product.id} size="md" className="border border-gray-200 shadow-sm" />
+            <ProductPhotoLogo productId={product.id} size="md" />
             <div className="text-left">
               <div className="text-base font-extrabold tracking-tight text-gray-900 leading-none">
                 Google AI
@@ -100,7 +100,7 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
         />
         <div className="relative z-10 flex flex-col items-center">
           <div className="flex items-center gap-2.5 mb-2">
-            <ProductPhotoLogo productId={product.id} size="md" className="border border-gray-200 shadow-sm" />
+            <ProductPhotoLogo productId={product.id} size="md" />
             <div className="text-left">
               <div className="text-base font-extrabold tracking-tight text-gray-900 leading-none">
                 Abyssinia Journal
@@ -168,7 +168,7 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
         />
         <div className="relative z-10 flex flex-col items-center">
           <div className="flex items-center gap-2.5 mb-2">
-            <ProductPhotoLogo productId={product.id} size="md" className="border border-gray-200 shadow-sm" />
+            <ProductPhotoLogo productId={product.id} size="md" />
             <div className="text-left">
               <div className="text-base font-extrabold tracking-tight text-gray-900 leading-none">
                 Notion Template Journal
