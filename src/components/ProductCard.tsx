@@ -1,18 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Product } from '../types';
 import { ProductBrandVisual } from './ProductBrandVisual';
-import { ArrowRight, Check, Star } from 'lucide-react';
+import { ArrowRight, Check } from 'lucide-react';
 import { triggerHaptic } from '../services/telegram';
-import { isFavorite, toggleFavorite, subscribeToFavorites } from '../services/favorites';
-import { toast } from '../services/toast';
 
 interface ProductCardProps {
   product: Product;
   onView: (product: Product) => void;
   ctaVariant?: 'options' | 'details'; // 'options' on Home, 'details' on Products
   showPricePlaceholder?: boolean;
-  isSaved?: boolean;
-  onToggleSave?: (productId: string) => void;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
@@ -20,35 +16,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onView,
   ctaVariant = 'details',
   showPricePlaceholder = false,
-  isSaved: controlledIsSaved,
-  onToggleSave,
 }) => {
-  const [internalIsSaved, setInternalIsSaved] = useState<boolean>(() => isFavorite(product.id));
-
-  useEffect(() => {
-    if (controlledIsSaved !== undefined) return;
-    const unsubscribe = subscribeToFavorites((favIds) => {
-      setInternalIsSaved(favIds.includes(product.id));
-    });
-    return unsubscribe;
-  }, [product.id, controlledIsSaved]);
-
-  const isLiked = controlledIsSaved !== undefined ? controlledIsSaved : internalIsSaved;
-
-  const handleToggleFavorite = () => {
-    triggerHaptic('medium');
-    if (onToggleSave) {
-      onToggleSave(product.id);
-    } else {
-      const nowSaved = toggleFavorite(product.id);
-      if (nowSaved) {
-        toast.success('Added to Saved', `${product.name} added to your saved list.`);
-      } else {
-        toast.info('Removed from Saved', `${product.name} removed from your saved list.`);
-      }
-    }
-  };
-
   const isOptionsCTA = ctaVariant === 'options';
 
   return (
@@ -59,29 +27,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       }}
       className="group bg-white border border-gray-200/90 rounded-xl overflow-hidden shadow-xs hover:border-gray-300 hover:shadow-sm transition-all duration-150 cursor-pointer flex flex-col justify-between"
     >
-      {/* 1. Large visual / logo area with Star action */}
-      <div className="relative">
-        <ProductBrandVisual product={product} />
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            handleToggleFavorite();
-          }}
-          className={`absolute top-2.5 right-2.5 z-20 w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-xs cursor-pointer active:scale-90 ${
-            isLiked
-              ? 'bg-white text-amber-500 shadow-md ring-1 ring-amber-200'
-              : 'bg-black/40 hover:bg-black/60 text-white/80 hover:text-white backdrop-blur-xs border border-white/20'
-          }`}
-          aria-label={isLiked ? `Remove ${product.name} from saved items` : `Save ${product.name} to favorites`}
-        >
-          <Star
-            className={`w-4 h-4 transition-transform ${
-              isLiked ? 'fill-amber-400 text-amber-500 scale-110' : 'stroke-[2.2]'
-            }`}
-          />
-        </button>
-      </div>
+      {/* 1. Large visual / logo area (Style C with real logos) */}
+      <ProductBrandVisual product={product} />
 
       {/* 2. Card Content Body */}
       <div className="p-4 flex-1 flex flex-col justify-between">
@@ -103,59 +50,65 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             {product.name}
           </h3>
 
-          {/* Short Description */}
-          <p className="text-xs text-gray-600 leading-relaxed mb-3">
+          {/* Tier Label */}
+          <p className="text-xs font-semibold text-gray-500 mb-2">
+            {product.tier}
+          </p>
+
+          {/* Description */}
+          <p className="text-xs text-gray-600 line-clamp-2 mb-3 leading-relaxed">
             {product.shortDescription}
           </p>
 
-          {/* Key Feature highlights */}
-          <div className="flex flex-wrap gap-1.5 mb-3.5">
-            {product.features.slice(0, 2).map((feat, idx) => (
-              <span
-                key={idx}
-                className="inline-flex items-center gap-1 text-[10.5px] font-medium text-gray-700 bg-gray-50 border border-gray-200/80 px-2 py-0.5 rounded"
-              >
-                <Check className="w-3 h-3 text-[#721428] stroke-[2.5]" />
-                <span>{feat}</span>
-              </span>
+          {/* Key Features List (Top 2) */}
+          <div className="space-y-1 mb-4">
+            {product.features.slice(0, 2).map((feature, idx) => (
+              <div key={idx} className="flex items-center gap-1.5 text-xs text-gray-600">
+                <Check className="w-3.5 h-3.5 text-[#721428] shrink-0" />
+                <span className="truncate">{feature}</span>
+              </div>
             ))}
           </div>
         </div>
 
-        {/* 3. Action Area */}
-        <div className="pt-2.5 border-t border-gray-100 flex items-center justify-between gap-3">
-          {showPricePlaceholder ? (
-            <div className="min-w-0">
-              <span className="text-[10px] font-semibold text-gray-500 block">
+        {/* 3. Bottom Row: Action Button */}
+        <div className="pt-2 border-t border-gray-100 flex flex-col gap-2">
+          {showPricePlaceholder && (
+            <div className="text-right">
+              <span className="text-[11px] text-gray-400 block">
                 Starting from
               </span>
-              <span className="text-xs font-bold text-gray-900 truncate block">
-                {product.startingPricePlaceholder}
+              <span className="text-sm font-bold text-gray-900">
+                {product.priceETB ? `${product.priceETB.toLocaleString()} ETB` : 'Flexible'}
               </span>
             </div>
-          ) : (
-            <span className="text-[11px] font-semibold text-gray-500">
-              Subscription License
-            </span>
           )}
 
-          {/* Clear Burgundy CTA Button */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              triggerHaptic('light');
-              onView(product);
-            }}
-            className={`inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-bold transition-all active:scale-[0.98] shrink-0 shadow-xs ${
-              isOptionsCTA
-                ? 'bg-[#721428] hover:bg-[#5A0E1E] text-white active:bg-[#470A17]'
-                : 'bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] hover:bg-[#F3E2E6]'
-            }`}
-            aria-label={isOptionsCTA ? `View options for ${product.name}` : `View details for ${product.name}`}
-          >
-            <span>{isOptionsCTA ? 'View Options' : 'View Details'}</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
+          {isOptionsCTA ? (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                triggerHaptic('light');
+                onView(product);
+              }}
+              className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-[#721428] hover:bg-[#5A0E1E] text-white text-xs font-bold transition-all"
+            >
+              <span>View Options</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          ) : (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                triggerHaptic('light');
+                onView(product);
+              }}
+              className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg border border-gray-200 text-xs font-bold text-gray-800 hover:bg-gray-50 active:bg-gray-100 transition-colors"
+            >
+              <span>View Details</span>
+              <ArrowRight className="w-3.5 h-3.5 text-gray-500" />
+            </button>
+          )}
         </div>
       </div>
     </div>

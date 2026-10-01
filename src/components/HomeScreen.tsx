@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Product } from '../types';
 import { SwipeableProductCard } from './SwipeableProductCard';
-import { ArrowRight, ArrowLeftRight, ShieldCheck, Zap, Bookmark, Compass, Star } from 'lucide-react';
+import { ArrowRight, ArrowLeftRight, ShieldCheck, Zap, Bookmark, Compass } from 'lucide-react';
 import { triggerHaptic } from '../services/telegram';
 import { AthLogo } from './AthLogo';
 import { getFavoriteIds, subscribeToFavorites } from '../services/favorites';
@@ -255,7 +255,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               <div>
                 <h4 className="text-sm font-bold text-stone-900">No Saved Items Yet</h4>
                 <p className="text-xs text-stone-500 max-w-xs mx-auto mt-1 leading-relaxed">
-                  Tap the star icon on any tool card in the store to save it here for fast access.
+                  Open View Options on any tool and tap the star icon to save it here for fast access.
                 </p>
               </div>
               <button
