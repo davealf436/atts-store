@@ -370,3 +370,13 @@ html.dark body {
   animation: checkmarkStroke 0.32s cubic-bezier(0.65, 0, 0.45, 1) 0.22s forwards;
 }
 
+@keyframes toast-progress {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
+
+

@@ -11,6 +11,7 @@ import { ProfileScreen } from './components/ProfileScreen';
 import { SettingsScreen } from './components/SettingsScreen';
 import { ProductDetailModal } from './components/ProductDetailModal';
 import { CartDrawer } from './components/CartDrawer';
+import { ToastContainer } from './components/ToastContainer';
 import { initTelegramApp, getInitialTelegramUser } from './services/telegram';
 
 export const App: React.FC = () => {
@@ -195,6 +196,9 @@ export const App: React.FC = () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
         />
+
+        {/* Global Bottom Notification Toast Container */}
+        <ToastContainer />
       </div>
     </div>
   );

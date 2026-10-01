@@ -26,6 +26,7 @@ import {
 } from '../services/wallet';
 import { triggerHaptic, triggerNotificationHaptic, openTelegramSupport } from '../services/telegram';
 import { SuccessCheckmarkAnimation } from './SuccessCheckmarkAnimation';
+import { toast } from '../services/toast';
 
 interface WalletScreenProps {
   user: TelegramUser;
@@ -212,6 +213,10 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
 
       setIsSubmitting(false);
       triggerNotificationHaptic('success');
+      toast.success(
+        'Deposit Request Submitted!',
+        `${formatETB(result.transaction.amountETB)} via ${methodName} is pending admin verification.`
+      );
       setSubmittedNotification({
         adminText: result.adminNotification,
         transactionId: result.transaction.id,
@@ -231,6 +236,10 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
     const newState = approvePendingDeposit(txId);
     setWallet(newState);
     triggerNotificationHaptic('success');
+    toast.success(
+      'Deposit Approved & Credited!',
+      'Your funds have been added to your wallet balance.'
+    );
     if (submittedNotification && submittedNotification.transactionId === txId) {
       setSubmittedNotification(null);
     }

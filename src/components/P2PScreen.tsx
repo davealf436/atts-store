@@ -33,6 +33,7 @@ import {
 } from '../services/p2p';
 import { TelegramUser, WalletTransaction } from '../types';
 import { SuccessCheckmarkAnimation } from './SuccessCheckmarkAnimation';
+import { toast } from '../services/toast';
 
 interface P2PScreenProps {
   onNavigateToWallet?: () => void;
@@ -245,6 +246,10 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
       setIsSubmitting(false);
       setShowBuyConfirmModal(false);
       triggerNotificationHaptic('success');
+      toast.success(
+        'USDT Purchase Submitted!',
+        `Order #${newOrder.id} for ${calculatedBuyUSDT} USDT (${formatETB(parsedBuyETB)}) submitted.`
+      );
       setPendingApprovalModal(newOrder);
       setDestinationAddress('');
     }, 600);
@@ -310,6 +315,10 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
       setIsSubmitting(false);
       setShowSellConfirmModal(false);
       triggerNotificationHaptic('success');
+      toast.success(
+        'USDT Sale Submitted!',
+        `Order #${newOrder.id} for ${parsedSellUSDT.toFixed(2)} USDT (${formatETB(parseFloat(calculatedSellETB))}) submitted.`
+      );
       setPendingApprovalModal(newOrder);
       setSellAccountNumber('');
       setSellAccountName('');
