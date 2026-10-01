@@ -9,7 +9,7 @@ import { WalletScreen } from './components/WalletScreen';
 import { OrdersScreen } from './components/OrdersScreen';
 import { ProfileScreen } from './components/ProfileScreen';
 import { SettingsScreen } from './components/SettingsScreen';
-import { ProductDetailModal } from './components/ProductDetailModal';
+import { ProductPage } from './components/ProductPage';
 import { CartDrawer } from './components/CartDrawer';
 import { ToastContainer } from './components/ToastContainer';
 import { initTelegramApp, getInitialTelegramUser } from './services/telegram';
@@ -27,7 +27,7 @@ export const App: React.FC = () => {
   };
 
   const [activeTab, setActiveTab] = useState<NavigationTab>(getInitialTab);
-  const [currentView, setCurrentView] = useState<'main' | 'profile' | 'settings'>('main');
+  const [currentView, setCurrentView] = useState<'main' | 'profile' | 'settings' | 'product'>('main');
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -42,6 +42,7 @@ export const App: React.FC = () => {
       const hash = window.location.hash.toLowerCase().replace('#', '');
       if (hash === 'wallet' || hash === 'p2p' || hash === 'orders' || hash === 'home') {
         setCurrentView('main');
+        setSelectedProduct(null);
         setActiveTab(hash as NavigationTab);
       }
     };
@@ -51,6 +52,7 @@ export const App: React.FC = () => {
 
   const handleSelectTab = (tab: NavigationTab) => {
     setCurrentView('main');
+    setSelectedProduct(null);
     setActiveTab(tab);
     if (typeof window !== 'undefined') {
       window.location.hash = tab;
@@ -131,13 +133,31 @@ export const App: React.FC = () => {
             />
           )}
 
+          {/* Dedicated Product Page View */}
+          {currentView === 'product' && selectedProduct && (
+            <ProductPage
+              product={selectedProduct}
+              onBack={() => {
+                setCurrentView('main');
+                setSelectedProduct(null);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              onAddToCart={handleAddToCart}
+              onOpenCart={() => setIsCartOpen(true)}
+            />
+          )}
+
           {/* Main Tab Views */}
           {currentView === 'main' && (
             <>
               {activeTab === 'home' && (
                 <HomeScreen
                   products={PRODUCTS}
-                  onViewProduct={(product) => setSelectedProduct(product)}
+                  onViewProduct={(product) => {
+                    setSelectedProduct(product);
+                    setCurrentView('product');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
                   onAddToCart={handleAddToCart}
                   onNavigateToP2P={() => handleSelectTab('p2p')}
                 />
@@ -164,18 +184,13 @@ export const App: React.FC = () => {
           )}
         </main>
 
-        {/* Fixed Bottom Navigation (Home · P2P · Wallet · My Orders) */}
-        <BottomNav
-          activeTab={currentView !== 'main' ? (currentView as any) : activeTab}
-          onSelectTab={handleSelectTab}
-        />
-
-        {/* Product Detail Modal / Sheet */}
-        <ProductDetailModal
-          product={selectedProduct}
-          onClose={() => setSelectedProduct(null)}
-          onAddToCart={handleAddToCart}
-        />
+        {/* Fixed Bottom Navigation (Home · P2P · Wallet · My Orders) - hidden on dedicated product page so Add to Cart bar has full focus */}
+        {currentView !== 'product' && (
+          <BottomNav
+            activeTab={currentView !== 'main' ? (currentView as any) : activeTab}
+            onSelectTab={handleSelectTab}
+          />
+        )}
 
         {/* Cart Drawer with Instant Wallet Checkout */}
         <CartDrawer
