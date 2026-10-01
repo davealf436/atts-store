@@ -277,45 +277,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       {/* ─── ALL TOOLS VIEW (When All Tools Tab is Active) ─── */}
       {homeTab === 'all' && (
         <>
-          {/* Optional Saved Items Highlight Section if user has favorited items */}
-          {savedProducts.length > 0 && (
-            <section className="space-y-2.5">
-              <div className="flex items-center justify-between px-0.5">
-                <div>
-                  <h3 className="text-sm font-bold text-gray-900 tracking-tight flex items-center gap-1.5">
-                    <Bookmark className="w-4 h-4 fill-[#721428] text-[#721428]" />
-                    <span>Saved Items</span>
-                    <span className="text-[10px] font-semibold text-gray-400">· {savedProducts.length} saved</span>
-                  </h3>
-                  <p className="text-[11px] text-gray-500">
-                    Your bookmarked subscriptions
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    triggerHaptic('light');
-                    setHomeTab('saved');
-                  }}
-                  className="text-[11px] font-bold text-[#721428] hover:underline cursor-pointer"
-                >
-                  View All ({savedProducts.length})
-                </button>
-              </div>
-
-              {/* Horizontal Track of Saved Items */}
-              <div className="flex gap-3 overflow-x-auto pb-2 pt-0.5 -mx-3.5 px-3.5 snap-x snap-mandatory scrollbar-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-                {savedProducts.map((product) => (
-                  <SwipeableProductCard
-                    key={`saved-track-${product.id}`}
-                    product={product}
-                    onView={onViewProduct}
-                  />
-                ))}
-              </div>
-            </section>
-          )}
-
           {/* Featured Tools Section with Horizontal Swipeable Cards */}
           <section id="featured-tools" className="space-y-2.5 scroll-mt-16">
             <div className="flex items-center justify-between px-0.5">
