@@ -89,20 +89,11 @@ export const SwipeableProductCard: React.FC<SwipeableProductCardProps> = ({
           )}
         </div>
 
-        {/* Product Name & optional subtitle at the bottom of the image area */}
+        {/* Product Name at the bottom of the image area */}
         <div className="mt-2.5 mb-2 px-1">
           <h4 className="text-[13.5px] font-bold text-gray-900 tracking-tight leading-snug group-hover:text-[#721428] transition-colors truncate">
             {product.name}
           </h4>
-          {product.subtitle ? (
-            <p className="text-[11px] text-gray-500 font-medium leading-tight mt-0.5 truncate">
-              {product.subtitle}
-            </p>
-          ) : (
-            <p className="text-[11px] text-transparent select-none leading-tight mt-0.5">
-              &nbsp;
-            </p>
-          )}
         </div>
       </div>
 
