@@ -10,7 +10,7 @@ import {
   Compass,
   LineChart,
   BookOpen,
-  Sparkles,
+  Crown,
 } from 'lucide-react';
 import { triggerHaptic } from '../services/telegram';
 import { AthLogo } from './AthLogo';
@@ -21,12 +21,14 @@ interface HomeScreenProps {
   onViewProduct: (product: Product) => void;
   onAddToCart: (product: Product) => void;
   onNavigateToP2P: () => void;
+  onSelectCategory: (categoryId: 'trading-tools' | 'journaling' | 'subscriptions') => void;
 }
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({
   products,
   onViewProduct,
   onNavigateToP2P,
+  onSelectCategory,
 }) => {
   const [homeTab, setHomeTab] = useState<'all' | 'saved'>('all');
   const [favoriteIds, setFavoriteIds] = useState<string[]>(getFavoriteIds);
@@ -297,14 +299,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       {homeTab === 'all' && (
         <>
           {/* Available Tools Category Navigation */}
-          <section className="space-y-2.5">
+          <section className="space-y-2">
             <div className="flex items-center justify-between px-0.5">
               <div>
                 <h3 className="text-sm font-bold text-gray-900 tracking-tight flex items-center gap-1.5">
                   <span>Available Tools</span>
                 </h3>
                 <p className="text-[11px] text-gray-500">
-                  Select a category to jump directly to a toolset
+                  Tap any category to open its dedicated collection
                 </p>
               </div>
             </div>
@@ -313,60 +315,54 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               {/* 1. Trading Tools */}
               <button
                 type="button"
-                onClick={() => scrollToSection('featured-tools')}
-                className="group relative bg-white border border-gray-200/90 hover:border-[#721428]/40 active:border-[#721428] rounded-xl p-2.5 sm:p-3 text-left flex flex-col justify-between shadow-2xs hover:shadow-xs transition-all duration-150 cursor-pointer active:scale-[0.98]"
-                aria-label="Jump to Trading Tools section"
+                onClick={() => {
+                  triggerHaptic('light');
+                  onSelectCategory('trading-tools');
+                }}
+                className="group relative bg-white border border-gray-200/90 hover:border-[#721428]/40 active:border-[#721428] rounded-2xl p-2.5 sm:p-3 text-center flex flex-col items-center justify-center shadow-2xs hover:shadow-xs transition-all duration-150 cursor-pointer active:scale-[0.97]"
+                aria-label="Open Trading Tools collection"
               >
-                <div className="w-8 h-8 rounded-lg bg-[#FAF0F2] border border-[#F0D5DA]/70 flex items-center justify-center text-[#721428] mb-2 group-hover:bg-[#721428] group-hover:text-white group-hover:border-[#721428] transition-colors">
-                  <LineChart className="w-4 h-4 stroke-[1.8]" />
+                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[#FAF0F2] border border-[#F0D5DA]/70 flex items-center justify-center text-[#721428] mb-2 group-hover:bg-[#721428] group-hover:text-white group-hover:border-[#721428] transition-colors shadow-2xs">
+                  <LineChart className="w-6 h-6 stroke-[2]" />
                 </div>
-                <div>
-                  <div className="text-[12.5px] sm:text-[13px] font-bold text-gray-900 group-hover:text-[#721428] transition-colors leading-tight">
-                    Trading Tools
-                  </div>
-                  <div className="text-[10px] text-gray-500 font-medium mt-0.5">
-                    Charting &amp; Replay
-                  </div>
+                <div className="text-[12px] sm:text-[13px] font-bold text-gray-900 group-hover:text-[#721428] transition-colors leading-tight text-center">
+                  Trading Tools
                 </div>
               </button>
 
               {/* 2. Journaling */}
               <button
                 type="button"
-                onClick={() => scrollToSection('journaling-tools')}
-                className="group relative bg-white border border-gray-200/90 hover:border-[#721428]/40 active:border-[#721428] rounded-xl p-2.5 sm:p-3 text-left flex flex-col justify-between shadow-2xs hover:shadow-xs transition-all duration-150 cursor-pointer active:scale-[0.98]"
-                aria-label="Jump to Journaling section"
+                onClick={() => {
+                  triggerHaptic('light');
+                  onSelectCategory('journaling');
+                }}
+                className="group relative bg-white border border-gray-200/90 hover:border-[#721428]/40 active:border-[#721428] rounded-2xl p-2.5 sm:p-3 text-center flex flex-col items-center justify-center shadow-2xs hover:shadow-xs transition-all duration-150 cursor-pointer active:scale-[0.97]"
+                aria-label="Open Journaling collection"
               >
-                <div className="w-8 h-8 rounded-lg bg-[#FAF0F2] border border-[#F0D5DA]/70 flex items-center justify-center text-[#721428] mb-2 group-hover:bg-[#721428] group-hover:text-white group-hover:border-[#721428] transition-colors">
-                  <BookOpen className="w-4 h-4 stroke-[1.8]" />
+                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[#FAF0F2] border border-[#F0D5DA]/70 flex items-center justify-center text-[#721428] mb-2 group-hover:bg-[#721428] group-hover:text-white group-hover:border-[#721428] transition-colors shadow-2xs">
+                  <BookOpen className="w-6 h-6 stroke-[2]" />
                 </div>
-                <div>
-                  <div className="text-[12.5px] sm:text-[13px] font-bold text-gray-900 group-hover:text-[#721428] transition-colors leading-tight">
-                    Journaling
-                  </div>
-                  <div className="text-[10px] text-gray-500 font-medium mt-0.5">
-                    Ledger &amp; Testing
-                  </div>
+                <div className="text-[12px] sm:text-[13px] font-bold text-gray-900 group-hover:text-[#721428] transition-colors leading-tight text-center">
+                  Journaling
                 </div>
               </button>
 
               {/* 3. Subscriptions */}
               <button
                 type="button"
-                onClick={() => scrollToSection('subscriptions-tools')}
-                className="group relative bg-white border border-gray-200/90 hover:border-[#721428]/40 active:border-[#721428] rounded-xl p-2.5 sm:p-3 text-left flex flex-col justify-between shadow-2xs hover:shadow-xs transition-all duration-150 cursor-pointer active:scale-[0.98]"
-                aria-label="Jump to Subscriptions section"
+                onClick={() => {
+                  triggerHaptic('light');
+                  onSelectCategory('subscriptions');
+                }}
+                className="group relative bg-white border border-gray-200/90 hover:border-[#721428]/40 active:border-[#721428] rounded-2xl p-2.5 sm:p-3 text-center flex flex-col items-center justify-center shadow-2xs hover:shadow-xs transition-all duration-150 cursor-pointer active:scale-[0.97]"
+                aria-label="Open Subscriptions collection"
               >
-                <div className="w-8 h-8 rounded-lg bg-[#FAF0F2] border border-[#F0D5DA]/70 flex items-center justify-center text-[#721428] mb-2 group-hover:bg-[#721428] group-hover:text-white group-hover:border-[#721428] transition-colors">
-                  <Sparkles className="w-4 h-4 stroke-[1.8]" />
+                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[#FAF0F2] border border-[#F0D5DA]/70 flex items-center justify-center text-[#721428] mb-2 group-hover:bg-[#721428] group-hover:text-white group-hover:border-[#721428] transition-colors shadow-2xs">
+                  <Crown className="w-6 h-6 stroke-[2]" />
                 </div>
-                <div>
-                  <div className="text-[12.5px] sm:text-[13px] font-bold text-gray-900 group-hover:text-[#721428] transition-colors leading-tight">
-                    Subscriptions
-                  </div>
-                  <div className="text-[10px] text-gray-500 font-medium mt-0.5">
-                    Telegram &amp; AI
-                  </div>
+                <div className="text-[12px] sm:text-[13px] font-bold text-gray-900 group-hover:text-[#721428] transition-colors leading-tight text-center">
+                  Subscriptions
                 </div>
               </button>
             </div>
