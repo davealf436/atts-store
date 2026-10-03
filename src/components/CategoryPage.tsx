@@ -122,7 +122,7 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({
           <span>Back</span>
         </button>
 
-        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]">
+        <span className="text-[10px] font-bold tracking-wide px-2 py-0.5 rounded-full bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]">
           {details.products.length} {details.products.length === 1 ? 'Product' : 'Products'}
         </span>
       </div>
@@ -134,7 +134,7 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({
         </div>
 
         <div className="flex-1 min-w-0">
-          <div className="inline-flex items-center gap-1 text-[9px] font-extrabold uppercase tracking-wider text-[#721428] mb-0.5">
+          <div className="inline-flex items-center gap-1 text-[9.5px] font-bold tracking-wide text-[#721428] mb-0.5">
             <span>{details.badge}</span>
           </div>
           <h2 className="text-base font-black text-gray-900 tracking-tight leading-tight">
@@ -187,7 +187,7 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({
               <div className="flex-1 min-w-0">
                 {product.badge && (
                   <div className="mb-0.5 leading-none">
-                    <span className="inline-flex items-center px-1.5 py-[2px] rounded text-[9px] font-extrabold uppercase tracking-tight bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]/80">
+                    <span className="inline-flex items-center px-1.5 py-[2px] rounded text-[9.5px] font-bold tracking-tight bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]/80">
                       {product.badge}
                     </span>
                   </div>
