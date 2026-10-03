@@ -145,7 +145,7 @@ export const AthTerminalLoader: React.FC<AthTerminalLoaderProps> = ({ onInitiali
     <div
       role="status"
       aria-live="polite"
-      aria-label="Loading Abyssinia Trading Hub"
+      aria-label="Loading Backtesting Lab"
       className={`fixed inset-0 z-[100] flex flex-col justify-center items-center bg-[#F8F9FA] text-stone-900 select-none overflow-hidden transition-all duration-500 ease-out ${
         isFadingOut && !hasError
           ? 'opacity-0 scale-[1.015] pointer-events-none'
@@ -156,7 +156,7 @@ export const AthTerminalLoader: React.FC<AthTerminalLoaderProps> = ({ onInitiali
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {/* Delicate hairline coordinate grid */}
         <div
-          className="absolute inset-0 opacity-[0.03]"
+          className="absolute inset-0 opacity-[0.032]"
           style={{
             backgroundImage:
               'linear-gradient(to right, #721428 1px, transparent 1px), linear-gradient(to bottom, #721428 1px, transparent 1px)',
@@ -166,33 +166,33 @@ export const AthTerminalLoader: React.FC<AthTerminalLoaderProps> = ({ onInitiali
 
         {/* Soft radial ambient aura centered behind loader */}
         <div
-          className="absolute inset-0 opacity-40 pointer-events-none"
+          className="absolute inset-0 opacity-45 pointer-events-none"
           style={{
             background:
-              'radial-gradient(circle 320px at 50% 50%, rgba(59, 130, 246, 0.05) 0%, rgba(114, 20, 40, 0.02) 50%, transparent 100%)',
+              'radial-gradient(circle 320px at 50% 50%, rgba(114, 20, 40, 0.08) 0%, rgba(114, 20, 40, 0.015) 55%, transparent 100%)',
           }}
         />
       </div>
 
-      {/* ─── Centered Content: Circular Progress Loader with Breathing Logo, Brand & Status ─── */}
+      {/* ─── Centered Content: Single-Focus Burgundy Circular Progress Loader ─── */}
       <div className="relative z-10 flex flex-col items-center justify-center px-6 text-center max-w-sm">
-        {/* 1. Logo Centered Inside Thin Animated Circular Progress Ring */}
+        {/* 1. Centered Logo inside Thin Animated Burgundy Circular Progress Ring */}
         <div className="relative mb-6 flex items-center justify-center">
           {/* Circular Loader Frame */}
           <div className="relative w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center">
-            {/* SVG Thin Progress Ring with subtle blue glow */}
+            {/* SVG Thin Burgundy Progress Ring (Single visual focus for loading) */}
             <svg
               className="absolute inset-0 w-full h-full pointer-events-none -rotate-90"
               viewBox="0 0 120 120"
             >
               <defs>
-                <linearGradient id="athBlueProgressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#38bdf8" />
-                  <stop offset="70%" stopColor="#2563eb" />
-                  <stop offset="100%" stopColor="#1d4ed8" />
+                <linearGradient id="athBurgundyProgressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#A3213F" />
+                  <stop offset="60%" stopColor="#721428" />
+                  <stop offset="100%" stopColor="#4D0A17" />
                 </linearGradient>
-                <filter id="athBlueGlow" x="-20%" y="-20%" width="140%" height="140%">
-                  <feDropShadow dx="0" dy="0" stdDeviation="2.2" floodColor="#3b82f6" floodOpacity="0.4" />
+                <filter id="athBurgundyGlow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="0" stdDeviation="2.4" floodColor="#721428" floodOpacity="0.4" />
                 </filter>
               </defs>
 
@@ -202,26 +202,26 @@ export const AthTerminalLoader: React.FC<AthTerminalLoaderProps> = ({ onInitiali
                 cy="60"
                 r="52"
                 fill="none"
-                stroke="#E2E8F0"
+                stroke="#EAE2E4"
                 strokeWidth="2"
-                opacity="0.75"
+                opacity="0.8"
               />
 
-              {/* Animated Progress Ring with Smooth Stroke Dash and Rotation */}
+              {/* Animated Burgundy Progress Ring with Smooth Stroke Dash and Rotation */}
               <circle
                 cx="60"
                 cy="60"
                 r="52"
                 fill="none"
-                stroke="url(#athBlueProgressGradient)"
+                stroke="url(#athBurgundyProgressGradient)"
                 strokeWidth="2.5"
                 strokeLinecap="round"
-                filter="url(#athBlueGlow)"
+                filter="url(#athBurgundyGlow)"
                 className="animate-[athRingDash_2.6s_ease-in-out_infinite,athRingSpin_3.2s_linear_infinite] origin-center"
               />
             </svg>
 
-            {/* Centered ATH Logo with subtle pulse/breathing animation */}
+            {/* Centered Logo with subtle pulse/breathing animation */}
             <div className="relative w-18 h-18 sm:w-20 sm:h-20 flex items-center justify-center animate-[athLogoBreathe_3.2s_ease-in-out_infinite]">
               <AthLogo
                 size={78}
@@ -232,17 +232,17 @@ export const AthTerminalLoader: React.FC<AthTerminalLoaderProps> = ({ onInitiali
           </div>
         </div>
 
-        {/* 2. Brand Name Underneath */}
+        {/* 2. BACKTESTING LAB Brand Name */}
         <h1 className="text-[18px] sm:text-[20px] font-black tracking-tight text-stone-900 leading-tight uppercase mb-1">
-          ABYSSINIA TRADING HUB
+          BACKTESTING LAB
         </h1>
 
-        {/* 3. Tagline Underneath */}
+        {/* 3. Built for Better Backtesting. Tagline */}
         <p className="text-xs sm:text-[13px] font-semibold text-stone-600 tracking-wide mb-6">
-          Built for Better <span className="text-[#721428] font-bold">Trading.</span>
+          Built for Better <span className="text-[#721428] font-bold">Backtesting.</span>
         </p>
 
-        {/* 4. Small Status Message with Smooth Fade Transitions */}
+        {/* 4. Small Rotating Status Message */}
         {hasError ? (
           <div className="space-y-3">
             <div className="inline-flex items-center gap-1.5 text-xs text-rose-700 bg-rose-50 border border-rose-200 px-3 py-1.5 rounded-lg font-medium">
