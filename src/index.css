@@ -402,4 +402,40 @@ html.dark body {
   }
 }
 
+/* ATH Minimalist Logo Breathing Animation */
+@keyframes athLogoBreathe {
+  0%, 100% {
+    transform: scale(0.97);
+    opacity: 0.93;
+  }
+  50% {
+    transform: scale(1.03);
+    opacity: 1;
+  }
+}
+
+/* ATH Three Smoothly Pulsing Dots */
+@keyframes athDotPulse {
+  0%, 100% {
+    transform: scale(0.7);
+    opacity: 0.35;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 1;
+  }
+}
+
+/* ATH Status Text Smooth Rotation Fade */
+@keyframes athStatusFade {
+  0% {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 
