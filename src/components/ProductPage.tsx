@@ -50,21 +50,13 @@ export const ProductPage: React.FC<ProductPageProps> = ({
   if (isEssentialFX) {
     plans = [
       {
-        id: '6d',
-        name: '6 Days',
-        durationLabel: 'Sprint Replay Pass',
-        priceETB: 250,
-        priceUSD: 1.8,
-        billingText: 'Billed once • 6 days full backtesting access',
-      },
-      {
-        id: '2w',
-        name: '2 Weeks',
-        durationLabel: '14-Day Strategy Pass',
-        priceETB: 500,
-        priceUSD: 3.6,
-        savingsBadge: 'Best Value',
-        billingText: 'Billed once • 14 days full backtesting access',
+        id: '3m',
+        name: '3 Months',
+        durationLabel: '3 Months to Prove & Refine Your System',
+        priceETB: 2100,
+        priceUSD: 15.0,
+        savingsBadge: 'Build Your Edge',
+        billingText: 'Billed once • 90 days full access to prove & refine your system',
       },
       {
         id: '1m',
@@ -77,13 +69,21 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         billingText: 'Billed once • 36 days full backtesting access',
       },
       {
-        id: '3m',
-        name: '3 Months',
-        durationLabel: '3 Months to Prove & Refine Your System',
-        priceETB: 2100,
-        priceUSD: 15.0,
-        savingsBadge: 'Build Your Edge',
-        billingText: 'Billed once • 90 days full access to prove & refine your system',
+        id: '2w',
+        name: '2 Weeks',
+        durationLabel: '14-Day Strategy Pass',
+        priceETB: 500,
+        priceUSD: 3.6,
+        savingsBadge: 'Best Value',
+        billingText: 'Billed once • 14 days full backtesting access',
+      },
+      {
+        id: '6d',
+        name: '6 Days',
+        durationLabel: 'Sprint Replay Pass',
+        priceETB: 250,
+        priceUSD: 1.8,
+        billingText: 'Billed once • 6 days full backtesting access',
       },
     ];
   } else if (isPremiumFX) {
@@ -160,11 +160,11 @@ export const ProductPage: React.FC<ProductPageProps> = ({
     ];
   }
 
-  const defaultPlanId = isEssentialFX ? '6d' : '1m';
+  const defaultPlanId = isEssentialFX ? '3m' : '1m';
   const [selectedPlanId, setSelectedPlanId] = useState<string>(defaultPlanId);
 
   useEffect(() => {
-    setSelectedPlanId(isEssentialFX ? '6d' : '1m');
+    setSelectedPlanId(isEssentialFX ? '3m' : '1m');
     setBundleJournal(false);
   }, [product.id, isEssentialFX]);
 
