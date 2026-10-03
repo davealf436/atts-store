@@ -438,29 +438,17 @@ html.dark body {
   }
 }
 
-/* ATH Circular Progress Ring Animations */
-@keyframes athRingSpin {
-  0% {
-    transform: rotate(0deg);
+/* ATH Three-Dot Sequential Pulse Animation */
+@keyframes athDotPulse {
+  0%, 100% {
+    transform: scale(0.8);
+    opacity: 0.35;
   }
-  100% {
-    transform: rotate(360deg);
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
   }
 }
 
-@keyframes athRingDash {
-  0% {
-    stroke-dasharray: 45, 269;
-    stroke-dashoffset: 0;
-  }
-  50% {
-    stroke-dasharray: 210, 104;
-    stroke-dashoffset: -45;
-  }
-  100% {
-    stroke-dasharray: 45, 269;
-    stroke-dashoffset: -314;
-  }
-}
 
 

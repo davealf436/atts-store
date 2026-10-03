@@ -175,61 +175,25 @@ export const AthTerminalLoader: React.FC<AthTerminalLoaderProps> = ({ onInitiali
         />
       </div>
 
-      {/* ─── Centered Content: Single-Focus Burgundy Circular Progress Loader ─── */}
+      {/* ─── Centered Content: Three-Dot Sequential Loader with Logo, Brand & Status ─── */}
       <div className="relative z-10 flex flex-col items-center justify-center px-6 text-center max-w-sm">
-        {/* 1. Centered Logo inside Animated Burgundy Circular Progress Ring (Increased 15–20%) */}
+        {/* 1. Centered Frameless Logo with subtle breathing animation */}
         <div className="relative mb-6 flex items-center justify-center">
-          {/* Circular Loader Frame */}
-          <div className="relative w-[136px] h-[136px] sm:w-[152px] sm:h-[152px] flex items-center justify-center">
-            {/* SVG Burgundy Progress Ring (Single visual focus for loading) */}
-            <svg
-              className="absolute inset-0 w-full h-full pointer-events-none -rotate-90"
-              viewBox="0 0 120 120"
-            >
-              <defs>
-                <linearGradient id="athBurgundyProgressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#A3213F" />
-                  <stop offset="55%" stopColor="#721428" />
-                  <stop offset="100%" stopColor="#4D0A17" />
-                </linearGradient>
-                <filter id="athBurgundyGlow" x="-20%" y="-20%" width="140%" height="140%">
-                  <feDropShadow dx="0" dy="0" stdDeviation="2.8" floodColor="#721428" floodOpacity="0.45" />
-                </filter>
-              </defs>
+          {/* Subtle soft ambient glow centered behind logo */}
+          <div
+            className="absolute -inset-8 rounded-full pointer-events-none"
+            style={{
+              background:
+                'radial-gradient(circle at center, rgba(114, 20, 40, 0.08) 0%, rgba(114, 20, 40, 0.015) 55%, transparent 75%)',
+            }}
+          />
 
-              {/* Faint Background Track Ring */}
-              <circle
-                cx="60"
-                cy="60"
-                r="50"
-                fill="none"
-                stroke="#EAE2E4"
-                strokeWidth="3"
-                opacity="0.85"
-              />
-
-              {/* Animated Burgundy Progress Ring with Smooth Stroke Dash and Rotation */}
-              <circle
-                cx="60"
-                cy="60"
-                r="50"
-                fill="none"
-                stroke="url(#athBurgundyProgressGradient)"
-                strokeWidth="3.8"
-                strokeLinecap="round"
-                filter="url(#athBurgundyGlow)"
-                className="animate-[athRingDash_2.6s_ease-in-out_infinite,athRingSpin_3.2s_linear_infinite] origin-center"
-              />
-            </svg>
-
-            {/* Centered Logo with subtle pulse/breathing animation */}
-            <div className="relative w-[88px] h-[88px] sm:w-[98px] sm:h-[98px] flex items-center justify-center animate-[athLogoBreathe_3.2s_ease-in-out_infinite]">
-              <AthLogo
-                size={92}
-                animated={true}
-                className="w-full h-full drop-shadow-[0_4px_16px_rgba(114,20,40,0.12)]"
-              />
-            </div>
+          <div className="relative w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center animate-[athLogoBreathe_3.2s_ease-in-out_infinite]">
+            <AthLogo
+              size={96}
+              animated={true}
+              className="w-full h-full drop-shadow-[0_6px_20px_rgba(114,20,40,0.12)]"
+            />
           </div>
         </div>
 
@@ -243,7 +207,7 @@ export const AthTerminalLoader: React.FC<AthTerminalLoaderProps> = ({ onInitiali
           Built for Better <span className="text-[#721428] font-bold">Trading.</span>
         </p>
 
-        {/* 4. Small Rotating Status Message */}
+        {/* 4. Three Small Burgundy Dots with Smooth Sequential Pulse + Rotating Status Message */}
         {hasError ? (
           <div className="space-y-3">
             <div className="inline-flex items-center gap-1.5 text-xs text-rose-700 bg-rose-50 border border-rose-200 px-3 py-1.5 rounded-lg font-medium">
@@ -262,13 +226,38 @@ export const AthTerminalLoader: React.FC<AthTerminalLoaderProps> = ({ onInitiali
             </div>
           </div>
         ) : (
-          <div className="h-5 relative flex items-center justify-center overflow-hidden">
-            <p
-              key={statusIndex}
-              className="text-[11.5px] font-medium text-stone-500 tracking-tight animate-[athStatusFade_0.35s_ease-out]"
-            >
-              {STATUS_MESSAGES[statusIndex]}
-            </p>
+          <div className="flex flex-col items-center justify-center">
+            {/* Three small burgundy dots with smooth sequential pulse */}
+            <div className="flex items-center justify-center gap-1.5 mb-2.5">
+              <span
+                className="w-1.5 h-1.5 rounded-full bg-[#721428]"
+                style={{
+                  animation: 'athDotPulse 1.4s ease-in-out infinite 0s',
+                }}
+              />
+              <span
+                className="w-1.5 h-1.5 rounded-full bg-[#721428]"
+                style={{
+                  animation: 'athDotPulse 1.4s ease-in-out infinite 0.2s',
+                }}
+              />
+              <span
+                className="w-1.5 h-1.5 rounded-full bg-[#721428]"
+                style={{
+                  animation: 'athDotPulse 1.4s ease-in-out infinite 0.4s',
+                }}
+              />
+            </div>
+
+            {/* Rotating Status Message with fade transition */}
+            <div className="h-5 relative flex items-center justify-center overflow-hidden">
+              <p
+                key={statusIndex}
+                className="text-[11.5px] font-medium text-stone-500 tracking-tight animate-[athStatusFade_0.35s_ease-out]"
+              >
+                {STATUS_MESSAGES[statusIndex]}
+              </p>
+            </div>
           </div>
         )}
       </div>
