@@ -78,15 +78,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     <div className="space-y-4 pb-4">
       {/* ATH Home Hero Card — Compact Refined Edition */}
       <section className="relative overflow-hidden rounded-2xl bg-[#FCFAF7] dark:bg-[#1C1C24] border border-[#721428]/40 dark:border-[#721428]/55 shadow-xs pt-2.5 pb-3.5 px-3.5 sm:pt-3 sm:pb-4 sm:px-4 select-none">
-        {/* Subtle background technical grid & market watermark */}
+        {/* Subtle background technical dot-matrix & market watermark */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {/* Faint coordinate grid lines */}
+          {/* Subtle technical dot-matrix pattern with refined neutral/burgundy tint */}
           <div
-            className="absolute inset-0 opacity-[0.035]"
+            className="absolute inset-0 opacity-[0.12] dark:opacity-[0.18] pointer-events-none"
             style={{
               backgroundImage:
-                'linear-gradient(to right, #1C1917 1px, transparent 1px), linear-gradient(to bottom, #1C1917 1px, transparent 1px)',
-              backgroundSize: '22px 22px',
+                'radial-gradient(circle, #721428 0.85px, transparent 0.85px)',
+              backgroundSize: '18px 18px',
             }}
           />
 
