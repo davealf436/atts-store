@@ -79,11 +79,11 @@ export const ProductPage: React.FC<ProductPageProps> = ({
       {
         id: '3m',
         name: '3 Months',
-        durationLabel: '90 Days to Build a Proven Strategy',
+        durationLabel: '3 Months to Prove & Refine Your System',
         priceETB: 2100,
         priceUSD: 15.0,
-        savingsBadge: 'Prove Your Strategy',
-        billingText: 'Billed once • 90 days full access to prove your trading edge',
+        savingsBadge: 'Build Your Edge',
+        billingText: 'Billed once • 90 days full access to prove & refine your system',
       },
     ];
   } else if (isPremiumFX) {
