@@ -134,7 +134,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   const handleCopyKey = (key: string) => {
     triggerHaptic('light');
-    navigator.clipboard.writeText(key);
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(key).catch(() => {});
+    }
     setCopiedKey(true);
     setTimeout(() => setCopiedKey(false), 2000);
   };

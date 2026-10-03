@@ -148,7 +148,9 @@ export const P2PScreen: React.FC<P2PScreenProps> = ({ onNavigateToWallet, user }
 
   const handleCopy = (text: string, label: string) => {
     triggerHaptic('light');
-    navigator.clipboard.writeText(text);
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(text).catch(() => {});
+    }
     setCopiedItem(label);
     setTimeout(() => setCopiedItem(null), 2000);
   };

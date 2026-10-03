@@ -153,6 +153,12 @@ export const ProductPage: React.FC<ProductPageProps> = ({
 
   const defaultPlanId = isEssentialFX ? '6d' : '1m';
   const [selectedPlanId, setSelectedPlanId] = useState<string>(defaultPlanId);
+
+  useEffect(() => {
+    setSelectedPlanId(isEssentialFX ? '6d' : '1m');
+    setBundleJournal(false);
+  }, [product.id, isEssentialFX]);
+
   const selectedPlan = plans.find((p) => p.id === selectedPlanId) || plans[0];
 
   const bundleAddonETB = 450;

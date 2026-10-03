@@ -219,7 +219,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <Bookmark className={`w-3.5 h-3.5 ${favoriteIds.length > 0 ? 'fill-[#721428] text-[#721428]' : ''}`} />
           <span>Saved</span>
           {favoriteIds.length > 0 && (
-            <span className="ml-0.5 px-1.5 py-0.2 rounded-full text-[10px] font-extrabold bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]">
+            <span className="ml-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-extrabold bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]">
               {favoriteIds.length}
             </span>
           )}
@@ -261,6 +261,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   <SwipeableProductCard
                     product={product}
                     onView={onViewProduct}
+                    className="w-full"
                   />
                 </div>
               ))}

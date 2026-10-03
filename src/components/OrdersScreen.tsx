@@ -24,7 +24,9 @@ export const OrdersScreen: React.FC<OrdersScreenProps> = ({ onBrowseProducts }) 
 
   const handleCopyKey = (key: string, id: string) => {
     triggerHaptic('light');
-    navigator.clipboard.writeText(key);
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(key).catch(() => {});
+    }
     setCopiedKey(id);
     setTimeout(() => setCopiedKey(null), 2000);
   };

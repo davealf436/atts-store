@@ -7,11 +7,13 @@ import { triggerHaptic } from '../services/telegram';
 interface SwipeableProductCardProps {
   product: Product;
   onView: (product: Product) => void;
+  className?: string;
 }
 
 export const SwipeableProductCard: React.FC<SwipeableProductCardProps> = ({
   product,
   onView,
+  className = 'w-[210px] xs:w-[225px] shrink-0 snap-start',
 }) => {
   const handleClick = () => {
     triggerHaptic('light');
@@ -44,7 +46,13 @@ export const SwipeableProductCard: React.FC<SwipeableProductCardProps> = ({
   return (
     <div
       onClick={handleClick}
-      className="w-[210px] xs:w-[225px] shrink-0 snap-start bg-white border border-gray-200/90 hover:border-[#721428]/40 rounded-2xl p-2.5 flex flex-col justify-between shadow-2xs hover:shadow-xs transition-all duration-150 cursor-pointer group active:scale-[0.98]"
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleClick();
+        }
+      }}
+      className={`bg-white border border-gray-200/90 hover:border-[#721428]/40 rounded-2xl p-2.5 flex flex-col justify-between shadow-2xs hover:shadow-xs transition-all duration-150 cursor-pointer group active:scale-[0.98] ${className}`}
       role="button"
       tabIndex={0}
       aria-label={`View options for ${product.name}`}

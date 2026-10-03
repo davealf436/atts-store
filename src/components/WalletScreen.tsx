@@ -126,7 +126,9 @@ export const WalletScreen: React.FC<WalletScreenProps> = ({ user, onNavigateToSh
 
   const handleCopy = (text: string, label: string) => {
     triggerHaptic('light');
-    navigator.clipboard.writeText(text);
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(text).catch(() => {});
+    }
     setCopiedItem(label);
     setTimeout(() => setCopiedItem(null), 2000);
   };
