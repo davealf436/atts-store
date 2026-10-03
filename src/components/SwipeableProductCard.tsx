@@ -72,10 +72,6 @@ export const SwipeableProductCard: React.FC<SwipeableProductCardProps> = ({
                 className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold tracking-tight shadow-xs ${
                   isLightBg
                     ? 'bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]'
-                    : product.id === 'fxreplay-premium'
-                    ? 'bg-amber-300 text-stone-950 border border-amber-400 font-extrabold shadow-xs'
-                    : product.id === 'fxreplay-pro'
-                    ? 'bg-sky-50 text-sky-900 border border-sky-200/90 font-bold'
                     : 'bg-white/95 backdrop-blur-md text-[#721428] border border-white/60'
                 }`}
               >

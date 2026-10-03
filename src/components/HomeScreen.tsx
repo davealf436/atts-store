@@ -33,8 +33,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   // Display products in the exact requested order:
   // 1. TradingView Premium
   // 2. TradingView Essential
-  // 3. FXReplay Pro (ESSENTIAL PLAN)
-  // 4. FXReplay Pro (PREMIUM PLAN)
+  // 3. FXReplay Pro (Essential Plan)
+  // 4. FXReplay Pro (Premium Plan)
   const orderedProducts = ['tv-premium', 'tv-essential', 'fxreplay-pro', 'fxreplay-premium']
     .map((id) => products.find((p) => p.id === id))
     .filter((p): p is Product => Boolean(p));

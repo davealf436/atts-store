@@ -222,13 +222,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
           {/* Badge indicator */}
           {product.badge && (
             <span
-              className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                product.id === 'fxreplay-premium'
-                  ? 'bg-amber-300 text-stone-950 border border-amber-400 font-extrabold'
-                  : product.id === 'fxreplay-pro'
-                  ? 'bg-sky-50 text-sky-900 border border-sky-200/90 font-bold'
-                  : 'bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]'
-              }`}
+              className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]"
             >
               {product.badge}
             </span>
