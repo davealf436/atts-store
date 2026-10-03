@@ -11,6 +11,7 @@ import { ProfileScreen } from './components/ProfileScreen';
 import { SettingsScreen } from './components/SettingsScreen';
 import { ProductPage } from './components/ProductPage';
 import { CategoryPage, CategoryId } from './components/CategoryPage';
+import { AthTerminalLoader } from './components/AthTerminalLoader';
 import { CartDrawer } from './components/CartDrawer';
 import { ToastContainer } from './components/ToastContainer';
 import { initTelegramApp, getInitialTelegramUser } from './services/telegram';
@@ -34,6 +35,7 @@ export const App: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [hasInitialized, setHasInitialized] = useState(false);
 
   const telegramUser = getInitialTelegramUser();
 
@@ -105,6 +107,11 @@ export const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#F0F2F5] text-gray-900 flex flex-col items-center">
+      {/* Premium Full-Screen ATH Terminal Initialization Animation */}
+      {!hasInitialized && (
+        <AthTerminalLoader onInitialized={() => setHasInitialized(true)} />
+      )}
+
       {/* Mobile-first centered frame (320px–430px optimal viewport) */}
       <div className="w-full max-w-md min-h-screen bg-[#F8F9FA] flex flex-col relative sm:border-x sm:border-gray-200/80 sm:shadow-sm">
         {/* Sticky Top Bar with Profile, Notifications, Cart */}

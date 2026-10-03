@@ -379,4 +379,17 @@ html.dark body {
   }
 }
 
+/* ATH Terminal Initializer Loading Scan Animation */
+@keyframes athTerminalScan {
+  0% {
+    transform: translateX(-110%);
+  }
+  50% {
+    transform: translateX(80%);
+  }
+  100% {
+    transform: translateX(220%);
+  }
+}
+
 
