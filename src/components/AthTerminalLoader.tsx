@@ -8,7 +8,7 @@ interface AthTerminalLoaderProps {
 }
 
 const STATUS_MESSAGES = [
-  'Preparing your backtests...',
+  'Initializing your workspace...',
   'Loading market data...',
   'Preparing your workspace...',
   'Almost ready...',
@@ -145,7 +145,7 @@ export const AthTerminalLoader: React.FC<AthTerminalLoaderProps> = ({ onInitiali
     <div
       role="status"
       aria-live="polite"
-      aria-label="Loading Backtesting Lab"
+      aria-label="Loading Abyssinia Trading Hub"
       className={`fixed inset-0 z-[100] flex flex-col justify-center items-center bg-[#F8F9FA] text-stone-900 select-none overflow-hidden transition-all duration-500 ease-out ${
         isFadingOut && !hasError
           ? 'opacity-0 scale-[1.015] pointer-events-none'
@@ -232,14 +232,14 @@ export const AthTerminalLoader: React.FC<AthTerminalLoaderProps> = ({ onInitiali
           </div>
         </div>
 
-        {/* 2. BACKTESTING LAB Brand Name */}
+        {/* 2. ABYSSINIA TRADING HUB Brand Name */}
         <h1 className="text-[18px] sm:text-[20px] font-black tracking-tight text-stone-900 leading-tight uppercase mb-1">
-          BACKTESTING LAB
+          ABYSSINIA TRADING HUB
         </h1>
 
-        {/* 3. Built for Better Backtesting. Tagline */}
+        {/* 3. Built for Better Trading. Tagline */}
         <p className="text-xs sm:text-[13px] font-semibold text-stone-600 tracking-wide mb-6">
-          Built for Better <span className="text-[#721428] font-bold">Backtesting.</span>
+          Built for Better <span className="text-[#721428] font-bold">Trading.</span>
         </p>
 
         {/* 4. Small Rotating Status Message */}
