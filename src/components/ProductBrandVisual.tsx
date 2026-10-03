@@ -21,7 +21,7 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
   if (isTelegram) {
     return (
       <div
-        className={`relative w-full h-[88px] sm:h-[94px] overflow-hidden bg-gradient-to-r from-[#1D92D3] via-[#24A1DE] to-[#1281BC] flex items-center justify-between px-3.5 sm:px-4 py-2.5 border-b border-blue-400/40 select-none ${className}`}
+        className={`relative w-full h-[74px] sm:h-[80px] overflow-hidden bg-gradient-to-r from-[#1D92D3] via-[#24A1DE] to-[#1281BC] flex items-center justify-between px-3.5 sm:px-4 py-2 border-b border-blue-400/40 select-none ${className}`}
       >
         {/* Subtle background ambient radial light & micro dot texture */}
         <div
@@ -42,7 +42,7 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
         <div className="relative z-10 flex items-center gap-3 sm:gap-3.5 min-w-0 flex-1">
           {/* Logo Showcase with subtle glass ring */}
           <div className="relative shrink-0">
-            <div className="w-12 h-12 sm:w-13 sm:h-13 rounded-xl overflow-hidden ring-1 ring-white/30 shadow-[0_4px_12px_rgba(0,0,0,0.15)] flex items-center justify-center bg-[#24A1DE]">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl overflow-hidden ring-1 ring-white/30 shadow-[0_4px_12px_rgba(0,0,0,0.15)] flex items-center justify-center bg-[#24A1DE]">
               <ProductPhotoLogo productId={product.id} size="md" className="w-full h-full" />
             </div>
           </div>
@@ -61,17 +61,12 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
             <h3 className="text-[15px] sm:text-[16px] font-black text-white tracking-tight leading-tight truncate">
               Telegram Premium
             </h3>
-
-            {/* Technical Spec */}
-            <p className="text-[11px] font-medium text-blue-100/90 tracking-normal truncate mt-0.5">
-              4 GB File Uploads · Doubled Limits · High-Speed CDN
-            </p>
           </div>
         </div>
 
         {/* Right Tag Seal */}
         <div className="relative z-10 shrink-0 ml-2 hidden xs:flex">
-          <span className="inline-flex items-center px-2 py-1 rounded-md bg-white/15 backdrop-blur-xs border border-white/25 text-[9px] font-extrabold uppercase tracking-widest text-white shadow-2xs">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-white/15 backdrop-blur-xs border border-white/25 text-[9px] font-extrabold uppercase tracking-widest text-white shadow-2xs">
             Official
           </span>
         </div>
@@ -83,7 +78,7 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
   if (isGoogleAI) {
     return (
       <div
-        className={`relative w-full h-[88px] sm:h-[94px] overflow-hidden bg-gradient-to-r from-white via-[#FAFBFD] to-[#F1F5FD] dark:from-[#141722] dark:via-[#161B28] dark:to-[#111420] flex items-center justify-between px-3.5 sm:px-4 py-2.5 border-b border-gray-200/90 dark:border-gray-800 select-none ${className}`}
+        className={`relative w-full h-[74px] sm:h-[80px] overflow-hidden bg-gradient-to-r from-white via-[#FAFBFD] to-[#F1F5FD] dark:from-[#141722] dark:via-[#161B28] dark:to-[#111420] flex items-center justify-between px-3.5 sm:px-4 py-2 border-b border-gray-200/90 dark:border-gray-800 select-none ${className}`}
       >
         <div
           className="absolute inset-0 opacity-[0.08] pointer-events-none"
@@ -101,7 +96,7 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
 
         <div className="relative z-10 flex items-center gap-3 sm:gap-3.5 min-w-0 flex-1">
           <div className="relative shrink-0">
-            <div className="w-12 h-12 sm:w-13 sm:h-13 rounded-xl overflow-hidden ring-1 ring-gray-200 dark:ring-gray-700 shadow-2xs flex items-center justify-center bg-white">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl overflow-hidden ring-1 ring-gray-200 dark:ring-gray-700 shadow-2xs flex items-center justify-center bg-white">
               <ProductPhotoLogo productId={product.id} size="md" className="w-full h-full" />
             </div>
           </div>
@@ -117,15 +112,11 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
             <h3 className="text-[15px] sm:text-[16px] font-black text-gray-900 dark:text-white tracking-tight leading-tight truncate">
               Google AI · Gemini Pro
             </h3>
-
-            <p className="text-[11px] font-medium text-gray-600 dark:text-gray-300 tracking-normal truncate mt-0.5">
-              Gemini 1.5 Pro · 2M Context Window · Workspace AI
-            </p>
           </div>
         </div>
 
         <div className="relative z-10 shrink-0 ml-2 hidden xs:flex">
-          <span className="inline-flex items-center px-2 py-1 rounded-md bg-[#FAF0F2] dark:bg-[#721428]/25 border border-[#F0D5DA] dark:border-[#721428]/40 text-[9px] font-extrabold uppercase tracking-widest text-[#721428] dark:text-[#FB7185] shadow-2xs">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-[#FAF0F2] dark:bg-[#721428]/25 border border-[#F0D5DA] dark:border-[#721428]/40 text-[9px] font-extrabold uppercase tracking-widest text-[#721428] dark:text-[#FB7185] shadow-2xs">
             AI Powered
           </span>
         </div>
@@ -137,7 +128,7 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
   if (isAbyssiniaJournal) {
     return (
       <div
-        className={`relative w-full h-[88px] sm:h-[94px] overflow-hidden bg-gradient-to-r from-[#FAF8F5] via-[#FCFAF7] to-[#F5EFE8] dark:from-[#181822] dark:via-[#1A1A26] dark:to-[#14141E] flex items-center justify-between px-3.5 sm:px-4 py-2.5 border-b border-[#721428]/20 dark:border-[#721428]/35 select-none ${className}`}
+        className={`relative w-full h-[74px] sm:h-[80px] overflow-hidden bg-gradient-to-r from-[#FAF8F5] via-[#FCFAF7] to-[#F5EFE8] dark:from-[#181822] dark:via-[#1A1A26] dark:to-[#14141E] flex items-center justify-between px-3.5 sm:px-4 py-2 border-b border-[#721428]/20 dark:border-[#721428]/35 select-none ${className}`}
       >
         <div
           className="absolute inset-0 opacity-[0.10] pointer-events-none"
@@ -149,7 +140,7 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
 
         <div className="relative z-10 flex items-center gap-3 sm:gap-3.5 min-w-0 flex-1">
           <div className="relative shrink-0">
-            <div className="w-12 h-12 sm:w-13 sm:h-13 rounded-xl overflow-hidden ring-1 ring-[#721428]/25 shadow-2xs flex items-center justify-center bg-white">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl overflow-hidden ring-1 ring-[#721428]/25 shadow-2xs flex items-center justify-center bg-white">
               <ProductPhotoLogo productId={product.id} size="md" className="w-full h-full" />
             </div>
           </div>
@@ -165,15 +156,11 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
             <h3 className="text-[15px] sm:text-[16px] font-black text-stone-900 dark:text-white tracking-tight leading-tight truncate">
               Abyssinia Journal
             </h3>
-
-            <p className="text-[11px] font-medium text-stone-600 dark:text-stone-300 tracking-normal truncate mt-0.5">
-              Session Logging · Win-Rate Analytics · Psychology Curve
-            </p>
           </div>
         </div>
 
         <div className="relative z-10 shrink-0 ml-2 hidden xs:flex">
-          <span className="inline-flex items-center px-2 py-1 rounded-md bg-[#FAF0F2] dark:bg-[#721428]/25 border border-[#F0D5DA] dark:border-[#721428]/40 text-[9px] font-extrabold uppercase tracking-widest text-[#721428] dark:text-[#FB7185] shadow-2xs">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-[#FAF0F2] dark:bg-[#721428]/25 border border-[#F0D5DA] dark:border-[#721428]/40 text-[9px] font-extrabold uppercase tracking-widest text-[#721428] dark:text-[#FB7185] shadow-2xs">
             Official
           </span>
         </div>
@@ -185,7 +172,7 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
   if (isBacktestingJournal) {
     return (
       <div
-        className={`relative w-full h-[88px] sm:h-[94px] overflow-hidden bg-gradient-to-r from-[#070B14] via-[#091120] to-[#04070E] flex items-center justify-between px-3.5 sm:px-4 py-2.5 border-b border-gray-800 select-none ${className}`}
+        className={`relative w-full h-[74px] sm:h-[80px] overflow-hidden bg-gradient-to-r from-[#070B14] via-[#091120] to-[#04070E] flex items-center justify-between px-3.5 sm:px-4 py-2 border-b border-gray-800 select-none ${className}`}
       >
         <div
           className="absolute inset-0 opacity-[0.14] pointer-events-none"
@@ -197,7 +184,7 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
 
         <div className="relative z-10 flex items-center gap-3 sm:gap-3.5 min-w-0 flex-1">
           <div className="relative shrink-0">
-            <div className="w-12 h-12 sm:w-13 sm:h-13 rounded-xl overflow-hidden ring-1 ring-sky-500/30 shadow-[0_4px_12px_rgba(0,0,0,0.3)] flex items-center justify-center bg-black">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl overflow-hidden ring-1 ring-sky-500/30 shadow-[0_4px_12px_rgba(0,0,0,0.3)] flex items-center justify-center bg-black">
               <ProductPhotoLogo productId={product.id} size="md" className="w-full h-full" />
             </div>
           </div>
@@ -213,15 +200,11 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
             <h3 className="text-[15px] sm:text-[16px] font-black text-white tracking-tight leading-tight truncate">
               Backtesting Journal
             </h3>
-
-            <p className="text-[11px] font-medium text-gray-300 tracking-normal truncate mt-0.5">
-              100+ Trade Sample Testing · Drawdowns &amp; Edge Model
-            </p>
           </div>
         </div>
 
         <div className="relative z-10 shrink-0 ml-2 hidden xs:flex">
-          <span className="inline-flex items-center px-2 py-1 rounded-md bg-sky-950/80 border border-sky-800/60 text-[9px] font-extrabold uppercase tracking-widest text-sky-300 shadow-2xs">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-sky-950/80 border border-sky-800/60 text-[9px] font-extrabold uppercase tracking-widest text-sky-300 shadow-2xs">
             Advanced
           </span>
         </div>
@@ -233,7 +216,7 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
   if (isNotion) {
     return (
       <div
-        className={`relative w-full h-[88px] sm:h-[94px] overflow-hidden bg-gradient-to-r from-[#F8F9FA] via-[#FFFFFF] to-[#F1F3F5] dark:from-[#14161A] dark:via-[#17191E] dark:to-[#111316] flex items-center justify-between px-3.5 sm:px-4 py-2.5 border-b border-gray-200 dark:border-gray-800 select-none ${className}`}
+        className={`relative w-full h-[74px] sm:h-[80px] overflow-hidden bg-gradient-to-r from-[#F8F9FA] via-[#FFFFFF] to-[#F1F3F5] dark:from-[#14161A] dark:via-[#17191E] dark:to-[#111316] flex items-center justify-between px-3.5 sm:px-4 py-2 border-b border-gray-200 dark:border-gray-800 select-none ${className}`}
       >
         <div
           className="absolute inset-0 opacity-[0.08] pointer-events-none"
@@ -245,7 +228,7 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
 
         <div className="relative z-10 flex items-center gap-3 sm:gap-3.5 min-w-0 flex-1">
           <div className="relative shrink-0">
-            <div className="w-12 h-12 sm:w-13 sm:h-13 rounded-xl overflow-hidden ring-1 ring-gray-200 dark:ring-gray-700 shadow-2xs flex items-center justify-center bg-white">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl overflow-hidden ring-1 ring-gray-200 dark:ring-gray-700 shadow-2xs flex items-center justify-center bg-white">
               <ProductPhotoLogo productId={product.id} size="md" className="w-full h-full" />
             </div>
           </div>
@@ -261,15 +244,11 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
             <h3 className="text-[15px] sm:text-[16px] font-black text-stone-900 dark:text-white tracking-tight leading-tight truncate">
               Notion Template Journal
             </h3>
-
-            <p className="text-[11px] font-medium text-stone-600 dark:text-stone-300 tracking-normal truncate mt-0.5">
-              Trading Playbook Database · Calendar · 1-Click Duplicate
-            </p>
           </div>
         </div>
 
         <div className="relative z-10 shrink-0 ml-2 hidden xs:flex">
-          <span className="inline-flex items-center px-2 py-1 rounded-md bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-[9px] font-extrabold uppercase tracking-widest text-emerald-700 dark:text-emerald-400 shadow-2xs">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-[9px] font-extrabold uppercase tracking-widest text-emerald-700 dark:text-emerald-400 shadow-2xs">
             Free Gift
           </span>
         </div>
@@ -282,7 +261,7 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
     const isPremiumTier = product.id === 'fxreplay-premium';
     return (
       <div
-        className={`relative w-full h-[88px] sm:h-[94px] overflow-hidden bg-gradient-to-r from-[#040810] via-[#070F1E] to-[#040811] flex items-center justify-between px-3.5 sm:px-4 py-2.5 border-b border-gray-800/90 select-none ${className}`}
+        className={`relative w-full h-[74px] sm:h-[80px] overflow-hidden bg-gradient-to-r from-[#040810] via-[#070F1E] to-[#040811] flex items-center justify-between px-3.5 sm:px-4 py-2 border-b border-gray-800/90 select-none ${className}`}
       >
         <div
           className="absolute inset-0 opacity-[0.14] pointer-events-none"
@@ -300,7 +279,7 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
 
         <div className="relative z-10 flex items-center gap-3 sm:gap-3.5 min-w-0 flex-1">
           <div className="relative shrink-0">
-            <div className={`w-12 h-12 sm:w-13 sm:h-13 rounded-xl overflow-hidden ring-1 ${isPremiumTier ? 'ring-amber-400/30' : 'ring-emerald-400/30'} shadow-[0_4px_14px_rgba(0,0,0,0.35)] flex items-center justify-center bg-[#070D18]`}>
+            <div className={`w-11 h-11 sm:w-12 sm:h-12 rounded-xl overflow-hidden ring-1 ${isPremiumTier ? 'ring-amber-400/30' : 'ring-emerald-400/30'} shadow-[0_4px_14px_rgba(0,0,0,0.35)] flex items-center justify-center bg-[#070D18]`}>
               <ProductPhotoLogo productId={product.id} size="md" className="w-full h-full" />
             </div>
           </div>
@@ -316,17 +295,11 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
             <h3 className="text-[15px] sm:text-[16px] font-black text-white tracking-tight leading-tight truncate uppercase">
               FX<span className="text-emerald-400">REPLAY</span> <span className="text-xs font-semibold text-gray-300 normal-case">{isPremiumTier ? '· Premium Plan' : '· Pro Plan'}</span>
             </h3>
-
-            <p className="text-[11px] font-medium text-gray-300 tracking-normal truncate mt-0.5">
-              {isPremiumTier
-                ? 'One Email · Private Non-Shareable Session · 30 Days'
-                : 'Accurate Tick Replay · Multi-Timeframe Chart Sync'}
-            </p>
           </div>
         </div>
 
         <div className="relative z-10 shrink-0 ml-2 hidden xs:flex">
-          <span className={`inline-flex items-center px-2 py-1 rounded-md text-[9px] font-extrabold uppercase tracking-widest shadow-2xs ${
+          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-widest shadow-2xs ${
             isPremiumTier
               ? 'bg-amber-950/80 border border-amber-800/60 text-amber-300'
               : 'bg-emerald-950/80 border border-emerald-800/60 text-emerald-300'
@@ -342,7 +315,7 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
   if (isTVPremium) {
     return (
       <div
-        className={`relative w-full h-[88px] sm:h-[94px] overflow-hidden bg-gradient-to-r from-[#000000] via-[#0A0B10] to-[#040508] flex items-center justify-between px-3.5 sm:px-4 py-2.5 border-b border-gray-800/90 select-none ${className}`}
+        className={`relative w-full h-[74px] sm:h-[80px] overflow-hidden bg-gradient-to-r from-[#000000] via-[#0A0B10] to-[#040508] flex items-center justify-between px-3.5 sm:px-4 py-2 border-b border-gray-800/90 select-none ${className}`}
       >
         <div
           className="absolute inset-0 opacity-[0.14] pointer-events-none"
@@ -360,7 +333,7 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
 
         <div className="relative z-10 flex items-center gap-3 sm:gap-3.5 min-w-0 flex-1">
           <div className="relative shrink-0">
-            <div className="w-12 h-12 sm:w-13 sm:h-13 rounded-xl overflow-hidden ring-1 ring-white/20 shadow-[0_4px_14px_rgba(0,0,0,0.5)] flex items-center justify-center bg-black">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl overflow-hidden ring-1 ring-white/20 shadow-[0_4px_14px_rgba(0,0,0,0.5)] flex items-center justify-center bg-black">
               <ProductPhotoLogo productId={product.id} size="md" className="w-full h-full" />
             </div>
           </div>
@@ -376,15 +349,11 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
             <h3 className="text-[15px] sm:text-[16px] font-black text-white tracking-tight leading-tight truncate">
               TradingView Premium
             </h3>
-
-            <p className="text-[11px] font-medium text-gray-300 tracking-normal truncate mt-0.5">
-              8 Charts / Tab · 25 Indicators · Second-Based Intervals
-            </p>
           </div>
         </div>
 
         <div className="relative z-10 shrink-0 ml-2 hidden xs:flex">
-          <span className="inline-flex items-center px-2 py-1 rounded-md bg-[#721428] border border-[#721428] text-[9px] font-extrabold uppercase tracking-widest text-white shadow-2xs">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-[#721428] border border-[#721428] text-[9px] font-extrabold uppercase tracking-widest text-white shadow-2xs">
             Flagship
           </span>
         </div>
@@ -395,7 +364,7 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
   // 8. TradingView Essential & Default Fallback — Compact Horizontal Identity Card
   return (
     <div
-      className={`relative w-full h-[88px] sm:h-[94px] overflow-hidden bg-gradient-to-r from-[#08080A] via-[#101217] to-[#08080B] flex items-center justify-between px-3.5 sm:px-4 py-2.5 border-b border-gray-800/90 select-none ${className}`}
+      className={`relative w-full h-[74px] sm:h-[80px] overflow-hidden bg-gradient-to-r from-[#08080A] via-[#101217] to-[#08080B] flex items-center justify-between px-3.5 sm:px-4 py-2 border-b border-gray-800/90 select-none ${className}`}
     >
       <div
         className="absolute inset-0 opacity-[0.12] pointer-events-none"
@@ -407,7 +376,7 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
 
       <div className="relative z-10 flex items-center gap-3 sm:gap-3.5 min-w-0 flex-1">
         <div className="relative shrink-0">
-          <div className="w-12 h-12 sm:w-13 sm:h-13 rounded-xl overflow-hidden ring-1 ring-white/15 shadow-[0_4px_14px_rgba(0,0,0,0.4)] flex items-center justify-center bg-black">
+          <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl overflow-hidden ring-1 ring-white/15 shadow-[0_4px_14px_rgba(0,0,0,0.4)] flex items-center justify-center bg-black">
             <ProductPhotoLogo productId={product.id} size="md" className="w-full h-full" />
           </div>
         </div>
@@ -423,17 +392,11 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
           <h3 className="text-[15px] sm:text-[16px] font-black text-white tracking-tight leading-tight truncate">
             {product.name}
           </h3>
-
-          <p className="text-[11px] font-medium text-gray-300 tracking-normal truncate mt-0.5">
-            {isTVEssential
-              ? '2 Charts / Tab · 5 Indicators · 20 Server Alerts'
-              : (product.shortDescription || 'Official verified trading license')}
-          </p>
         </div>
       </div>
 
       <div className="relative z-10 shrink-0 ml-2 hidden xs:flex">
-        <span className="inline-flex items-center px-2 py-1 rounded-md bg-slate-800/90 border border-slate-700 text-[9px] font-extrabold uppercase tracking-widest text-slate-200 shadow-2xs">
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-slate-800/90 border border-slate-700 text-[9px] font-extrabold uppercase tracking-widest text-slate-200 shadow-2xs">
           {product.badge || 'Verified'}
         </span>
       </div>
