@@ -450,16 +450,16 @@ html.dark body {
 
 @keyframes athRingDash {
   0% {
-    stroke-dasharray: 60, 240;
+    stroke-dasharray: 45, 269;
     stroke-dashoffset: 0;
   }
   50% {
-    stroke-dasharray: 190, 110;
-    stroke-dashoffset: -60;
+    stroke-dasharray: 210, 104;
+    stroke-dashoffset: -45;
   }
   100% {
-    stroke-dasharray: 60, 240;
-    stroke-dashoffset: -300;
+    stroke-dasharray: 45, 269;
+    stroke-dashoffset: -314;
   }
 }
 
