@@ -33,8 +33,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   // Display products in the exact requested order:
   // 1. TradingView Premium
   // 2. TradingView Essential
-  // 3. FXReplay Pro
-  const orderedProducts = ['tv-premium', 'tv-essential', 'fxreplay-pro']
+  // 3. FXReplay Pro (ESSENTIAL PLAN)
+  // 4. FXReplay Pro (PREMIUM PLAN)
+  const orderedProducts = ['tv-premium', 'tv-essential', 'fxreplay-pro', 'fxreplay-premium']
     .map((id) => products.find((p) => p.id === id))
     .filter((p): p is Product => Boolean(p));
 
@@ -213,7 +214,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <div className="flex items-center justify-between px-0.5">
             <div>
               <h3 className="text-sm font-bold text-gray-900 tracking-tight flex items-center gap-1.5">
-                <Bookmark className="w-4 h-4 fill-[#721428] text-[#721428]" />
                 <span>Your Saved Tools</span>
                 <span className="text-[10px] font-semibold text-gray-400">· {savedProducts.length} items</span>
               </h3>

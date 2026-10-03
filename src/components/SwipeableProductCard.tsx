@@ -18,7 +18,7 @@ export const SwipeableProductCard: React.FC<SwipeableProductCardProps> = ({
     onView(product);
   };
 
-  const isFXReplay = product.id === 'fxreplay-pro';
+  const isFXReplay = product.brand === 'FXReplay' || product.id === 'fxreplay-pro' || product.id === 'fxreplay-premium';
   const isAbyssiniaJournal = product.id === 'abyssinia-journal';
   const isBacktestingJournal = product.id === 'backtesting-journal';
   const isNotion = product.id === 'notion-template-journal';

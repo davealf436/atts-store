@@ -367,8 +367,8 @@ export const ProductPhotoLogo: React.FC<ProductPhotoLogoProps> = ({
     );
   }
 
-  // 6. Official FXReplay Logo (for FXReplay Pro)
-  if (productId === 'fxreplay-pro') {
+  // 6. Official FXReplay Logo (for FXReplay Pro Essential & Premium)
+  if (productId === 'fxreplay-pro' || productId === 'fxreplay-premium') {
     return (
       <div
         className={`relative overflow-hidden shrink-0 flex items-center justify-center select-none shadow-2xs ${sizeClasses[size]} ${className}`}
