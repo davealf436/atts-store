@@ -152,24 +152,25 @@ export const AthTerminalLoader: React.FC<AthTerminalLoaderProps> = ({ onInitiali
           : 'opacity-100 scale-100 pointer-events-auto'
       }`}
     >
-      {/* ─── Very Subtle Trading-Grid Background ─── */}
+      {/* ─── Subtle Dot-Matrix Background (No connecting lines) ─── */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {/* Delicate hairline coordinate grid */}
+        {/* Evenly spaced tiny points in refined neutral/burgundy tint */}
         <div
-          className="absolute inset-0 opacity-[0.032]"
+          className="absolute inset-0 opacity-40"
           style={{
             backgroundImage:
-              'linear-gradient(to right, #721428 1px, transparent 1px), linear-gradient(to bottom, #721428 1px, transparent 1px)',
+              'radial-gradient(circle, rgba(114, 20, 40, 0.18) 1.2px, transparent 1.2px)',
             backgroundSize: '24px 24px',
+            backgroundPosition: 'center',
           }}
         />
 
-        {/* Soft radial ambient aura centered behind loader */}
+        {/* Soft radial ambient aura centered behind loader for subtle depth */}
         <div
-          className="absolute inset-0 opacity-45 pointer-events-none"
+          className="absolute inset-0 opacity-40 pointer-events-none"
           style={{
             background:
-              'radial-gradient(circle 320px at 50% 50%, rgba(114, 20, 40, 0.08) 0%, rgba(114, 20, 40, 0.015) 55%, transparent 100%)',
+              'radial-gradient(circle 340px at 50% 50%, rgba(114, 20, 40, 0.06) 0%, rgba(114, 20, 40, 0.01) 55%, transparent 100%)',
           }}
         />
       </div>
