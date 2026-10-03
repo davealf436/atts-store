@@ -438,4 +438,29 @@ html.dark body {
   }
 }
 
+/* ATH Circular Progress Ring Animations */
+@keyframes athRingSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes athRingDash {
+  0% {
+    stroke-dasharray: 60, 240;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 190, 110;
+    stroke-dashoffset: -60;
+  }
+  100% {
+    stroke-dasharray: 60, 240;
+    stroke-dashoffset: -300;
+  }
+}
+
 

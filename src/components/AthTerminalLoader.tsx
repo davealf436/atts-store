@@ -8,9 +8,9 @@ interface AthTerminalLoaderProps {
 }
 
 const STATUS_MESSAGES = [
-  'Initializing your workspace...',
-  'Loading market data...',
   'Preparing your backtests...',
+  'Loading market data...',
+  'Preparing your workspace...',
   'Almost ready...',
 ];
 
@@ -58,7 +58,7 @@ export const AthTerminalLoader: React.FC<AthTerminalLoaderProps> = ({ onInitiali
         await Promise.all([domReady, fontsReady, storageCheck]);
         systemReadyRef.current = true;
 
-        // If status rotation cycle has completed, fade out to dashboard
+        // If status cycle has reached the final stage, smoothly transition
         if (cycleCompleteRef.current && !isTransitioningRef.current) {
           triggerFadeOut();
         }
@@ -89,21 +89,21 @@ export const AthTerminalLoader: React.FC<AthTerminalLoaderProps> = ({ onInitiali
     const timers: ReturnType<typeof setTimeout>[] = [];
 
     // 2. Smoothly rotate status messages:
-    // Message 1: "Initializing your workspace..." (0s – 1.15s)
-    // Message 2: "Loading market data..." (1.15s – 2.3s)
+    // Message 1: "Preparing your backtests..." (0s – 1.2s)
+    // Message 2: "Loading market data..." (1.2s – 2.4s)
     timers.push(setTimeout(() => {
       setStatusIndex(1);
-    }, 1150));
+    }, 1200));
 
-    // Message 3: "Preparing your backtests..." (2.3s – 3.45s)
+    // Message 3: "Preparing your workspace..." (2.4s – 3.6s)
     timers.push(setTimeout(() => {
       setStatusIndex(2);
-    }, 2300));
+    }, 2400));
 
-    // Message 4: "Almost ready..." (3.45s – 4.5s)
+    // Message 4: "Almost ready..." (3.6s – 4.6s)
     timers.push(setTimeout(() => {
       setStatusIndex(3);
-    }, 3450));
+    }, 3600));
 
     // Finish sequence and smoothly transition to Dashboard
     timers.push(setTimeout(() => {
@@ -111,7 +111,7 @@ export const AthTerminalLoader: React.FC<AthTerminalLoaderProps> = ({ onInitiali
       if (systemReadyRef.current && !isTransitioningRef.current) {
         triggerFadeOut();
       }
-    }, 4500));
+    }, 4600));
 
     // Safety fallback at 7.0s: ensure user is never blocked
     timers.push(setTimeout(() => {
@@ -156,7 +156,7 @@ export const AthTerminalLoader: React.FC<AthTerminalLoaderProps> = ({ onInitiali
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {/* Delicate hairline coordinate grid */}
         <div
-          className="absolute inset-0 opacity-[0.035]"
+          className="absolute inset-0 opacity-[0.03]"
           style={{
             backgroundImage:
               'linear-gradient(to right, #721428 1px, transparent 1px), linear-gradient(to bottom, #721428 1px, transparent 1px)',
@@ -164,40 +164,85 @@ export const AthTerminalLoader: React.FC<AthTerminalLoaderProps> = ({ onInitiali
           }}
         />
 
-        {/* Soft radial ambient aura centered behind logo */}
+        {/* Soft radial ambient aura centered behind loader */}
         <div
           className="absolute inset-0 opacity-40 pointer-events-none"
           style={{
             background:
-              'radial-gradient(circle 340px at 50% 50%, rgba(114, 20, 40, 0.08) 0%, rgba(114, 20, 40, 0.015) 55%, transparent 100%)',
+              'radial-gradient(circle 320px at 50% 50%, rgba(59, 130, 246, 0.05) 0%, rgba(114, 20, 40, 0.02) 50%, transparent 100%)',
           }}
         />
       </div>
 
-      {/* ─── Centered Content Area: Logo, Brand Name, Tagline, Loader, and Rotating Status ─── */}
+      {/* ─── Centered Content: Circular Progress Loader with Breathing Logo, Brand & Status ─── */}
       <div className="relative z-10 flex flex-col items-center justify-center px-6 text-center max-w-sm">
-        {/* 1. ATH Logo with subtle fade/scale breathing animation */}
-        <div className="relative mb-5 flex items-center justify-center">
-          <div className="relative w-22 h-22 sm:w-24 sm:h-24 flex items-center justify-center animate-[athLogoBreathe_3.4s_ease-in-out_infinite]">
-            <AthLogo
-              size={96}
-              animated={true}
-              className="w-full h-full drop-shadow-[0_8px_20px_rgba(114,20,40,0.12)]"
-            />
+        {/* 1. Logo Centered Inside Thin Animated Circular Progress Ring */}
+        <div className="relative mb-6 flex items-center justify-center">
+          {/* Circular Loader Frame */}
+          <div className="relative w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center">
+            {/* SVG Thin Progress Ring with subtle blue glow */}
+            <svg
+              className="absolute inset-0 w-full h-full pointer-events-none -rotate-90"
+              viewBox="0 0 120 120"
+            >
+              <defs>
+                <linearGradient id="athBlueProgressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#38bdf8" />
+                  <stop offset="70%" stopColor="#2563eb" />
+                  <stop offset="100%" stopColor="#1d4ed8" />
+                </linearGradient>
+                <filter id="athBlueGlow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="0" stdDeviation="2.2" floodColor="#3b82f6" floodOpacity="0.4" />
+                </filter>
+              </defs>
+
+              {/* Faint Background Track Ring */}
+              <circle
+                cx="60"
+                cy="60"
+                r="52"
+                fill="none"
+                stroke="#E2E8F0"
+                strokeWidth="2"
+                opacity="0.75"
+              />
+
+              {/* Animated Progress Ring with Smooth Stroke Dash and Rotation */}
+              <circle
+                cx="60"
+                cy="60"
+                r="52"
+                fill="none"
+                stroke="url(#athBlueProgressGradient)"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                filter="url(#athBlueGlow)"
+                className="animate-[athRingDash_2.6s_ease-in-out_infinite,athRingSpin_3.2s_linear_infinite] origin-center"
+              />
+            </svg>
+
+            {/* Centered ATH Logo with subtle pulse/breathing animation */}
+            <div className="relative w-18 h-18 sm:w-20 sm:h-20 flex items-center justify-center animate-[athLogoBreathe_3.2s_ease-in-out_infinite]">
+              <AthLogo
+                size={78}
+                animated={true}
+                className="w-full h-full drop-shadow-[0_4px_16px_rgba(114,20,40,0.12)]"
+              />
+            </div>
           </div>
         </div>
 
-        {/* 2. Brand Name */}
+        {/* 2. Brand Name Underneath */}
         <h1 className="text-[18px] sm:text-[20px] font-black tracking-tight text-stone-900 leading-tight uppercase mb-1">
           ABYSSINIA TRADING HUB
         </h1>
 
-        {/* 3. Tagline */}
+        {/* 3. Tagline Underneath */}
         <p className="text-xs sm:text-[13px] font-semibold text-stone-600 tracking-wide mb-6">
           Built for Better <span className="text-[#721428] font-bold">Trading.</span>
         </p>
 
-        {/* 4. Loader: Three Smoothly Pulsing Dots & Rotating Status Text */}
+        {/* 4. Small Status Message with Smooth Fade Transitions */}
         {hasError ? (
           <div className="space-y-3">
             <div className="inline-flex items-center gap-1.5 text-xs text-rose-700 bg-rose-50 border border-rose-200 px-3 py-1.5 rounded-lg font-medium">
@@ -216,38 +261,13 @@ export const AthTerminalLoader: React.FC<AthTerminalLoaderProps> = ({ onInitiali
             </div>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center">
-            {/* Three Smoothly Pulsing Burgundy Dots */}
-            <div className="flex items-center justify-center gap-2 mb-3">
-              <span
-                className="w-2 h-2 rounded-full bg-[#721428]"
-                style={{
-                  animation: 'athDotPulse 1.4s ease-in-out infinite 0s',
-                }}
-              />
-              <span
-                className="w-2 h-2 rounded-full bg-[#721428]"
-                style={{
-                  animation: 'athDotPulse 1.4s ease-in-out infinite 0.22s',
-                }}
-              />
-              <span
-                className="w-2 h-2 rounded-full bg-[#721428]"
-                style={{
-                  animation: 'athDotPulse 1.4s ease-in-out infinite 0.44s',
-                }}
-              />
-            </div>
-
-            {/* Smoothly Rotating Status Text */}
-            <div className="h-5 relative flex items-center justify-center overflow-hidden">
-              <p
-                key={statusIndex}
-                className="text-[11.5px] font-medium text-stone-500 tracking-tight animate-[athStatusFade_0.35s_ease-out]"
-              >
-                {STATUS_MESSAGES[statusIndex]}
-              </p>
-            </div>
+          <div className="h-5 relative flex items-center justify-center overflow-hidden">
+            <p
+              key={statusIndex}
+              className="text-[11.5px] font-medium text-stone-500 tracking-tight animate-[athStatusFade_0.35s_ease-out]"
+            >
+              {STATUS_MESSAGES[statusIndex]}
+            </p>
           </div>
         )}
       </div>
