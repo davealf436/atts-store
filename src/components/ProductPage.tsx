@@ -7,7 +7,7 @@ import {
   ShoppingBag,
   ShieldCheck,
   Zap,
-  Sparkles,
+  Clock,
   Star,
   Layers,
 } from 'lucide-react';
@@ -42,7 +42,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
   const isEssentialFX = product.id === 'fxreplay-pro';
   const isPremiumFX = product.id === 'fxreplay-premium';
 
-  // State for optional bundle with Backtesting Journal on Essential Plan
+  // State for optional bundle with Backtesting Lab on Essential Plan
   const [bundleJournal, setBundleJournal] = useState<boolean>(false);
 
   // Generate pricing plans based on product
@@ -63,18 +63,27 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         durationLabel: '14-Day Strategy Pass',
         priceETB: 500,
         priceUSD: 3.6,
-        savingsBadge: 'Popular Choice',
-        isPopular: true,
+        savingsBadge: 'Best Value',
         billingText: 'Billed once • 14 days full backtesting access',
       },
       {
         id: '1m',
         name: '1 Month',
-        durationLabel: '30-Day Complete Pass',
-        priceETB: 950,
-        priceUSD: 6.8,
-        savingsBadge: 'Best Value',
-        billingText: 'Billed once • 30 days full backtesting access',
+        durationLabel: '30 + 6 Days Complete Pass',
+        priceETB: 800,
+        priceUSD: 5.7,
+        savingsBadge: 'Popular Choice',
+        isPopular: true,
+        billingText: 'Billed once • 36 days full backtesting access',
+      },
+      {
+        id: '3m',
+        name: '3 Months',
+        durationLabel: '90 Days + Proven Strategy Blueprint',
+        priceETB: 2100,
+        priceUSD: 15.0,
+        savingsBadge: 'Proven Strategy Bonus',
+        billingText: 'Billed once • 90 days access + Proven Strategy gift',
       },
     ];
   } else if (isPremiumFX) {
@@ -161,8 +170,8 @@ export const ProductPage: React.FC<ProductPageProps> = ({
 
   const selectedPlan = plans.find((p) => p.id === selectedPlanId) || plans[0];
 
-  const bundleAddonETB = 450;
-  const bundleAddonUSD = 3.2;
+  const bundleAddonETB = 350;
+  const bundleAddonUSD = 2.5;
 
   const currentPriceETB =
     selectedPlan.priceETB + (isEssentialFX && bundleJournal ? bundleAddonETB : 0);
@@ -195,7 +204,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
 
   const handleAddToCartClick = () => {
     triggerNotificationHaptic('success');
-    const bundleSuffix = isEssentialFX && bundleJournal ? ' + Backtesting Journal' : '';
+    const bundleSuffix = isEssentialFX && bundleJournal ? ' + Backtesting Lab' : '';
     const itemTitle = `${product.name} — ${product.tier || selectedPlan.name} (${selectedPlan.name})${bundleSuffix}`;
 
     const configuredProduct: Product = {
@@ -322,7 +331,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
       <div className="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-3">
         <div className="flex items-center justify-between">
           <h3 className="text-xs sm:text-sm font-bold text-stone-900 tracking-tight flex items-center gap-1.5">
-            <Sparkles className="w-4 h-4 text-[#721428]" />
+            <Clock className="w-4 h-4 text-[#721428]" />
             <span>Choose Your Plan</span>
           </h3>
           <span className="text-[11px] font-medium text-stone-500">
@@ -393,7 +402,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
           })}
         </div>
 
-        {/* Optional Bundle with Backtesting Journal for Essential Plan */}
+        {/* Optional Bundle with Backtesting Lab for Essential Plan */}
         {isEssentialFX && (
           <div className="p-3.5 rounded-xl border border-[#721428]/25 bg-[#FCFAF7] transition-colors">
             <div className="flex items-start justify-between gap-3">
@@ -412,14 +421,14 @@ export const ProductPage: React.FC<ProductPageProps> = ({
                   <div className="flex items-center gap-1.5 flex-wrap">
                     <Layers className="w-3.5 h-3.5 text-[#721428]" />
                     <span className="text-xs font-bold text-stone-900">
-                      Bundle with Backtesting Journal
+                      Bundle with Backtesting Lab
                     </span>
                     <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]">
                       +{formatETB(bundleAddonETB)}
                     </span>
                   </div>
                   <p className="text-[11px] text-stone-600 mt-1 leading-snug">
-                    Includes official Backtesting Journal with historical trade analytics and metrics tracking alongside your FXReplay sessions.
+                    Includes official Backtesting Lab with historical trade analytics and metrics tracking alongside your FXReplay sessions.
                   </p>
                 </label>
               </div>
@@ -435,7 +444,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
             </span>
             <span className="font-semibold text-stone-900">
               {selectedPlan.name} ({selectedPlan.durationLabel})
-              {isEssentialFX && bundleJournal ? ' + Backtesting Journal' : ''}
+              {isEssentialFX && bundleJournal ? ' + Backtesting Lab' : ''}
             </span>
             <span className="text-[10px] text-stone-500 block mt-0.5">
               {selectedPlan.billingText}
