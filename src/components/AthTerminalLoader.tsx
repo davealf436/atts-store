@@ -7,39 +7,34 @@ interface AthTerminalLoaderProps {
   onInitialized?: () => void;
 }
 
-const BRAND_LETTERS = 'ABYSSINIA TRADING HUB'.split('');
+const FULL_BRAND = 'ABYSSINIA TRADING HUB';
+const SLOGAN_WORDS = ['Built', 'for', 'Better', 'Trading.'];
 
 export const AthTerminalLoader: React.FC<AthTerminalLoaderProps> = ({ onInitialized }) => {
-  // Phase sequence (12-Second Master Timeline):
-  // Phase 1 (0.0s – 2.5s): Subtle burgundy glow emerges; ATH logo smoothly scales and fades in cleanly without square box.
-  // Phase 2 (2.5s – 5.5s): "ABYSSINIA TRADING HUB" reveals letter-by-letter with cinematic stagger.
-  // Phase 3 (5.5s – 7.5s): "Built for Better Trading." fades in with "Trading." in burgundy.
-  // Phase 4 (7.5s – 9.5s): Refined luxury burgundy loading indicator activates with workspace status.
-  // Phase 5 (9.5s – 12.0s): Status updates to "Workspace Verified"; full brand lockup is held in poise and stillness.
-  // Phase 6 (>= 12.0s): Smooth cinematic transition into Home page once system is ready.
-  const [phase, setPhase] = useState<1 | 2 | 3 | 4 | 5 | 6>(1);
-  const [isLogoMounted, setIsLogoMounted] = useState(false);
-  const [isExiting, setIsExiting] = useState(false);
+  // ─── Deliberate 12-Second Master Timeline Sequence (NO FADES) ───
+  // 0.0s – 1.0s: Clean initial presentation with centered logo at start scale
+  // 1.0s – 4.0s: Deliberate logo movement & scaling into position (motion only, zero opacity fade)
+  // 4.0s – 7.0s: Crisp letter-by-letter reveal of "ABYSSINIA TRADING HUB" (typing, zero opacity fade)
+  // 7.0s – 9.0s: Crisp word-by-word reveal of "Built for Better Trading." (zero opacity fade)
+  // 9.0s – 11.0s: Refined burgundy loading indicator active with workspace status (zero opacity fade)
+  // 11.0s – 12.0s: Complete branded display hold in stillness
+  // At 12.0s: Instant cut directly to Home page (0ms cut, NO crossfade, NO opacity transition)
+
+  const [logoMoved, setLogoMoved] = useState(false);
+  const [revealedChars, setRevealedChars] = useState(0);
+  const [revealedWords, setRevealedWords] = useState(0);
+  const [showIndicator, setShowIndicator] = useState(false);
+  const [isWorkspaceVerified, setIsWorkspaceVerified] = useState(false);
   const [isExited, setIsExited] = useState(false);
   const [hasError, setHasError] = useState(false);
 
-  // References to guarantee strict monotonic execution and prevent state races
   const systemReadyRef = useRef(false);
   const minTimePassedRef = useRef(false);
-  const isExitingRef = useRef(false);
+  const isCutTriggeredRef = useRef(false);
 
-  // Trigger logo entrance on the first animation frame after mount
   useEffect(() => {
-    const raf = requestAnimationFrame(() => {
-      setIsLogoMounted(true);
-    });
-    return () => cancelAnimationFrame(raf);
-  }, []);
-
-  // ─── 12-Second Choreographed Sequence Engine ───
-  useEffect(() => {
-    // 1. Background real readiness detection (Telegram, fonts, cache)
-    const detectSubsystemReadiness = async () => {
+    // 1. Detect actual subsystem readiness (Telegram, fonts, cache)
+    const detectSubsystems = async () => {
       try {
         initTelegramApp();
 
@@ -63,7 +58,7 @@ export const AthTerminalLoader: React.FC<AthTerminalLoaderProps> = ({ onInitiali
               window.localStorage.getItem('ath_user_profile');
             }
           } catch {
-            // Safe ignore
+            // Safe fallback
           }
           resolve();
         });
@@ -71,96 +66,96 @@ export const AthTerminalLoader: React.FC<AthTerminalLoaderProps> = ({ onInitiali
         await Promise.all([domReady, fontsReady, storageCheck]);
         systemReadyRef.current = true;
 
-        // If the 12s minimum has already completed when ready, trigger transition
-        if (minTimePassedRef.current && !isExitingRef.current) {
-          triggerExit();
+        // If the 12-second mark has already been reached, cut instantly to Home
+        if (minTimePassedRef.current && !isCutTriggeredRef.current) {
+          triggerInstantCut();
         }
       } catch (err) {
         console.warn('System readiness notice:', err);
         systemReadyRef.current = true;
-        if (minTimePassedRef.current && !isExitingRef.current) {
-          triggerExit();
+        if (minTimePassedRef.current && !isCutTriggeredRef.current) {
+          triggerInstantCut();
         }
       }
     };
 
-    detectSubsystemReadiness();
+    detectSubsystems();
 
-    const triggerExit = () => {
-      if (isExitingRef.current) return;
-      isExitingRef.current = true;
+    // ─── Instant Cut to Home: 0ms cut with zero opacity fade, zero crossfade ───
+    const triggerInstantCut = () => {
+      if (isCutTriggeredRef.current) return;
+      isCutTriggeredRef.current = true;
       triggerHaptic('light');
-      setIsExiting(true);
-
-      setTimeout(() => {
-        setIsExited(true);
-        onInitialized?.();
-      }, 600);
+      setIsExited(true);
+      onInitialized?.();
     };
 
-    // ─── Precision Master Timeline Scheduling ───
-    // Phase 2: 2.5s – Letter-by-letter reveal of "ABYSSINIA TRADING HUB"
-    const t1 = setTimeout(() => {
-      setPhase(2);
-    }, 2500);
+    const timers: ReturnType<typeof setTimeout>[] = [];
 
-    // Phase 3: 5.5s – Fade in "Built for Better Trading."
-    const t2 = setTimeout(() => {
-      setPhase(3);
-    }, 5500);
+    // Stage 1 (1.0s – 4.0s): Logo movement and scaling into place (scale/movement only, no fade)
+    timers.push(setTimeout(() => {
+      setLogoMoved(true);
+    }, 1000));
 
-    // Phase 4: 7.5s – Activate refined burgundy loading indicator
-    const t3 = setTimeout(() => {
-      setPhase(4);
-    }, 7500);
+    // Stage 2 (4.0s – 7.0s): Letter-by-letter reveal of "ABYSSINIA TRADING HUB"
+    const totalChars = FULL_BRAND.length;
+    for (let i = 1; i <= totalChars; i++) {
+      const charDelay = 4000 + Math.round((i - 1) * (3000 / totalChars));
+      timers.push(setTimeout(() => {
+        setRevealedChars(i);
+      }, charDelay));
+    }
 
-    // Phase 5: 9.5s – Status verified; sustain complete composition for 2.5s hold
-    const t4 = setTimeout(() => {
-      setPhase(5);
-    }, 9500);
+    // Stage 3 (7.0s – 9.0s): Word-by-word reveal of "Built for Better Trading."
+    for (let w = 1; w <= SLOGAN_WORDS.length; w++) {
+      const wordDelay = 7000 + (w - 1) * 500;
+      timers.push(setTimeout(() => {
+        setRevealedWords(w);
+      }, wordDelay));
+    }
 
-    // Phase 6: 12.0s – Enforced 12-Second Minimum Presentation Mark reached
-    const t5 = setTimeout(() => {
+    // Stage 4 (9.0s – 10.5s): Show refined burgundy loading indicator
+    timers.push(setTimeout(() => {
+      setShowIndicator(true);
+    }, 9000));
+
+    // Stage 5 (10.5s – 12.0s): Update status to "Workspace Verified · Ready"
+    timers.push(setTimeout(() => {
+      setIsWorkspaceVerified(true);
+    }, 10500));
+
+    // Stage 6 (12.0s): 12-second mark reached -> Instant Cut directly to Home!
+    timers.push(setTimeout(() => {
       minTimePassedRef.current = true;
-      setPhase(6);
-
-      // If subsystem readiness is confirmed, transition to Home
-      if (systemReadyRef.current && !isExitingRef.current) {
-        triggerExit();
+      if (systemReadyRef.current && !isCutTriggeredRef.current) {
+        triggerInstantCut();
       }
-    }, 12000);
+    }, 12000));
 
-    // Safety fallback at 15.0s: guarantee users are never trapped if connection completely drops
-    const safetyTimeout = setTimeout(() => {
+    // Safety fallback at 16.0s: guarantee user is never blocked indefinitely if offline
+    timers.push(setTimeout(() => {
       systemReadyRef.current = true;
-      if (!isExitingRef.current) {
-        triggerExit();
+      if (!isCutTriggeredRef.current) {
+        triggerInstantCut();
       }
-    }, 15000);
+    }, 16000));
 
     return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      clearTimeout(t3);
-      clearTimeout(t4);
-      clearTimeout(t5);
-      clearTimeout(safetyTimeout);
+      timers.forEach(clearTimeout);
     };
   }, [onInitialized]);
 
+  // Once exited, completely unmount (instant cut, no transition)
   if (isExited) {
     return null;
   }
 
   const handleManualContinue = () => {
-    if (isExitingRef.current) return;
-    isExitingRef.current = true;
+    if (isCutTriggeredRef.current) return;
+    isCutTriggeredRef.current = true;
     triggerHaptic('medium');
-    setIsExiting(true);
-    setTimeout(() => {
-      setIsExited(true);
-      onInitialized?.();
-    }, 400);
+    setIsExited(true);
+    onInitialized?.();
   };
 
   return (
@@ -168,11 +163,7 @@ export const AthTerminalLoader: React.FC<AthTerminalLoaderProps> = ({ onInitiali
       role="status"
       aria-live="polite"
       aria-label="Initializing Abyssinia Trading Hub"
-      className={`fixed inset-0 z-[100] flex flex-col justify-between items-center bg-[#F8F9FA] text-stone-900 select-none overflow-hidden transition-all duration-600 ease-out ${
-        isExiting && !hasError
-          ? 'opacity-0 scale-[1.018] pointer-events-none'
-          : 'opacity-100 scale-100 pointer-events-auto'
-      }`}
+      className="fixed inset-0 z-[100] flex flex-col justify-between items-center bg-[#F8F9FA] text-stone-900 select-none overflow-hidden"
     >
       {/* ─── Architectural Grid Background (Subtle 22px coordinate pattern) ─── */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -195,30 +186,26 @@ export const AthTerminalLoader: React.FC<AthTerminalLoaderProps> = ({ onInitiali
         />
       </div>
 
-      {/* ─── Clean Header Spacer (Distracting technical labels removed) ─── */}
+      {/* ─── Clean Header Spacer ─── */}
       <div className="pt-safe pt-6 w-full" />
 
-      {/* ─── Main Centerpiece: Clean Logo, Letter-by-Letter Title, Slogan, and Refined Indicator ─── */}
+      {/* ─── Main Centerpiece: Logo Movement, Sharp Typography, Slogan, and Indicator ─── */}
       <main className="relative z-10 flex flex-col items-center justify-center px-6 text-center max-w-sm -mt-4">
-        {/* 1. ATH Logo with subtle burgundy glow behind it (No square box, clean against background) */}
+        {/* 1. ATH Logo: Deliberate movement & scaling from 1.0s to 4.0s (NO fade) */}
         <div className="relative mb-6 flex items-center justify-center">
-          {/* Subtle burgundy ambient breathing aura */}
+          {/* Subtle burgundy ambient glow (static solid presence, no opacity fading) */}
           <div
-            className={`absolute -inset-10 rounded-full pointer-events-none transition-all duration-1000 ease-out ${
-              isLogoMounted ? 'opacity-80 scale-100' : 'opacity-0 scale-75'
-            }`}
+            className="absolute -inset-10 rounded-full pointer-events-none"
             style={{
               background:
-                'radial-gradient(circle at center, rgba(114, 20, 40, 0.12) 0%, rgba(114, 20, 40, 0.03) 55%, transparent 75%)',
+                'radial-gradient(circle at center, rgba(114, 20, 40, 0.10) 0%, rgba(114, 20, 40, 0.02) 55%, transparent 75%)',
             }}
           />
 
-          {/* Clean frameless ATH Logo */}
+          {/* Clean frameless ATH Logo without box or border */}
           <div
-            className={`relative w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center transition-all duration-[1800ms] cubic-bezier(0.16, 1, 0.3, 1) ${
-              isLogoMounted
-                ? 'opacity-100 scale-100 translate-y-0'
-                : 'opacity-0 scale-85 translate-y-3'
+            className={`relative w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center transition-transform duration-[3000ms] cubic-bezier(0.25, 1, 0.5, 1) ${
+              logoMoved ? 'scale-100 translate-y-0' : 'scale-90 translate-y-2'
             }`}
           >
             <AthLogo
@@ -229,43 +216,38 @@ export const AthTerminalLoader: React.FC<AthTerminalLoaderProps> = ({ onInitiali
           </div>
         </div>
 
-        {/* 2. Brand Name: 2.5s–5.5s Letter-by-Letter Cinematic Staggered Reveal */}
+        {/* 2. Brand Name: 4.0s–7.0s Letter-by-Letter Sharp Typing Reveal (NO fade) */}
         <div className="min-h-[28px] mb-2 flex items-center justify-center">
           <h1 className="text-[17px] sm:text-[19px] font-black tracking-tight text-stone-900 leading-tight uppercase flex items-center justify-center flex-wrap">
-            {BRAND_LETTERS.map((char, index) => (
-              <span
-                key={`ath-char-${index}`}
-                className={`inline-block transition-all duration-[800ms] cubic-bezier(0.16, 1, 0.3, 1) ${
-                  phase >= 2
-                    ? 'opacity-100 translate-y-0 filter-none'
-                    : 'opacity-0 translate-y-3 blur-[3px]'
-                }`}
-                style={{
-                  transitionDelay: phase >= 2 ? `${index * 55}ms` : '0ms',
-                }}
-              >
-                {char === ' ' ? '\u00A0' : char}
-              </span>
-            ))}
+            {FULL_BRAND.slice(0, revealedChars)}
+            {revealedChars > 0 && revealedChars < FULL_BRAND.length && (
+              <span className="w-1.5 h-4 bg-[#721428] ml-0.5 inline-block" />
+            )}
           </h1>
         </div>
 
-        {/* 3. Brand Slogan: 5.5s–7.5s Fade-In ("Built for Better Trading.") */}
-        <div className="min-h-[24px] mb-7 flex items-center justify-center overflow-hidden">
-          <p
-            className={`text-xs sm:text-[13.5px] font-semibold text-stone-600 tracking-wide transition-all duration-[1000ms] cubic-bezier(0.16, 1, 0.3, 1) ${
-              phase >= 3
-                ? 'opacity-100 translate-y-0'
-                : 'opacity-0 translate-y-2.5 pointer-events-none'
-            }`}
-          >
-            Built for Better <span className="text-[#721428] font-bold">Trading.</span>
-          </p>
+        {/* 3. Brand Slogan: 7.0s–9.0s Word-by-Word Sharp Reveal (NO fade, "Trading." in burgundy) */}
+        <div className="min-h-[24px] mb-7 flex items-center justify-center">
+          {revealedWords > 0 && (
+            <p className="text-xs sm:text-[13.5px] font-semibold text-stone-600 tracking-wide">
+              {SLOGAN_WORDS.slice(0, revealedWords).map((word, idx) => {
+                const isLastWord = word === 'Trading.';
+                return (
+                  <span
+                    key={`slogan-${idx}`}
+                    className={isLastWord ? 'text-[#721428] font-bold ml-1' : idx > 0 ? 'ml-1' : ''}
+                  >
+                    {word}
+                  </span>
+                );
+              })}
+            </p>
+          )}
         </div>
 
-        {/* 4. Refined Burgundy Loading Indicator: 7.5s+ with 9.5s–12.0s Sustained Brand Hold */}
+        {/* 4. Loading Indicator: 9.0s–12.0s Active Indicator (NO fade, scale pulse only) */}
         {hasError ? (
-          <div className="space-y-3 animate-in fade-in duration-300">
+          <div className="space-y-3">
             <div className="inline-flex items-center gap-1.5 text-xs text-rose-700 bg-rose-50 border border-rose-200 px-3 py-1.5 rounded-lg font-medium">
               <AlertCircle className="w-3.5 h-3.5 shrink-0" />
               <span>Connection paused. Tap to enter.</span>
@@ -282,54 +264,50 @@ export const AthTerminalLoader: React.FC<AthTerminalLoaderProps> = ({ onInitiali
             </div>
           </div>
         ) : (
-          <div
-            className={`w-full flex flex-col items-center transition-all duration-[900ms] ease-out ${
-              phase >= 4 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'
-            }`}
-          >
-            {/* Refined Luxury Indicator: Harmonic Triple Breathing Burgundy Pips */}
-            <div className="flex items-center justify-center gap-2 mb-2.5">
-              <span
-                className="w-1.5 h-1.5 rounded-full bg-[#721428]"
-                style={{
-                  animation: 'athHarmonicPulse 1.6s ease-in-out infinite 0s',
-                }}
-              />
-              <span
-                className="w-2 h-2 rounded-full bg-[#721428]"
-                style={{
-                  animation: 'athHarmonicPulse 1.6s ease-in-out infinite 0.28s',
-                }}
-              />
-              <span
-                className="w-1.5 h-1.5 rounded-full bg-[#721428]"
-                style={{
-                  animation: 'athHarmonicPulse 1.6s ease-in-out infinite 0.56s',
-                }}
-              />
-            </div>
+          showIndicator && (
+            <div className="w-full flex flex-col items-center">
+              {/* Refined Luxury Indicator: Harmonic Triple Breathing Burgundy Pips (scale pulse only) */}
+              <div className="flex items-center justify-center gap-2 mb-2.5">
+                <span
+                  className="w-1.5 h-1.5 rounded-full bg-[#721428]"
+                  style={{
+                    animation: 'athHarmonicPulse 1.6s ease-in-out infinite 0s',
+                  }}
+                />
+                <span
+                  className="w-2 h-2 rounded-full bg-[#721428]"
+                  style={{
+                    animation: 'athHarmonicPulse 1.6s ease-in-out infinite 0.28s',
+                  }}
+                />
+                <span
+                  className="w-1.5 h-1.5 rounded-full bg-[#721428]"
+                  style={{
+                    animation: 'athHarmonicPulse 1.6s ease-in-out infinite 0.56s',
+                  }}
+                />
+              </div>
 
-            {/* Subtle Gradient Hairline Accent */}
-            <div className="w-24 sm:w-28 h-[1px] bg-gradient-to-r from-transparent via-[#721428]/25 to-transparent mb-2.5" />
+              {/* Subtle Gradient Hairline Accent */}
+              <div className="w-24 sm:w-28 h-[1px] bg-gradient-to-r from-transparent via-[#721428]/35 to-transparent mb-2.5" />
 
-            {/* Dynamic Refined Status Text */}
-            <div className="text-[11px] font-medium text-stone-500 tracking-tight flex items-center justify-center gap-1.5 h-5">
-              {phase >= 5 ? (
-                <span className="inline-flex items-center gap-1.5 text-stone-700 font-semibold animate-in fade-in duration-300">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[#721428]" />
-                  <span>Workspace Verified · Launching</span>
-                </span>
-              ) : (
-                <span className="animate-in fade-in duration-300">
-                  Initializing workspace environment…
-                </span>
-              )}
+              {/* Dynamic Refined Status Text */}
+              <div className="text-[11px] font-medium text-stone-500 tracking-tight flex items-center justify-center gap-1.5 h-5">
+                {isWorkspaceVerified ? (
+                  <span className="inline-flex items-center gap-1.5 text-stone-700 font-semibold">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#721428]" />
+                    <span>Workspace Verified · Ready</span>
+                  </span>
+                ) : (
+                  <span>Initializing workspace environment…</span>
+                )}
+              </div>
             </div>
-          </div>
+          )
         )}
       </main>
 
-      {/* ─── Clean Minimalist Brand Footer (Distracting technical labels removed) ─── */}
+      {/* ─── Clean Minimalist Brand Footer ─── */}
       <footer className="relative z-10 pb-safe pb-6 px-6 w-full text-center">
         <p className="text-[10px] text-stone-400 font-semibold tracking-wider uppercase">
           Abyssinia Trading Hub

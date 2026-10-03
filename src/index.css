@@ -392,15 +392,13 @@ html.dark body {
   }
 }
 
-/* ATH Refined Luxury Indicator Harmonic Pulse */
+/* ATH Refined Luxury Indicator Harmonic Pulse (scale only, no fade) */
 @keyframes athHarmonicPulse {
   0%, 100% {
     transform: scale(0.85);
-    opacity: 0.35;
   }
   50% {
-    transform: scale(1.25);
-    opacity: 1;
+    transform: scale(1.3);
   }
 }
 
