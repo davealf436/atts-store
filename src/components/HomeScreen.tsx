@@ -299,19 +299,16 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       {homeTab === 'all' && (
         <>
           {/* Available Tools Category Navigation */}
-          <section className="space-y-2">
+          <section className="space-y-1.5">
             <div className="flex items-center justify-between px-0.5">
               <div>
                 <h3 className="text-sm font-bold text-gray-900 tracking-tight flex items-center gap-1.5">
                   <span>Available Tools</span>
                 </h3>
-                <p className="text-[11px] text-gray-500">
-                  Tap any category to open its dedicated collection
-                </p>
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
+            <div className="grid grid-cols-3 gap-2">
               {/* 1. Trading Tools */}
               <button
                 type="button"
@@ -319,13 +316,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   triggerHaptic('light');
                   onSelectCategory('trading-tools');
                 }}
-                className="group relative bg-white border border-gray-200/90 hover:border-[#721428]/40 active:border-[#721428] rounded-2xl p-2.5 sm:p-3 text-center flex flex-col items-center justify-center shadow-2xs hover:shadow-xs transition-all duration-150 cursor-pointer active:scale-[0.97]"
+                className="group relative bg-white border border-gray-200/90 hover:border-[#721428]/40 active:border-[#721428] rounded-xl py-2 px-1.5 text-center flex flex-col items-center justify-center shadow-2xs hover:shadow-xs transition-all duration-150 cursor-pointer active:scale-[0.97]"
                 aria-label="Open Trading Tools collection"
               >
-                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[#FAF0F2] border border-[#F0D5DA]/70 flex items-center justify-center text-[#721428] mb-2 group-hover:bg-[#721428] group-hover:text-white group-hover:border-[#721428] transition-colors shadow-2xs">
-                  <LineChart className="w-6 h-6 stroke-[2]" />
+                <div className="w-9 h-9 rounded-lg bg-[#FAF0F2] border border-[#F0D5DA]/70 flex items-center justify-center text-[#721428] mb-1.5 group-hover:bg-[#721428] group-hover:text-white group-hover:border-[#721428] transition-colors shadow-2xs">
+                  <LineChart className="w-5 h-5 stroke-[2]" />
                 </div>
-                <div className="text-[12px] sm:text-[13px] font-bold text-gray-900 group-hover:text-[#721428] transition-colors leading-tight text-center">
+                <div className="text-[11.5px] sm:text-xs font-bold text-gray-900 group-hover:text-[#721428] transition-colors leading-tight text-center truncate w-full px-0.5">
                   Trading Tools
                 </div>
               </button>
@@ -337,13 +334,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   triggerHaptic('light');
                   onSelectCategory('journaling');
                 }}
-                className="group relative bg-white border border-gray-200/90 hover:border-[#721428]/40 active:border-[#721428] rounded-2xl p-2.5 sm:p-3 text-center flex flex-col items-center justify-center shadow-2xs hover:shadow-xs transition-all duration-150 cursor-pointer active:scale-[0.97]"
+                className="group relative bg-white border border-gray-200/90 hover:border-[#721428]/40 active:border-[#721428] rounded-xl py-2 px-1.5 text-center flex flex-col items-center justify-center shadow-2xs hover:shadow-xs transition-all duration-150 cursor-pointer active:scale-[0.97]"
                 aria-label="Open Journaling collection"
               >
-                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[#FAF0F2] border border-[#F0D5DA]/70 flex items-center justify-center text-[#721428] mb-2 group-hover:bg-[#721428] group-hover:text-white group-hover:border-[#721428] transition-colors shadow-2xs">
-                  <BookOpen className="w-6 h-6 stroke-[2]" />
+                <div className="w-9 h-9 rounded-lg bg-[#FAF0F2] border border-[#F0D5DA]/70 flex items-center justify-center text-[#721428] mb-1.5 group-hover:bg-[#721428] group-hover:text-white group-hover:border-[#721428] transition-colors shadow-2xs">
+                  <BookOpen className="w-5 h-5 stroke-[2]" />
                 </div>
-                <div className="text-[12px] sm:text-[13px] font-bold text-gray-900 group-hover:text-[#721428] transition-colors leading-tight text-center">
+                <div className="text-[11.5px] sm:text-xs font-bold text-gray-900 group-hover:text-[#721428] transition-colors leading-tight text-center truncate w-full px-0.5">
                   Journaling
                 </div>
               </button>
@@ -355,13 +352,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   triggerHaptic('light');
                   onSelectCategory('subscriptions');
                 }}
-                className="group relative bg-white border border-gray-200/90 hover:border-[#721428]/40 active:border-[#721428] rounded-2xl p-2.5 sm:p-3 text-center flex flex-col items-center justify-center shadow-2xs hover:shadow-xs transition-all duration-150 cursor-pointer active:scale-[0.97]"
+                className="group relative bg-white border border-gray-200/90 hover:border-[#721428]/40 active:border-[#721428] rounded-xl py-2 px-1.5 text-center flex flex-col items-center justify-center shadow-2xs hover:shadow-xs transition-all duration-150 cursor-pointer active:scale-[0.97]"
                 aria-label="Open Subscriptions collection"
               >
-                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[#FAF0F2] border border-[#F0D5DA]/70 flex items-center justify-center text-[#721428] mb-2 group-hover:bg-[#721428] group-hover:text-white group-hover:border-[#721428] transition-colors shadow-2xs">
-                  <Crown className="w-6 h-6 stroke-[2]" />
+                <div className="w-9 h-9 rounded-lg bg-[#FAF0F2] border border-[#F0D5DA]/70 flex items-center justify-center text-[#721428] mb-1.5 group-hover:bg-[#721428] group-hover:text-white group-hover:border-[#721428] transition-colors shadow-2xs">
+                  <Crown className="w-5 h-5 stroke-[2]" />
                 </div>
-                <div className="text-[12px] sm:text-[13px] font-bold text-gray-900 group-hover:text-[#721428] transition-colors leading-tight text-center">
+                <div className="text-[11.5px] sm:text-xs font-bold text-gray-900 group-hover:text-[#721428] transition-colors leading-tight text-center truncate w-full px-0.5">
                   Subscriptions
                 </div>
               </button>
