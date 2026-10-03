@@ -213,8 +213,12 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
             </div>
           </div>
           <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 border border-white/15 text-[10px] font-semibold text-gray-200">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-            Tick-by-Tick Engine · Pro
+            <span
+              className={`w-1.5 h-1.5 rounded-full ${
+                product.id === 'fxreplay-premium' ? 'bg-amber-400' : 'bg-emerald-400'
+              }`}
+            />
+            {product.badge || 'Tick-by-Tick Engine · Pro'}
           </div>
         </div>
       </div>

@@ -7,12 +7,9 @@ import {
   ShoppingBag,
   ShieldCheck,
   Zap,
-  Clock,
   Sparkles,
-  Award,
-  CreditCard,
-  ChevronRight,
   Star,
+  Layers,
 } from 'lucide-react';
 import { triggerHaptic, triggerNotificationHaptic } from '../services/telegram';
 import { formatETB } from '../services/wallet';
@@ -27,7 +24,7 @@ interface ProductPageProps {
 }
 
 interface PlanOption {
-  id: '1m' | '3m' | 'annual';
+  id: string;
   name: string;
   durationLabel: string;
   priceETB: number;
@@ -41,53 +38,130 @@ export const ProductPage: React.FC<ProductPageProps> = ({
   product,
   onBack,
   onAddToCart,
-  onOpenCart,
 }) => {
-  // Generate pricing plans based on the product base price
-  const baseETB = product.priceETB || 2500;
-  const baseUSD = Math.round((baseETB / 140) * 100) / 100;
+  const isEssentialFX = product.id === 'fxreplay-pro';
+  const isPremiumFX = product.id === 'fxreplay-premium';
 
-  const price1mETB = baseETB;
-  const price1mUSD = baseUSD;
+  // State for optional bundle with Backtesting Journal on Essential Plan
+  const [bundleJournal, setBundleJournal] = useState<boolean>(false);
 
-  const price3mETB = Math.round(baseETB * 3 * 0.90);
-  const price3mUSD = Math.round((price3mETB / 140) * 100) / 100;
+  // Generate pricing plans based on product
+  let plans: PlanOption[] = [];
+  if (isEssentialFX) {
+    plans = [
+      {
+        id: '6d',
+        name: '6 Days',
+        durationLabel: 'Sprint Replay Pass',
+        priceETB: 250,
+        priceUSD: 1.8,
+        billingText: 'Billed once • 6 days full backtesting access',
+      },
+      {
+        id: '2w',
+        name: '2 Weeks',
+        durationLabel: '14-Day Strategy Pass',
+        priceETB: 500,
+        priceUSD: 3.6,
+        savingsBadge: 'Popular Choice',
+        isPopular: true,
+        billingText: 'Billed once • 14 days full backtesting access',
+      },
+      {
+        id: '1m',
+        name: '1 Month',
+        durationLabel: '30-Day Complete Pass',
+        priceETB: 950,
+        priceUSD: 6.8,
+        savingsBadge: 'Best Value',
+        billingText: 'Billed once • 30 days full backtesting access',
+      },
+    ];
+  } else if (isPremiumFX) {
+    plans = [
+      {
+        id: '1m',
+        name: '1 Month',
+        durationLabel: 'Private Monthly Access',
+        priceETB: 2700,
+        priceUSD: 19.3,
+        isPopular: true,
+        billingText: 'One email, private and non-shareable access',
+      },
+      {
+        id: '3m',
+        name: '3 Months',
+        durationLabel: 'Private Quarterly Pass',
+        priceETB: 7290,
+        priceUSD: 52.0,
+        savingsBadge: 'Save 10%',
+        billingText: 'Billed once • 90 days private dedicated access',
+      },
+      {
+        id: 'annual',
+        name: 'Annual',
+        durationLabel: 'Private 12 Months Access',
+        priceETB: 24300,
+        priceUSD: 173.5,
+        savingsBadge: 'Save 25% · Best Value',
+        billingText: 'Billed once • 365 days private dedicated access',
+      },
+    ];
+  } else {
+    const baseETB = product.priceETB || 2500;
+    const baseUSD = Math.round((baseETB / 140) * 100) / 100;
 
-  const priceAnnualETB = Math.round(baseETB * 12 * 0.75);
-  const priceAnnualUSD = Math.round((priceAnnualETB / 140) * 100) / 100;
+    const price1mETB = baseETB;
+    const price1mUSD = baseUSD;
 
-  const plans: PlanOption[] = [
-    {
-      id: '1m',
-      name: '1 Month',
-      durationLabel: 'Monthly Access',
-      priceETB: price1mETB,
-      priceUSD: price1mUSD,
-      billingText: 'Billed once • 30 days full validity',
-    },
-    {
-      id: '3m',
-      name: '3 Months',
-      durationLabel: 'Quarterly Pass',
-      priceETB: price3mETB,
-      priceUSD: price3mUSD,
-      savingsBadge: 'Save 10%',
-      billingText: 'Billed once • 90 days full validity',
-    },
-    {
-      id: 'annual',
-      name: 'Annual',
-      durationLabel: '12 Months Access',
-      priceETB: priceAnnualETB,
-      priceUSD: priceAnnualUSD,
-      savingsBadge: 'Save 25% · Best Value',
-      isPopular: true,
-      billingText: 'Billed once • 365 days full validity',
-    },
-  ];
+    const price3mETB = Math.round(baseETB * 3 * 0.9);
+    const price3mUSD = Math.round((price3mETB / 140) * 100) / 100;
 
-  const [selectedPlanId, setSelectedPlanId] = useState<'1m' | '3m' | 'annual'>('1m');
+    const priceAnnualETB = Math.round(baseETB * 12 * 0.75);
+    const priceAnnualUSD = Math.round((priceAnnualETB / 140) * 100) / 100;
+
+    plans = [
+      {
+        id: '1m',
+        name: '1 Month',
+        durationLabel: 'Monthly Access',
+        priceETB: price1mETB,
+        priceUSD: price1mUSD,
+        billingText: 'Billed once • 30 days full validity',
+      },
+      {
+        id: '3m',
+        name: '3 Months',
+        durationLabel: 'Quarterly Pass',
+        priceETB: price3mETB,
+        priceUSD: price3mUSD,
+        savingsBadge: 'Save 10%',
+        billingText: 'Billed once • 90 days full validity',
+      },
+      {
+        id: 'annual',
+        name: 'Annual',
+        durationLabel: '12 Months Access',
+        priceETB: priceAnnualETB,
+        priceUSD: priceAnnualUSD,
+        savingsBadge: 'Save 25% · Best Value',
+        isPopular: true,
+        billingText: 'Billed once • 365 days full validity',
+      },
+    ];
+  }
+
+  const defaultPlanId = isEssentialFX ? '6d' : '1m';
+  const [selectedPlanId, setSelectedPlanId] = useState<string>(defaultPlanId);
   const selectedPlan = plans.find((p) => p.id === selectedPlanId) || plans[0];
+
+  const bundleAddonETB = 450;
+  const bundleAddonUSD = 3.2;
+
+  const currentPriceETB =
+    selectedPlan.priceETB + (isEssentialFX && bundleJournal ? bundleAddonETB : 0);
+  const currentPriceUSD =
+    selectedPlan.priceUSD + (isEssentialFX && bundleJournal ? bundleAddonUSD : 0);
 
   const [isLiked, setIsLiked] = useState<boolean>(() => isFavorite(product.id));
 
@@ -108,24 +182,24 @@ export const ProductPage: React.FC<ProductPageProps> = ({
     }
   };
 
-  const handleSelectPlan = (planId: '1m' | '3m' | 'annual') => {
+  const handleSelectPlan = (planId: string) => {
     triggerHaptic('light');
     setSelectedPlanId(planId);
   };
 
   const handleAddToCartClick = () => {
     triggerNotificationHaptic('success');
+    const bundleSuffix = isEssentialFX && bundleJournal ? ' + Backtesting Journal' : '';
+    const itemTitle = `${product.name} — ${product.tier || selectedPlan.name} (${selectedPlan.name})${bundleSuffix}`;
+
     const configuredProduct: Product = {
       ...product,
-      id: `${product.id}-${selectedPlan.id}`,
-      name: `${product.name} (${selectedPlan.name})`,
-      priceETB: selectedPlan.priceETB,
+      id: `${product.id}-${selectedPlan.id}${isEssentialFX && bundleJournal ? '-bundle' : ''}`,
+      name: itemTitle,
+      priceETB: currentPriceETB,
     };
     onAddToCart(configuredProduct);
-    toast.success(
-      'Added to Cart',
-      `${product.name} (${selectedPlan.name}) has been added to your cart.`
-    );
+    toast.success('Added to Cart', `${itemTitle} has been added to your cart.`);
   };
 
   return (
@@ -138,17 +212,29 @@ export const ProductPage: React.FC<ProductPageProps> = ({
             triggerHaptic('light');
             onBack();
           }}
-          className="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-xl bg-white border border-stone-200 text-stone-700 hover:text-stone-900 hover:bg-stone-50 transition-all cursor-pointer text-xs font-bold shadow-2xs active:scale-[0.98]"
-          aria-label="Go back to store"
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-stone-700 hover:text-stone-950 py-1.5 px-2.5 -ml-1 rounded-lg hover:bg-stone-100 transition-colors cursor-pointer"
         >
-          <ArrowLeft className="w-4 h-4 stroke-[2.2]" />
+          <ArrowLeft className="w-4 h-4" />
           <span>Back</span>
         </button>
 
         <div className="flex items-center gap-2">
-          <span className="text-[10.5px] font-bold text-stone-500 bg-stone-100 px-2.5 py-1 rounded-lg uppercase tracking-wider">
-            {product.brand}
-          </span>
+          {/* Badge indicator */}
+          {product.badge && (
+            <span
+              className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                product.id === 'fxreplay-premium'
+                  ? 'bg-amber-300 text-stone-950 border border-amber-400 font-extrabold'
+                  : product.id === 'fxreplay-pro'
+                  ? 'bg-sky-50 text-sky-900 border border-sky-200/90 font-bold'
+                  : 'bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]'
+              }`}
+            >
+              {product.badge}
+            </span>
+          )}
+
+          {/* Star Bookmark Button */}
           <button
             type="button"
             onClick={handleToggleFavorite}
@@ -169,39 +255,43 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         </div>
       </div>
 
-      {/* 2. Premium Dark Product Hero with Real Brand Logo */}
-      <div className="rounded-2xl overflow-hidden border border-stone-200/90 shadow-2xs bg-stone-900">
-        <ProductBrandVisual product={product} className="h-44 sm:h-52 w-full" />
+      {/* 2. Brand Visual Hero Banner */}
+      <div className="rounded-2xl overflow-hidden border border-stone-200/90 shadow-2xs">
+        <ProductBrandVisual product={product} />
       </div>
 
-      {/* 3. Product Title, Tier Badge, and Short Description */}
-      <div className="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-2.5">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-[10px] font-bold tracking-wide uppercase px-2.5 py-0.5 rounded-md bg-stone-100 text-stone-700">
-            {product.brand}
-          </span>
-          {product.badge && (
-            <span className="text-[10px] font-bold tracking-wide uppercase px-2.5 py-0.5 rounded-md bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]">
-              {product.badge}
+      {/* 3. Product Title, Tier & Subtitle Summary */}
+      <div className="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-2">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <div className="text-[11px] font-bold uppercase tracking-wider text-stone-500">
+              {product.brand}
+            </div>
+            <h1 className="text-xl sm:text-2xl font-extrabold text-stone-900 tracking-tight leading-tight mt-0.5">
+              {product.name}
+            </h1>
+            {product.subtitle && (
+              <p className="text-xs sm:text-sm font-semibold text-[#721428] mt-1">
+                {product.subtitle}
+              </p>
+            )}
+          </div>
+          <div className="text-right shrink-0">
+            <span className="text-[10px] uppercase tracking-wide text-stone-600 block">
+              Starting from
             </span>
-          )}
-          {product.tier && product.tier !== product.badge && (
-            <span className="text-[10px] font-semibold text-stone-500 bg-stone-50 px-2 py-0.5 rounded border border-stone-200">
-              {product.tier} Tier
+            <span className="text-base sm:text-lg font-extrabold text-[#721428] tabular-nums">
+              {formatETB(product.priceETB)}
             </span>
-          )}
+          </div>
         </div>
 
-        <h1 className="text-lg sm:text-xl font-bold text-stone-900 tracking-tight leading-tight">
-          {product.name}
-        </h1>
-
-        <p className="text-xs sm:text-[13px] text-stone-600 leading-relaxed">
+        <p className="text-xs text-stone-600 leading-relaxed font-normal pt-1">
           {product.shortDescription}
         </p>
 
-        {/* Value Highlights */}
-        <div className="pt-2 border-t border-stone-100 grid grid-cols-2 gap-2 text-[11px] text-stone-600 font-medium">
+        {/* Feature quick tags */}
+        <div className="flex items-center gap-3 pt-2 text-[11px] text-stone-600 border-t border-stone-100 flex-wrap">
           <div className="flex items-center gap-1.5">
             <Zap className="w-3.5 h-3.5 text-amber-500 shrink-0" />
             <span>Instant Telegram Delivery</span>
@@ -213,6 +303,21 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         </div>
       </div>
 
+      {/* Special Highlights for Premium Plan */}
+      {isPremiumFX && (
+        <div className="p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200/90 text-amber-950 flex items-start gap-2.5 shadow-2xs">
+          <ShieldCheck className="w-4.5 h-4.5 text-amber-600 shrink-0 mt-0.5" />
+          <div className="text-xs space-y-0.5">
+            <div className="font-extrabold text-amber-900">
+              One Email, Private &amp; Non-Shareable Access
+            </div>
+            <div className="text-amber-800 text-[11px] leading-snug">
+              Guaranteed 100% private session. Dedicated account assigned exclusively to your single designated email address.
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* 4. Choose Your Plan Section */}
       <div className="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-3">
         <div className="flex items-center justify-between">
@@ -221,7 +326,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
             <span>Choose Your Plan</span>
           </h3>
           <span className="text-[11px] font-medium text-stone-500">
-            Select billing cycle
+            {isEssentialFX ? 'Choose your duration' : 'Select billing cycle'}
           </span>
         </div>
 
@@ -288,6 +393,40 @@ export const ProductPage: React.FC<ProductPageProps> = ({
           })}
         </div>
 
+        {/* Optional Bundle with Backtesting Journal for Essential Plan */}
+        {isEssentialFX && (
+          <div className="p-3.5 rounded-xl border border-[#721428]/25 bg-[#FCFAF7] transition-colors">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-start gap-2.5">
+                <input
+                  type="checkbox"
+                  id="journal-bundle"
+                  checked={bundleJournal}
+                  onChange={(e) => {
+                    triggerHaptic('light');
+                    setBundleJournal(e.target.checked);
+                  }}
+                  className="mt-0.5 w-4 h-4 rounded text-[#721428] border-stone-300 focus:ring-[#721428] cursor-pointer"
+                />
+                <label htmlFor="journal-bundle" className="cursor-pointer">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <Layers className="w-3.5 h-3.5 text-[#721428]" />
+                    <span className="text-xs font-bold text-stone-900">
+                      Bundle with Backtesting Journal
+                    </span>
+                    <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]">
+                      +{formatETB(bundleAddonETB)}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-stone-600 mt-1 leading-snug">
+                    Includes official Backtesting Journal with historical trade analytics and metrics tracking alongside your FXReplay sessions.
+                  </p>
+                </label>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Selected Plan Summary Banner */}
         <div className="p-3 rounded-xl bg-stone-50 border border-stone-200/80 flex items-center justify-between text-xs">
           <div>
@@ -296,6 +435,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
             </span>
             <span className="font-semibold text-stone-900">
               {selectedPlan.name} ({selectedPlan.durationLabel})
+              {isEssentialFX && bundleJournal ? ' + Backtesting Journal' : ''}
             </span>
             <span className="text-[10px] text-stone-500 block mt-0.5">
               {selectedPlan.billingText}
@@ -303,10 +443,10 @@ export const ProductPage: React.FC<ProductPageProps> = ({
           </div>
           <div className="text-right">
             <div className="text-sm font-extrabold text-[#721428] tabular-nums">
-              {formatETB(selectedPlan.priceETB)}
+              {formatETB(currentPriceETB)}
             </div>
             <div className="text-[10.5px] font-medium text-stone-500">
-              ~${selectedPlan.priceUSD.toFixed(2)} USD
+              ~${currentPriceUSD.toFixed(2)} USD
             </div>
           </div>
         </div>
@@ -314,7 +454,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
 
       {/* 5. Overview (Compact and Premium) */}
       <div className="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-2">
-        <h3 className="text-xs font-bold text-stone-900 uppercase tracking-wider text-stone-500">
+        <h3 className="text-xs font-bold uppercase tracking-wider text-stone-500">
           Overview
         </h3>
         <p className="text-xs text-stone-700 leading-relaxed font-normal">
@@ -324,7 +464,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
 
       {/* 6. Included Specifications (Compact and Premium) */}
       <div className="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-2.5">
-        <h3 className="text-xs font-bold text-stone-900 uppercase tracking-wider text-stone-500">
+        <h3 className="text-xs font-bold uppercase tracking-wider text-stone-500">
           Included Specifications
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
@@ -354,12 +494,15 @@ export const ProductPage: React.FC<ProductPageProps> = ({
           >
             <div className="flex items-center gap-2">
               <ShoppingBag className="w-4.5 h-4.5" />
-              <span>Add to Cart • {selectedPlan.name}</span>
+              <span>
+                Add to Cart • {selectedPlan.name}
+                {isEssentialFX && bundleJournal ? ' + Bundle' : ''}
+              </span>
             </div>
             <div className="flex items-center gap-1.5 font-extrabold tabular-nums">
-              <span>{formatETB(selectedPlan.priceETB)}</span>
+              <span>{formatETB(currentPriceETB)}</span>
               <span className="text-white/70 text-[11px] font-normal">
-                (~${selectedPlan.priceUSD.toFixed(2)})
+                (~${currentPriceUSD.toFixed(2)})
               </span>
             </div>
           </button>

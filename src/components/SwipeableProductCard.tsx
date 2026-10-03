@@ -72,6 +72,10 @@ export const SwipeableProductCard: React.FC<SwipeableProductCardProps> = ({
                 className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold tracking-tight shadow-xs ${
                   isLightBg
                     ? 'bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]'
+                    : product.id === 'fxreplay-premium'
+                    ? 'bg-amber-300 text-stone-950 border border-amber-400 font-extrabold shadow-xs'
+                    : product.id === 'fxreplay-pro'
+                    ? 'bg-sky-50 text-sky-900 border border-sky-200/90 font-bold'
                     : 'bg-white/95 backdrop-blur-md text-[#721428] border border-white/60'
                 }`}
               >
@@ -81,11 +85,20 @@ export const SwipeableProductCard: React.FC<SwipeableProductCardProps> = ({
           )}
         </div>
 
-        {/* Product Name at the bottom of the image area (No price, no description) */}
+        {/* Product Name & optional subtitle at the bottom of the image area */}
         <div className="mt-2.5 mb-2 px-1">
           <h4 className="text-[13.5px] font-bold text-gray-900 tracking-tight leading-snug group-hover:text-[#721428] transition-colors truncate">
             {product.name}
           </h4>
+          {product.subtitle ? (
+            <p className="text-[11px] text-gray-500 font-medium leading-tight mt-0.5 truncate">
+              {product.subtitle}
+            </p>
+          ) : (
+            <p className="text-[11px] text-transparent select-none leading-tight mt-0.5">
+              &nbsp;
+            </p>
+          )}
         </div>
       </div>
 

@@ -21,6 +21,7 @@ export interface Product {
   features: string[];
   badge?: string;
   tier?: string;
+  subtitle?: string;
 }
 
 export interface CartItem {
