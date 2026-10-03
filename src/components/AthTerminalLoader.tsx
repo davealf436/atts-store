@@ -175,7 +175,7 @@ export const AthTerminalLoader: React.FC<AthTerminalLoaderProps> = ({ onInitiali
         />
       </div>
 
-      {/* ─── Centered Content: Three-Dot Sequential Loader with Logo, Brand & Status ─── */}
+      {/* ─── Centered Content: 4-Dot Sequential Loader with Logo, Brand & Status ─── */}
       <div className="relative z-10 flex flex-col items-center justify-center px-6 text-center max-w-sm">
         {/* 1. Centered Frameless Logo with subtle breathing animation */}
         <div className="relative mb-6 flex items-center justify-center">
@@ -207,7 +207,7 @@ export const AthTerminalLoader: React.FC<AthTerminalLoaderProps> = ({ onInitiali
           Built for Better <span className="text-[#721428] font-bold">Trading.</span>
         </p>
 
-        {/* 4. Three Small Burgundy Dots with Smooth Sequential Pulse + Rotating Status Message */}
+        {/* 4. Four Small Burgundy Dots with Smooth Sequential Pulse/Wave + Rotating Status Message */}
         {hasError ? (
           <div className="space-y-3">
             <div className="inline-flex items-center gap-1.5 text-xs text-rose-700 bg-rose-50 border border-rose-200 px-3 py-1.5 rounded-lg font-medium">
@@ -227,24 +227,30 @@ export const AthTerminalLoader: React.FC<AthTerminalLoaderProps> = ({ onInitiali
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center">
-            {/* Three small burgundy dots with smooth sequential pulse */}
+            {/* 4 small burgundy dots with smooth sequential pulse/wave left to right */}
             <div className="flex items-center justify-center gap-1.5 mb-2.5">
               <span
                 className="w-1.5 h-1.5 rounded-full bg-[#721428]"
                 style={{
-                  animation: 'athDotPulse 1.4s ease-in-out infinite 0s',
+                  animation: 'athDotPulse 1.35s ease-in-out infinite 0s',
                 }}
               />
               <span
                 className="w-1.5 h-1.5 rounded-full bg-[#721428]"
                 style={{
-                  animation: 'athDotPulse 1.4s ease-in-out infinite 0.2s',
+                  animation: 'athDotPulse 1.35s ease-in-out infinite 0.16s',
                 }}
               />
               <span
                 className="w-1.5 h-1.5 rounded-full bg-[#721428]"
                 style={{
-                  animation: 'athDotPulse 1.4s ease-in-out infinite 0.4s',
+                  animation: 'athDotPulse 1.35s ease-in-out infinite 0.32s',
+                }}
+              />
+              <span
+                className="w-1.5 h-1.5 rounded-full bg-[#721428]"
+                style={{
+                  animation: 'athDotPulse 1.35s ease-in-out infinite 0.48s',
                 }}
               />
             </div>

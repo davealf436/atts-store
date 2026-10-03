@@ -438,14 +438,14 @@ html.dark body {
   }
 }
 
-/* ATH Three-Dot Sequential Pulse Animation */
+/* ATH 4-Dot Sequential Pulse/Wave Animation */
 @keyframes athDotPulse {
-  0%, 100% {
-    transform: scale(0.8);
-    opacity: 0.35;
+  0%, 70%, 100% {
+    transform: scale(0.75);
+    opacity: 0.3;
   }
-  50% {
-    transform: scale(1.2);
+  30% {
+    transform: scale(1.22);
     opacity: 1;
   }
 }
