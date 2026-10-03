@@ -1,7 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Product } from '../types';
 import { SwipeableProductCard } from './SwipeableProductCard';
-import { ArrowRight, ArrowLeftRight, ShieldCheck, Zap, Bookmark, Compass } from 'lucide-react';
+import {
+  ArrowRight,
+  ArrowLeftRight,
+  ShieldCheck,
+  Zap,
+  Bookmark,
+  Compass,
+  LineChart,
+  BookOpen,
+  Sparkles,
+} from 'lucide-react';
 import { triggerHaptic } from '../services/telegram';
 import { AthLogo } from './AthLogo';
 import { getFavoriteIds, subscribeToFavorites } from '../services/favorites';
@@ -53,6 +63,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const orderedSubscriptionProducts = ['telegram-premium', 'google-ai']
     .map((id) => products.find((p) => p.id === id))
     .filter((p): p is Product => Boolean(p));
+
+  const scrollToSection = (sectionId: string) => {
+    triggerHaptic('light');
+    const el = document.getElementById(sectionId);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   return (
     <div className="space-y-4 pb-4">
@@ -277,6 +295,82 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       {/* ─── ALL TOOLS VIEW (When All Tools Tab is Active) ─── */}
       {homeTab === 'all' && (
         <>
+          {/* Available Tools Category Navigation */}
+          <section className="space-y-2.5">
+            <div className="flex items-center justify-between px-0.5">
+              <div>
+                <h3 className="text-sm font-bold text-gray-900 tracking-tight flex items-center gap-1.5">
+                  <span>Available Tools</span>
+                </h3>
+                <p className="text-[11px] text-gray-500">
+                  Select a category to jump directly to a toolset
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
+              {/* 1. Trading Tools */}
+              <button
+                type="button"
+                onClick={() => scrollToSection('featured-tools')}
+                className="group relative bg-white border border-gray-200/90 hover:border-[#721428]/40 active:border-[#721428] rounded-xl p-2.5 sm:p-3 text-left flex flex-col justify-between shadow-2xs hover:shadow-xs transition-all duration-150 cursor-pointer active:scale-[0.98]"
+                aria-label="Jump to Trading Tools section"
+              >
+                <div className="w-8 h-8 rounded-lg bg-[#FAF0F2] border border-[#F0D5DA]/70 flex items-center justify-center text-[#721428] mb-2 group-hover:bg-[#721428] group-hover:text-white group-hover:border-[#721428] transition-colors">
+                  <LineChart className="w-4 h-4 stroke-[1.8]" />
+                </div>
+                <div>
+                  <div className="text-[12.5px] sm:text-[13px] font-bold text-gray-900 group-hover:text-[#721428] transition-colors leading-tight">
+                    Trading Tools
+                  </div>
+                  <div className="text-[10px] text-gray-500 font-medium mt-0.5">
+                    Charting &amp; Replay
+                  </div>
+                </div>
+              </button>
+
+              {/* 2. Journaling */}
+              <button
+                type="button"
+                onClick={() => scrollToSection('journaling-tools')}
+                className="group relative bg-white border border-gray-200/90 hover:border-[#721428]/40 active:border-[#721428] rounded-xl p-2.5 sm:p-3 text-left flex flex-col justify-between shadow-2xs hover:shadow-xs transition-all duration-150 cursor-pointer active:scale-[0.98]"
+                aria-label="Jump to Journaling section"
+              >
+                <div className="w-8 h-8 rounded-lg bg-[#FAF0F2] border border-[#F0D5DA]/70 flex items-center justify-center text-[#721428] mb-2 group-hover:bg-[#721428] group-hover:text-white group-hover:border-[#721428] transition-colors">
+                  <BookOpen className="w-4 h-4 stroke-[1.8]" />
+                </div>
+                <div>
+                  <div className="text-[12.5px] sm:text-[13px] font-bold text-gray-900 group-hover:text-[#721428] transition-colors leading-tight">
+                    Journaling
+                  </div>
+                  <div className="text-[10px] text-gray-500 font-medium mt-0.5">
+                    Ledger &amp; Testing
+                  </div>
+                </div>
+              </button>
+
+              {/* 3. Subscriptions */}
+              <button
+                type="button"
+                onClick={() => scrollToSection('subscriptions-tools')}
+                className="group relative bg-white border border-gray-200/90 hover:border-[#721428]/40 active:border-[#721428] rounded-xl p-2.5 sm:p-3 text-left flex flex-col justify-between shadow-2xs hover:shadow-xs transition-all duration-150 cursor-pointer active:scale-[0.98]"
+                aria-label="Jump to Subscriptions section"
+              >
+                <div className="w-8 h-8 rounded-lg bg-[#FAF0F2] border border-[#F0D5DA]/70 flex items-center justify-center text-[#721428] mb-2 group-hover:bg-[#721428] group-hover:text-white group-hover:border-[#721428] transition-colors">
+                  <Sparkles className="w-4 h-4 stroke-[1.8]" />
+                </div>
+                <div>
+                  <div className="text-[12.5px] sm:text-[13px] font-bold text-gray-900 group-hover:text-[#721428] transition-colors leading-tight">
+                    Subscriptions
+                  </div>
+                  <div className="text-[10px] text-gray-500 font-medium mt-0.5">
+                    Telegram &amp; AI
+                  </div>
+                </div>
+              </button>
+            </div>
+          </section>
+
           {/* Featured Tools Section with Horizontal Swipeable Cards */}
           <section id="featured-tools" className="space-y-2.5 scroll-mt-16">
             <div className="flex items-center justify-between px-0.5">
@@ -304,7 +398,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </section>
 
           {/* Journaling Tools Section with Exact Same Horizontal Swipeable Cards */}
-          <section className="space-y-2.5">
+          <section id="journaling-tools" className="space-y-2.5 scroll-mt-16">
             <div className="flex items-center justify-between px-0.5">
               <div>
                 <h3 className="text-sm font-bold text-gray-900 tracking-tight flex items-center gap-1.5">
@@ -330,7 +424,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </section>
 
           {/* Premium Subscriptions Section (Ordered: 1. Telegram Premium, 2. Google AI) */}
-          <section className="space-y-2.5">
+          <section id="subscriptions-tools" className="space-y-2.5 scroll-mt-16">
             <div className="flex items-center justify-between px-0.5">
               <div>
                 <h3 className="text-sm font-bold text-gray-900 tracking-tight flex items-center gap-1.5">
