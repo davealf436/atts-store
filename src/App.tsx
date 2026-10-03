@@ -20,10 +20,10 @@ export const App: React.FC = () => {
       const hash = window.location.hash.toLowerCase().replace('#', '');
       if (hash === 'wallet') return 'wallet';
       if (hash === 'orders') return 'orders';
-      if (hash === 'home') return 'home';
       if (hash === 'p2p') return 'p2p';
+      if (hash === 'home') return 'home';
     }
-    return 'p2p';
+    return 'home';
   };
 
   const [activeTab, setActiveTab] = useState<NavigationTab>(getInitialTab);
