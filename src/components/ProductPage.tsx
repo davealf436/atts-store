@@ -9,7 +9,6 @@ import {
   Zap,
   Clock,
   Star,
-  Layers,
 } from 'lucide-react';
 import { triggerHaptic, triggerNotificationHaptic } from '../services/telegram';
 import { formatETB } from '../services/wallet';
@@ -83,6 +82,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         durationLabel: 'Sprint Replay Pass',
         priceETB: 250,
         priceUSD: 1.8,
+        savingsBadge: 'Strategy Sprint',
         billingText: 'Billed once • 6 days full backtesting access',
       },
     ];
@@ -419,7 +419,6 @@ export const ProductPage: React.FC<ProductPageProps> = ({
                 />
                 <label htmlFor="journal-bundle" className="cursor-pointer">
                   <div className="flex items-center gap-1.5 flex-wrap">
-                    <Layers className="w-3.5 h-3.5 text-[#721428]" />
                     <span className="text-xs font-bold text-stone-900">
                       Bundle with Backtesting Lab
                     </span>
