@@ -9,6 +9,10 @@ import {
   Zap,
   Clock,
   Star,
+  LayoutGrid,
+  History,
+  LineChart,
+  Radio,
 } from 'lucide-react';
 import { triggerHaptic, triggerNotificationHaptic } from '../services/telegram';
 import { formatETB } from '../services/wallet';
@@ -177,6 +181,34 @@ export const ProductPage: React.FC<ProductPageProps> = ({
     selectedPlan.priceETB + (isEssentialFX && bundleJournal ? bundleAddonETB : 0);
   const currentPriceUSD =
     selectedPlan.priceUSD + (isEssentialFX && bundleJournal ? bundleAddonUSD : 0);
+
+  const fxReplayBenefits = [
+    {
+      title: 'Flexible Chart Layouts',
+      description: 'Customize your chart layout for your backtesting workflow.',
+      icon: LayoutGrid,
+    },
+    {
+      title: 'Historical Data Since 2003',
+      description: 'Backtest historical market data from 2003 to the latest available date.',
+      icon: History,
+    },
+    {
+      title: '1-Minute & Second Timeframes',
+      description: 'Analyze price movements with fine-grained timeframes.',
+      icon: Clock,
+    },
+    {
+      title: 'TradingView Premium Charting',
+      description: 'Enjoy a familiar, powerful TradingView charting experience.',
+      icon: LineChart,
+    },
+    {
+      title: 'Real-Time CME Data',
+      description: 'Access real-time CME market data for supported instruments.',
+      icon: Radio,
+    },
+  ];
 
   const [isLiked, setIsLiked] = useState<boolean>(() => isFavorite(product.id));
 
@@ -460,7 +492,49 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         </div>
       </div>
 
-      {/* 5. Overview (Compact and Premium) */}
+      {/* 5. Why FXReplay Pro? (Minimal, compact benefit cards) */}
+      {isEssentialFX && (
+        <div className="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-stone-500">
+              Why FXReplay Pro?
+            </h3>
+            <span className="text-[10px] font-semibold text-[#721428] bg-[#FAF0F2] border border-[#F0D5DA] px-2 py-0.5 rounded-full">
+              Core Highlights
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            {fxReplayBenefits.map((benefit, idx) => {
+              const IconComponent = benefit.icon;
+              return (
+                <div
+                  key={idx}
+                  className={`p-3 rounded-xl bg-stone-50/70 border border-stone-200/80 transition-colors ${
+                    idx === 4 ? 'sm:col-span-2' : ''
+                  }`}
+                >
+                  <div className="flex items-start gap-2.5">
+                    <div className="w-7 h-7 rounded-lg bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center shrink-0 mt-0.5">
+                      <IconComponent className="w-3.5 h-3.5 stroke-[1.75]" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h4 className="text-xs font-bold text-stone-900 leading-snug">
+                        {benefit.title}
+                      </h4>
+                      <p className="text-[11.5px] text-stone-600 leading-snug mt-0.5 font-normal">
+                        {benefit.description}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* 6. Overview (Compact and Premium) */}
       <div className="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-2">
         <h3 className="text-xs font-bold uppercase tracking-wider text-stone-500">
           Overview
