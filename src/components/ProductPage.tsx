@@ -569,13 +569,13 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         </div>
       </div>
 
-      {/* 7. Sticky Burgundy Add to Cart Bar at Bottom */}
-      <div className="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-stone-200/90 p-3 sm:p-4 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
-        <div className="max-w-md mx-auto">
+      {/* 7. Floating Burgundy Add to Cart Button */}
+      <div className="fixed bottom-3 sm:bottom-4 inset-x-0 z-40 px-3.5 sm:px-4 pointer-events-none pb-safe">
+        <div className="max-w-md mx-auto pointer-events-auto">
           <button
             type="button"
             onClick={handleAddToCartClick}
-            className="w-full h-12 rounded-xl bg-[#721428] hover:bg-[#5A0E1E] active:bg-[#470A17] text-white font-bold text-xs sm:text-sm flex items-center justify-between px-4 transition-all active:scale-[0.98] shadow-md cursor-pointer"
+            className="w-full h-12 rounded-xl bg-[#721428] hover:bg-[#5A0E1E] active:bg-[#470A17] text-white font-bold text-xs sm:text-sm flex items-center justify-between px-4 transition-all active:scale-[0.98] shadow-[0_8px_24px_rgba(114,20,40,0.35)] cursor-pointer select-none"
           >
             <div className="flex items-center gap-2">
               <ShoppingBag className="w-4.5 h-4.5" />
