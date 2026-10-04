@@ -569,27 +569,42 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         </div>
       </div>
 
-      {/* 7. Sticky Burgundy Add to Cart Bar at Bottom */}
-      <div className="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-stone-200/90 p-3 sm:p-4 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
-        <div className="max-w-md mx-auto">
+      {/* 7. Premium Sticky Checkout Bar */}
+      <div className="fixed bottom-0 inset-x-0 z-40 bg-white/95 dark:bg-[#12141C]/95 backdrop-blur-md border-t border-stone-200/90 dark:border-stone-800 px-3.5 py-2.5 sm:px-4 sm:py-3 pb-safe shadow-[0_-4px_25px_rgba(0,0,0,0.08)]">
+        <div className="max-w-md mx-auto flex items-center justify-between gap-3">
+          {/* Left: Selected Plan & Price in ETB(USDT) */}
+          <div className="min-w-0 flex-1 flex flex-col justify-center">
+            {/* Selected Plan indicator */}
+            <div className="flex items-center gap-1.5 text-[11px] leading-tight mb-0.5 truncate">
+              <span className="font-extrabold text-[#721428] dark:text-[#FB7185] uppercase tracking-wide truncate">
+                {selectedPlan.name}
+                {isEssentialFX && bundleJournal ? ' + Lab' : ''}
+              </span>
+              <span className="text-stone-300 dark:text-stone-600 shrink-0">•</span>
+              <span className="text-stone-500 dark:text-stone-400 truncate text-[10.5px]">
+                {selectedPlan.durationLabel}
+              </span>
+            </div>
+
+            {/* Price Display in ETB (USDT) */}
+            <div className="flex items-baseline gap-1.5 flex-wrap">
+              <span className="text-base sm:text-lg font-black text-stone-900 dark:text-white tabular-nums leading-none">
+                {formatETB(currentPriceETB)}
+              </span>
+              <span className="text-[11px] sm:text-xs font-semibold text-stone-500 dark:text-stone-400 font-mono leading-none">
+                ({currentPriceUSD.toFixed(2)} USDT)
+              </span>
+            </div>
+          </div>
+
+          {/* Right: Prominent, Easy-to-Tap Add to Cart Button */}
           <button
             type="button"
             onClick={handleAddToCartClick}
-            className="w-full h-12 rounded-xl bg-[#721428] hover:bg-[#5A0E1E] active:bg-[#470A17] text-white font-bold text-xs sm:text-sm flex items-center justify-between px-4 transition-all active:scale-[0.98] shadow-md cursor-pointer"
+            className="h-11 sm:h-12 px-5 sm:px-6 rounded-xl bg-[#721428] hover:bg-[#5A0E1E] active:bg-[#470A17] text-white font-bold text-xs sm:text-sm tracking-tight flex items-center justify-center gap-2 shrink-0 transition-all active:scale-[0.96] shadow-md shadow-[#721428]/25 cursor-pointer select-none"
           >
-            <div className="flex items-center gap-2">
-              <ShoppingBag className="w-4.5 h-4.5" />
-              <span>
-                Add to Cart • {selectedPlan.name}
-                {isEssentialFX && bundleJournal ? ' + Bundle' : ''}
-              </span>
-            </div>
-            <div className="flex items-center gap-1.5 font-extrabold tabular-nums">
-              <span>{formatETB(currentPriceETB)}</span>
-              <span className="text-white/70 text-[11px] font-normal">
-                (~${currentPriceUSD.toFixed(2)})
-              </span>
-            </div>
+            <ShoppingBag className="w-4 h-4 stroke-[2.25]" />
+            <span>Add to Cart</span>
           </button>
         </div>
       </div>
