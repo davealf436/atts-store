@@ -4,7 +4,7 @@ import { ProductBrandVisual } from './ProductBrandVisual';
 import {
   ArrowLeft,
   Check,
-  ShoppingBag,
+  ShoppingCart,
   ShieldCheck,
   Zap,
   Clock,
@@ -578,7 +578,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
             className="w-full h-12 rounded-xl bg-[#721428] hover:bg-[#5A0E1E] active:bg-[#470A17] text-white font-bold text-xs sm:text-sm flex items-center justify-between px-4 transition-all active:scale-[0.98] shadow-[0_8px_24px_rgba(114,20,40,0.35)] cursor-pointer select-none"
           >
             <div className="flex items-center gap-2">
-              <ShoppingBag className="w-4.5 h-4.5" />
+              <ShoppingCart className="w-4.5 h-4.5" strokeWidth={2} />
               <span>
                 Add to Cart • {selectedPlan.name}
                 {isEssentialFX && bundleJournal ? ' + Bundle' : ''}
