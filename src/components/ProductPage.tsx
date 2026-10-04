@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Product } from '../types';
 import { ProductBrandVisual } from './ProductBrandVisual';
 import {
@@ -281,6 +281,28 @@ export const ProductPage: React.FC<ProductPageProps> = ({
     }
   };
 
+  const [activeHighlightIndex, setActiveHighlightIndex] = useState(0);
+  const highlightsRef = useRef<HTMLDivElement>(null);
+
+  const handleHighlightsScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const el = e.currentTarget;
+    const scrollPos = el.scrollLeft;
+    const cardWidth = 230;
+    const index = Math.round(scrollPos / cardWidth);
+    setActiveHighlightIndex(Math.min(Math.max(index, 0), fxReplayBenefits.length - 1));
+  };
+
+  const scrollToHighlight = (idx: number) => {
+    triggerHaptic('light');
+    if (highlightsRef.current) {
+      highlightsRef.current.scrollTo({
+        left: idx * 230,
+        behavior: 'smooth',
+      });
+      setActiveHighlightIndex(idx);
+    }
+  };
+
   const handleSelectPlan = (planId: string) => {
     triggerHaptic('light');
     setSelectedPlanId(planId);
@@ -396,6 +418,240 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         </div>
       </div>
 
+      {/* 4. Overview (Refined Context) */}
+      <div className="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-2">
+        <h3 className="text-xs font-bold uppercase tracking-wider text-stone-500">
+          Overview
+        </h3>
+        <p className="text-xs text-stone-700 leading-relaxed font-normal">
+          {product.fullDescription}
+        </p>
+      </div>
+
+      {/* 5. Why FXReplay Pro? (Horizontal Minimal & Compact Benefit Cards with Swipe Hint & Dots) */}
+      {isEssentialFX && (
+        <div className="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-3 relative overflow-hidden">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <h3 className="text-xs sm:text-sm font-bold text-stone-900 tracking-tight">
+                Why FXReplay Pro?
+              </h3>
+              <span className="text-[10px] font-semibold text-[#721428] bg-[#FAF0F2] border border-[#F0D5DA] px-2 py-0.5 rounded-full">
+                5 Highlights
+              </span>
+            </div>
+
+            {/* Dots indicator for swipe awareness */}
+            <div className="flex items-center gap-1.5" title="Swipe to view all highlights">
+              {fxReplayBenefits.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => scrollToHighlight(i)}
+                  className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                    activeHighlightIndex === i
+                      ? 'w-4 bg-[#721428]'
+                      : 'w-1.5 bg-stone-200 hover:bg-stone-300'
+                  }`}
+                  aria-label={`Highlight card ${i + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Cards Track with discrete edge fade */}
+          <div className="relative">
+            <div
+              ref={highlightsRef}
+              onScroll={handleHighlightsScroll}
+              className="flex items-stretch gap-2.5 overflow-x-auto pb-2 -mx-1 px-1 snap-x snap-mandatory scroll-smooth no-scrollbar"
+            >
+              {fxReplayBenefits.map((benefit, idx) => {
+                const IconComponent = benefit.icon;
+                return (
+                  <div
+                    key={idx}
+                    className="w-[220px] sm:w-[240px] shrink-0 snap-start p-3 rounded-xl bg-stone-50/70 border border-stone-200/80 hover:border-stone-300 transition-colors flex flex-col justify-between"
+                  >
+                    <div className="flex items-start gap-2.5">
+                      <div className="w-7 h-7 rounded-lg bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center shrink-0 mt-0.5">
+                        <IconComponent className="w-3.5 h-3.5 stroke-[1.75]" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h4 className="text-xs font-bold text-stone-900 leading-snug">
+                          {benefit.title}
+                        </h4>
+                        <p className="text-[11px] text-stone-600 leading-snug mt-1 font-normal">
+                          {benefit.description}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Subtle right gradient fade hint for swipeability on mobile */}
+            {activeHighlightIndex < fxReplayBenefits.length - 1 && (
+              <div className="pointer-events-none absolute right-0 top-0 bottom-2 w-8 bg-gradient-to-l from-white via-white/70 to-transparent sm:hidden" />
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* 6. What's Included (Interactive Comparison Table) */}
+      <div className="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-3">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-xs sm:text-sm font-bold text-stone-900 tracking-tight">
+              What's Included
+            </h3>
+            <p className="text-[10px] text-stone-500 mt-0.5">
+              Tap any column to select that pass
+            </p>
+          </div>
+          <span className="text-[10px] font-semibold text-[#721428] bg-[#FAF0F2] border border-[#F0D5DA] px-2 py-0.5 rounded-full">
+            Plan Comparison
+          </span>
+        </div>
+
+        {isEssentialFX ? (
+          <div className="overflow-x-auto -mx-1 px-1">
+            <table className="w-full text-left border-collapse min-w-[340px]">
+              <thead>
+                <tr className="border-b border-stone-200/80">
+                  <th className="pb-2.5 text-[11px] font-bold uppercase tracking-wider text-stone-400 w-[36%]">
+                    Features
+                  </th>
+                  {[
+                    { id: '6d', labelShort: '6D', labelLong: '6 Days' },
+                    { id: '2w', labelShort: '2W', labelLong: '2 Weeks' },
+                    { id: '1m', labelShort: '1M', labelLong: '1 Month' },
+                    { id: '3m', labelShort: '3M', labelLong: '3 Months' },
+                  ].map((col) => {
+                    const isColSelected = selectedPlanId === col.id;
+                    return (
+                      <th
+                        key={col.id}
+                        onClick={() => {
+                          handleSelectPlan(col.id);
+                          toast.info('Plan Selected', `Switched to ${col.labelLong}`);
+                        }}
+                        className={`pb-2.5 text-center text-xs font-bold w-[16%] cursor-pointer transition-all select-none p-1 rounded-t-xl ${
+                          isColSelected
+                            ? 'text-[#721428] bg-[#FAF0F2] ring-1 ring-[#F0D5DA]'
+                            : 'text-stone-700 hover:text-stone-900 hover:bg-stone-50'
+                        }`}
+                        title={`Select ${col.labelLong}`}
+                      >
+                        <div className="flex flex-col items-center">
+                          <span className="hidden sm:inline">{col.labelLong}</span>
+                          <span className="sm:hidden">{col.labelShort}</span>
+                          {isColSelected && (
+                            <span className="text-[8.5px] uppercase font-bold text-[#721428] mt-0.5 leading-none">
+                              Active
+                            </span>
+                          )}
+                        </div>
+                      </th>
+                    );
+                  })}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-stone-100">
+                {fxComparisonFeatures.map((row, idx) => {
+                  const renderCell = (val: boolean | string) => {
+                    if (val === true) {
+                      return (
+                        <div className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]">
+                          <Check className="w-3 h-3 stroke-[2.5]" />
+                        </div>
+                      );
+                    }
+                    if (typeof val === 'string') {
+                      return (
+                        <span className="inline-block text-[9.5px] font-bold text-[#721428] bg-[#FAF0F2] border border-[#F0D5DA] px-1.5 py-0.5 rounded leading-none">
+                          {val}
+                        </span>
+                      );
+                    }
+                    return <span className="text-stone-300 font-bold text-sm select-none">—</span>;
+                  };
+
+                  return (
+                    <tr key={idx} className="hover:bg-stone-50/50 transition-colors">
+                      <td className="py-2.5 pr-2 text-xs font-medium text-stone-800">
+                        {row.name}
+                      </td>
+                      <td
+                        onClick={() => {
+                          handleSelectPlan('6d');
+                          toast.info('Plan Selected', 'Switched to 6 Days');
+                        }}
+                        className={`py-2.5 text-center cursor-pointer transition-colors ${
+                          selectedPlanId === '6d' ? 'bg-[#FAF0F2]/50' : ''
+                        }`}
+                      >
+                        {renderCell(row.d6)}
+                      </td>
+                      <td
+                        onClick={() => {
+                          handleSelectPlan('2w');
+                          toast.info('Plan Selected', 'Switched to 2 Weeks');
+                        }}
+                        className={`py-2.5 text-center cursor-pointer transition-colors ${
+                          selectedPlanId === '2w' ? 'bg-[#FAF0F2]/50' : ''
+                        }`}
+                      >
+                        {renderCell(row.w2)}
+                      </td>
+                      <td
+                        onClick={() => {
+                          handleSelectPlan('1m');
+                          toast.info('Plan Selected', 'Switched to 1 Month');
+                        }}
+                        className={`py-2.5 text-center cursor-pointer transition-colors ${
+                          selectedPlanId === '1m' ? 'bg-[#FAF0F2]/50' : ''
+                        }`}
+                      >
+                        {renderCell(row.m1)}
+                      </td>
+                      <td
+                        onClick={() => {
+                          handleSelectPlan('3m');
+                          toast.info('Plan Selected', 'Switched to 3 Months');
+                        }}
+                        className={`py-2.5 text-center cursor-pointer transition-colors ${
+                          selectedPlanId === '3m' ? 'bg-[#FAF0F2]/50' : ''
+                        }`}
+                      >
+                        {renderCell(row.m3)}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+            {product.features.map((feature, idx) => (
+              <div
+                key={idx}
+                className="flex items-start gap-2 p-2 rounded-xl bg-stone-50 border border-stone-200/60 text-xs text-stone-800"
+              >
+                <div className="w-4 h-4 rounded-full bg-[#FAF0F2] text-[#721428] flex items-center justify-center shrink-0 mt-0.5 border border-[#F0D5DA]">
+                  <Check className="w-2.5 h-2.5 stroke-[2.5]" />
+                </div>
+                <span className="leading-snug text-xs font-medium text-stone-700">
+                  {feature}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* Special Highlights for Premium Plan */}
       {isPremiumFX && (
         <div className="p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200/90 text-amber-950 flex items-start gap-2.5 shadow-2xs">
@@ -411,7 +667,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         </div>
       )}
 
-      {/* 4. Choose Your Plan Section */}
+      {/* 7. Choose Your Plan Section */}
       <div className="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-3">
         <div className="flex items-center justify-between">
           <h3 className="text-xs sm:text-sm font-bold text-stone-900 tracking-tight flex items-center gap-1.5">
@@ -544,178 +800,59 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         </div>
       </div>
 
-      {/* 5. Why FXReplay Pro? (Horizontal Minimal & Compact Benefit Cards) */}
-      {isEssentialFX && (
-        <div className="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-3">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xs sm:text-sm font-bold text-stone-900 tracking-tight">
-              Why FXReplay Pro?
-            </h3>
-            <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-semibold text-[#721428] bg-[#FAF0F2] border border-[#F0D5DA] px-2 py-0.5 rounded-full">
-                5 Highlights
+      {/* 8. ATTS Guarantee & Delivery Transparency */}
+      <div className="bg-gradient-to-br from-stone-50 to-stone-100/70 rounded-2xl border border-stone-200/90 p-4 shadow-2xs space-y-3">
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 rounded-lg bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center shrink-0">
+            <ShieldCheck className="w-3.5 h-3.5 stroke-[2]" />
+          </div>
+          <div>
+            <h4 className="text-xs font-bold text-stone-900 leading-tight">
+              ATTS Verified Delivery &amp; Warranty
+            </h4>
+            <p className="text-[10px] text-stone-500">
+              Guaranteed by ATTS Store Ethiopia
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-0.5">
+          <div className="flex items-start gap-2 p-2.5 rounded-xl bg-white border border-stone-200/70 shadow-2xs">
+            <Zap className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+            <div className="min-w-0">
+              <span className="text-[11px] font-bold text-stone-900 block leading-tight">
+                Instant Telegram Delivery
               </span>
-              <span className="text-[10px] text-stone-400 font-medium hidden xs:inline">
-                Scroll horizontally →
+              <span className="text-[10px] text-stone-500 leading-tight block mt-0.5">
+                Credentials sent to your bot within 60s
               </span>
             </div>
           </div>
 
-          <div className="flex items-stretch gap-2.5 overflow-x-auto pb-2 -mx-1 px-1 snap-x snap-mandatory">
-            {fxReplayBenefits.map((benefit, idx) => {
-              const IconComponent = benefit.icon;
-              return (
-                <div
-                  key={idx}
-                  className="w-[220px] sm:w-[240px] shrink-0 snap-start p-3 rounded-xl bg-stone-50/70 border border-stone-200/80 hover:border-stone-300 transition-colors flex flex-col justify-between"
-                >
-                  <div className="flex items-start gap-2.5">
-                    <div className="w-7 h-7 rounded-lg bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center shrink-0 mt-0.5">
-                      <IconComponent className="w-3.5 h-3.5 stroke-[1.75]" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h4 className="text-xs font-bold text-stone-900 leading-snug">
-                        {benefit.title}
-                      </h4>
-                      <p className="text-[11px] text-stone-600 leading-snug mt-1 font-normal">
-                        {benefit.description}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+          <div className="flex items-start gap-2 p-2.5 rounded-xl bg-white border border-stone-200/70 shadow-2xs">
+            <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+            <div className="min-w-0">
+              <span className="text-[11px] font-bold text-stone-900 block leading-tight">
+                Full Duration Warranty
+              </span>
+              <span className="text-[10px] text-stone-500 leading-tight block mt-0.5">
+                100% replacement guarantee
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-2 p-2.5 rounded-xl bg-white border border-stone-200/70 shadow-2xs">
+            <Radio className="w-4 h-4 text-[#721428] shrink-0 mt-0.5" />
+            <div className="min-w-0">
+              <span className="text-[11px] font-bold text-stone-900 block leading-tight">
+                Direct Local Support
+              </span>
+              <span className="text-[10px] text-stone-500 leading-tight block mt-0.5">
+                Dedicated Telegram assistance 7 days/wk
+              </span>
+            </div>
           </div>
         </div>
-      )}
-
-      {/* 6. Overview (Compact and Premium) */}
-      <div className="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-2">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-stone-500">
-          Overview
-        </h3>
-        <p className="text-xs text-stone-700 leading-relaxed font-normal">
-          {product.fullDescription}
-        </p>
-      </div>
-
-      {/* 6. What's Included (Comparison Table) */}
-      <div className="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-3">
-        <div className="flex items-center justify-between">
-          <h3 className="text-xs sm:text-sm font-bold text-stone-900 tracking-tight">
-            What's Included
-          </h3>
-          <span className="text-[10px] font-semibold text-[#721428] bg-[#FAF0F2] border border-[#F0D5DA] px-2 py-0.5 rounded-full">
-            Plan Comparison
-          </span>
-        </div>
-
-        {isEssentialFX ? (
-          <div className="overflow-x-auto -mx-1 px-1">
-            <table className="w-full text-left border-collapse min-w-[340px]">
-              <thead>
-                <tr className="border-b border-stone-200/80">
-                  <th className="pb-2.5 text-[11px] font-bold uppercase tracking-wider text-stone-400 w-[36%]">
-                    Features
-                  </th>
-                  <th
-                    onClick={() => handleSelectPlan('6d')}
-                    className={`pb-2.5 text-center text-xs font-bold w-[16%] cursor-pointer transition-colors ${
-                      selectedPlanId === '6d' ? 'text-[#721428]' : 'text-stone-700 hover:text-stone-900'
-                    }`}
-                  >
-                    <span className="hidden sm:inline">6 Days</span>
-                    <span className="sm:hidden">6D</span>
-                  </th>
-                  <th
-                    onClick={() => handleSelectPlan('2w')}
-                    className={`pb-2.5 text-center text-xs font-bold w-[16%] cursor-pointer transition-colors ${
-                      selectedPlanId === '2w' ? 'text-[#721428]' : 'text-stone-700 hover:text-stone-900'
-                    }`}
-                  >
-                    <span className="hidden sm:inline">2 Weeks</span>
-                    <span className="sm:hidden">2W</span>
-                  </th>
-                  <th
-                    onClick={() => handleSelectPlan('1m')}
-                    className={`pb-2.5 text-center text-xs font-bold w-[16%] cursor-pointer transition-colors ${
-                      selectedPlanId === '1m' ? 'text-[#721428]' : 'text-stone-700 hover:text-stone-900'
-                    }`}
-                  >
-                    <span className="hidden sm:inline">1 Month</span>
-                    <span className="sm:hidden">1M</span>
-                  </th>
-                  <th
-                    onClick={() => handleSelectPlan('3m')}
-                    className={`pb-2.5 text-center text-xs font-bold w-[16%] cursor-pointer transition-colors ${
-                      selectedPlanId === '3m' ? 'text-[#721428]' : 'text-stone-700 hover:text-stone-900'
-                    }`}
-                  >
-                    <span className="hidden sm:inline">3 Months</span>
-                    <span className="sm:hidden">3M</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-stone-100">
-                {fxComparisonFeatures.map((row, idx) => {
-                  const renderCell = (val: boolean | string) => {
-                    if (val === true) {
-                      return (
-                        <div className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]">
-                          <Check className="w-3 h-3 stroke-[2.5]" />
-                        </div>
-                      );
-                    }
-                    if (typeof val === 'string') {
-                      return (
-                        <span className="inline-block text-[9.5px] font-bold text-[#721428] bg-[#FAF0F2] border border-[#F0D5DA] px-1.5 py-0.5 rounded leading-none">
-                          {val}
-                        </span>
-                      );
-                    }
-                    return <span className="text-stone-300 font-bold text-sm select-none">—</span>;
-                  };
-
-                  return (
-                    <tr key={idx} className="hover:bg-stone-50/50 transition-colors">
-                      <td className="py-2.5 pr-2 text-xs font-medium text-stone-800">
-                        {row.name}
-                      </td>
-                      <td className={`py-2.5 text-center ${selectedPlanId === '6d' ? 'bg-[#FAF0F2]/40 rounded' : ''}`}>
-                        {renderCell(row.d6)}
-                      </td>
-                      <td className={`py-2.5 text-center ${selectedPlanId === '2w' ? 'bg-[#FAF0F2]/40 rounded' : ''}`}>
-                        {renderCell(row.w2)}
-                      </td>
-                      <td className={`py-2.5 text-center ${selectedPlanId === '1m' ? 'bg-[#FAF0F2]/40 rounded' : ''}`}>
-                        {renderCell(row.m1)}
-                      </td>
-                      <td className={`py-2.5 text-center ${selectedPlanId === '3m' ? 'bg-[#FAF0F2]/40 rounded' : ''}`}>
-                        {renderCell(row.m3)}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-            {product.features.map((feature, idx) => (
-              <div
-                key={idx}
-                className="flex items-start gap-2 p-2 rounded-xl bg-stone-50 border border-stone-200/60 text-xs text-stone-800"
-              >
-                <div className="w-4 h-4 rounded-full bg-[#FAF0F2] text-[#721428] flex items-center justify-center shrink-0 mt-0.5 border border-[#F0D5DA]">
-                  <Check className="w-2.5 h-2.5 stroke-[2.5]" />
-                </div>
-                <span className="leading-snug text-xs font-medium text-stone-700">
-                  {feature}
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
       </div>
 
       {/* 7. Floating Burgundy Add to Cart Button */}
