@@ -492,27 +492,30 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         </div>
       </div>
 
-      {/* 5. Why FXReplay Pro? (Minimal, compact benefit cards) */}
+      {/* 5. Why FXReplay Pro? (Horizontal Minimal & Compact Benefit Cards) */}
       {isEssentialFX && (
         <div className="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-xs font-bold uppercase tracking-wider text-stone-500">
               Why FXReplay Pro?
             </h3>
-            <span className="text-[10px] font-semibold text-[#721428] bg-[#FAF0F2] border border-[#F0D5DA] px-2 py-0.5 rounded-full">
-              Core Highlights
-            </span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] font-semibold text-[#721428] bg-[#FAF0F2] border border-[#F0D5DA] px-2 py-0.5 rounded-full">
+                5 Highlights
+              </span>
+              <span className="text-[10px] text-stone-400 font-medium hidden xs:inline">
+                Scroll horizontally →
+              </span>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div className="flex items-stretch gap-2.5 overflow-x-auto pb-2 -mx-1 px-1 snap-x snap-mandatory">
             {fxReplayBenefits.map((benefit, idx) => {
               const IconComponent = benefit.icon;
               return (
                 <div
                   key={idx}
-                  className={`p-3 rounded-xl bg-stone-50/70 border border-stone-200/80 transition-colors ${
-                    idx === 4 ? 'sm:col-span-2' : ''
-                  }`}
+                  className="w-[220px] sm:w-[240px] shrink-0 snap-start p-3 rounded-xl bg-stone-50/70 border border-stone-200/80 hover:border-stone-300 transition-colors flex flex-col justify-between"
                 >
                   <div className="flex items-start gap-2.5">
                     <div className="w-7 h-7 rounded-lg bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center shrink-0 mt-0.5">
@@ -522,7 +525,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
                       <h4 className="text-xs font-bold text-stone-900 leading-snug">
                         {benefit.title}
                       </h4>
-                      <p className="text-[11.5px] text-stone-600 leading-snug mt-0.5 font-normal">
+                      <p className="text-[11px] text-stone-600 leading-snug mt-1 font-normal">
                         {benefit.description}
                       </p>
                     </div>
