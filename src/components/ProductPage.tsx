@@ -13,6 +13,8 @@ import {
   History,
   LineChart,
   Radio,
+  Play,
+  FastForward,
 } from 'lucide-react';
 import { triggerHaptic, triggerNotificationHaptic } from '../services/telegram';
 import { formatETB } from '../services/wallet';
@@ -44,6 +46,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
 }) => {
   const isEssentialFX = product.id === 'fxreplay-pro';
   const isPremiumFX = product.id === 'fxreplay-premium';
+  const isFXReplay = product.brand === 'FXReplay' || isEssentialFX || isPremiumFX;
 
   // State for optional bundle with Backtesting Lab on Essential Plan
   const [bundleJournal, setBundleJournal] = useState<boolean>(false);
@@ -370,63 +373,298 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         </div>
       </div>
 
-      {/* 2. Brand Visual Hero Banner */}
-      <div className="rounded-2xl overflow-hidden border border-stone-200/90 shadow-2xs">
-        <ProductBrandVisual product={product} />
-      </div>
+      {/* 2. Unified Hero Card (Trading Terminal Hero for FXReplay) */}
+      {isFXReplay ? (
+        <div className="bg-white rounded-3xl border border-stone-200/90 shadow-sm overflow-hidden select-none">
+          {/* Terminal Screen / Chart Canvas */}
+          <div className="relative bg-[#080B11] text-white overflow-hidden border-b border-stone-800">
+            {/* Subtle Grid Pattern Overlay */}
+            <div
+              className="absolute inset-0 opacity-[0.07] pointer-events-none"
+              style={{
+                backgroundImage: 'radial-gradient(circle, #94A3B8 1px, transparent 1px)',
+                backgroundSize: '20px 20px',
+              }}
+            />
 
-      {/* 3. Product Title, Tier & Subtitle Summary */}
-      <div className="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-2">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <div className="text-[11px] font-bold uppercase tracking-wider text-stone-500">
-              {product.brand}
+            {/* Terminal Top HUD Header */}
+            <div className="relative z-10 flex items-center justify-between px-3.5 py-2.5 border-b border-white/10 bg-white/[0.02] backdrop-blur-xs text-[11px] font-mono">
+              {/* Pair & Live Status */}
+              <div className="flex items-center gap-2">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span className="font-extrabold text-white tracking-wide">EUR/USD</span>
+                <span className="text-[10px] text-stone-400 px-1 py-0.2 rounded bg-white/5 border border-white/10">1M</span>
+                <span className="text-[10px] text-emerald-400 font-bold hidden xs:inline">+0.54%</span>
+              </div>
+
+              {/* Replay Player Controls Mockup */}
+              <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-black/50 border border-white/10 shadow-inner">
+                <div className="w-4 h-4 rounded flex items-center justify-center text-stone-400">
+                  <FastForward className="w-2.5 h-2.5 rotate-180" />
+                </div>
+                <div className="w-4 h-4 rounded-full bg-[#10B981] text-black flex items-center justify-center shadow-xs">
+                  <Play className="w-2.5 h-2.5 fill-black ml-0.5" />
+                </div>
+                <div className="w-4 h-4 rounded flex items-center justify-center text-stone-400">
+                  <FastForward className="w-2.5 h-2.5" />
+                </div>
+                <span className="text-[9px] font-bold text-amber-400 bg-amber-400/10 border border-amber-400/20 px-1.5 py-0.2 rounded-full ml-0.5">
+                  10x
+                </span>
+              </div>
+
+              {/* CME Historical Feed Badge */}
+              <div className="hidden sm:flex items-center gap-1 text-[9.5px] text-stone-400 font-medium">
+                <span className="text-emerald-400">●</span>
+                <span>2003–2026 CME Feeds</span>
+              </div>
             </div>
-            <h1 className="text-xl sm:text-2xl font-extrabold text-stone-900 tracking-tight leading-tight mt-0.5">
-              {product.name}
-            </h1>
-            {product.subtitle && (
-              <p className="text-xs sm:text-sm font-semibold text-[#721428] mt-1">
-                {product.subtitle}
-              </p>
-            )}
+
+            {/* SVG Candlestick Chart with Moving Average & Order Fill */}
+            <div className="relative h-[125px] sm:h-[145px] w-full px-2 pt-2 pb-1">
+              <svg
+                className="w-full h-full overflow-visible"
+                viewBox="0 0 380 120"
+                preserveAspectRatio="none"
+              >
+                {/* Horizontal Grid lines */}
+                <line x1="0" y1="28" x2="380" y2="28" stroke="#1E293B" strokeWidth="0.75" strokeDasharray="3 3" />
+                <line x1="0" y1="62" x2="380" y2="62" stroke="#1E293B" strokeWidth="0.75" strokeDasharray="3 3" />
+                <line x1="0" y1="96" x2="380" y2="96" stroke="#1E293B" strokeWidth="0.75" strokeDasharray="3 3" />
+
+                {/* Cyan EMA Trendline */}
+                <path
+                  d="M 10,88 C 70,82 130,68 190,58 C 250,48 310,24 370,16"
+                  fill="none"
+                  stroke="#06B6D4"
+                  strokeWidth="1.75"
+                  opacity="0.85"
+                />
+
+                {/* 14 Realistic Candlesticks */}
+                <line x1="20" y1="58" x2="20" y2="98" stroke="#10B981" strokeWidth="1" />
+                <rect x="17" y="66" width="6" height="24" fill="#10B981" rx="0.5" />
+
+                <line x1="42" y1="62" x2="42" y2="104" stroke="#EF4444" strokeWidth="1" />
+                <rect x="39" y="70" width="6" height="26" fill="#EF4444" rx="0.5" />
+
+                <line x1="64" y1="74" x2="64" y2="110" stroke="#EF4444" strokeWidth="1" />
+                <rect x="61" y="80" width="6" height="22" fill="#EF4444" rx="0.5" />
+
+                <line x1="86" y1="60" x2="86" y2="108" stroke="#10B981" strokeWidth="1" />
+                <rect x="83" y="66" width="6" height="18" fill="#10B981" rx="0.5" />
+
+                <line x1="108" y1="50" x2="108" y2="88" stroke="#10B981" strokeWidth="1" />
+                <rect x="105" y="56" width="6" height="22" fill="#10B981" rx="0.5" />
+
+                <line x1="130" y1="42" x2="130" y2="80" stroke="#10B981" strokeWidth="1" />
+                <rect x="127" y="48" width="6" height="20" fill="#10B981" rx="0.5" />
+
+                <line x1="152" y1="46" x2="152" y2="86" stroke="#EF4444" strokeWidth="1" />
+                <rect x="149" y="52" width="6" height="24" fill="#EF4444" rx="0.5" />
+
+                <line x1="174" y1="56" x2="174" y2="92" stroke="#EF4444" strokeWidth="1" />
+                <rect x="171" y="62" width="6" height="20" fill="#EF4444" rx="0.5" />
+
+                <line x1="196" y1="44" x2="196" y2="84" stroke="#10B981" strokeWidth="1" />
+                <rect x="193" y="50" width="6" height="22" fill="#10B981" rx="0.5" />
+
+                <line x1="218" y1="36" x2="218" y2="74" stroke="#10B981" strokeWidth="1" />
+                <rect x="215" y="42" width="6" height="20" fill="#10B981" rx="0.5" />
+
+                <line x1="240" y1="26" x2="240" y2="64" stroke="#10B981" strokeWidth="1" />
+                <rect x="237" y="32" width="6" height="22" fill="#10B981" rx="0.5" />
+
+                <line x1="262" y1="18" x2="262" y2="54" stroke="#10B981" strokeWidth="1" />
+                <rect x="259" y="24" width="6" height="20" fill="#10B981" rx="0.5" />
+
+                <line x1="284" y1="12" x2="284" y2="44" stroke="#10B981" strokeWidth="1" />
+                <rect x="281" y="16" width="6" height="18" fill="#10B981" rx="0.5" />
+
+                <line x1="306" y1="8" x2="306" y2="38" stroke="#10B981" strokeWidth="1" />
+                <rect x="303" y="12" width="6" height="18" fill="#10B981" rx="0.5" />
+
+                {/* Dotted Future Replay Candle */}
+                <line x1="328" y1="6" x2="328" y2="34" stroke="#10B981" strokeWidth="1" strokeDasharray="2 2" opacity="0.6" />
+                <rect x="325" y="10" width="6" height="16" fill="none" stroke="#10B981" strokeWidth="1" strokeDasharray="2 2" opacity="0.6" />
+
+                {/* Replay Scrub Line at x=316 */}
+                <line x1="316" y1="2" x2="316" y2="118" stroke="#10B981" strokeWidth="1.25" strokeDasharray="3 2" />
+
+                {/* Order Fill Annotation */}
+                <g transform="translate(236, 56)">
+                  <rect x="0" y="0" width="98" height="21" rx="4" fill="#022C22" stroke="#10B981" strokeWidth="0.9" />
+                  <circle cx="9" cy="10.5" r="3.5" fill="#10B981" />
+                  <text x="17" y="14" fill="#A7F3D0" fontSize="9" fontWeight="bold" fontFamily="monospace">
+                    BUY +2.8R (+42p)
+                  </text>
+                </g>
+
+                {/* Replay active tag */}
+                <g transform="translate(318, 14)">
+                  <rect x="0" y="0" width="56" height="15" rx="3" fill="#0F172A" stroke="#334155" strokeWidth="0.8" />
+                  <text x="5" y="10.5" fill="#94A3B8" fontSize="8" fontWeight="bold" fontFamily="monospace">
+                    BAR 1,840
+                  </text>
+                </g>
+              </svg>
+            </div>
+
+            {/* Terminal Bottom Ticker Strip */}
+            <div className="flex items-center justify-between px-3.5 py-1.5 bg-black/60 border-t border-white/5 text-[10px] font-mono text-stone-400">
+              <span className="flex items-center gap-1 text-emerald-400">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                Tick-by-Tick Simulation Active
+              </span>
+              <span className="hidden xs:inline text-stone-500">
+                Spread: 0.2 pips • Slippage: Simulated
+              </span>
+            </div>
           </div>
-          <div className="text-right shrink-0">
-            <span className="text-[10px] uppercase tracking-wide text-stone-600 block">
-              Starting from
-            </span>
-            <span className="text-base sm:text-lg font-extrabold text-[#721428] tabular-nums">
-              {formatETB(product.priceETB)}
-            </span>
+
+          {/* Lower Integrated Header & Value Props */}
+          <div className="p-4 sm:p-5 space-y-3.5">
+            {/* Brand & Price Row */}
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <div className="flex items-center gap-1.5 leading-none mb-1">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-[#721428] bg-[#FAF0F2] border border-[#F0D5DA] px-2 py-0.5 rounded-full">
+                    {product.brand} Official
+                  </span>
+                  <span className="text-[10px] text-stone-400 font-semibold">• Pro Replay Suite</span>
+                </div>
+                <h1 className="text-xl sm:text-2xl font-black text-stone-900 tracking-tight leading-tight">
+                  {product.name}
+                </h1>
+                <p className="text-xs sm:text-sm font-semibold text-[#721428] mt-0.5">
+                  {product.subtitle || 'Tick-by-Tick Market Simulator & Strategy Sandbox'}
+                </p>
+              </div>
+
+              <div className="text-right shrink-0 bg-stone-50 border border-stone-200/80 rounded-2xl p-2 sm:px-3 sm:py-2">
+                <span className="text-[9.5px] uppercase font-bold tracking-wider text-stone-500 block leading-none">
+                  Starting from
+                </span>
+                <div className="text-base sm:text-lg font-black text-[#721428] tabular-nums mt-0.5 leading-tight">
+                  {formatETB(product.priceETB)}
+                </div>
+                <span className="text-[10px] font-medium text-stone-500 block leading-none">
+                  ~${(product.priceETB / 140).toFixed(1)} USD
+                </span>
+              </div>
+            </div>
+
+            {/* 1-Sentence High-Impact Hook */}
+            <p className="text-xs text-stone-600 leading-relaxed font-normal">
+              Replay historical Forex, Crypto, and Index markets bar-by-bar to test and validate your trading edge without risking real capital.
+            </p>
+
+            {/* 3 Visual High-Value Trading Metric Chips */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+              <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-stone-50/80 border border-stone-200/70">
+                <div className="w-7 h-7 rounded-lg bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center shrink-0">
+                  <Zap className="w-3.5 h-3.5 stroke-[2]" />
+                </div>
+                <div className="min-w-0">
+                  <span className="text-[11px] font-extrabold text-stone-900 block leading-tight">
+                    Tick-by-Tick Replay
+                  </span>
+                  <span className="text-[10px] text-stone-500 leading-tight block truncate">
+                    True spread &amp; slippage fills
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-stone-50/80 border border-stone-200/70">
+                <div className="w-7 h-7 rounded-lg bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center shrink-0">
+                  <LineChart className="w-3.5 h-3.5 stroke-[2]" />
+                </div>
+                <div className="min-w-0">
+                  <span className="text-[11px] font-extrabold text-stone-900 block leading-tight">
+                    Multi-Timeframe Sync
+                  </span>
+                  <span className="text-[10px] text-stone-500 leading-tight block truncate">
+                    1-sec to 1-day charts
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-stone-50/80 border border-stone-200/70">
+                <div className="w-7 h-7 rounded-lg bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center shrink-0">
+                  <ShieldCheck className="w-3.5 h-3.5 stroke-[2]" />
+                </div>
+                <div className="min-w-0">
+                  <span className="text-[11px] font-extrabold text-stone-900 block leading-tight">
+                    Risk-Free Sandbox
+                  </span>
+                  <span className="text-[10px] text-stone-500 leading-tight block truncate">
+                    2003+ CME data &amp; analytics
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Trust Bar */}
+            <div className="flex items-center justify-between pt-2.5 border-t border-stone-100 text-[11px] text-stone-500 flex-wrap gap-2">
+              <div className="flex items-center gap-1.5">
+                <Zap className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                <span className="font-medium text-stone-700">Instant Telegram Delivery (&lt;60s)</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                <span className="font-medium text-stone-700">100% Genuine Private License</span>
+              </div>
+            </div>
           </div>
         </div>
+      ) : (
+        <div className="bg-white rounded-2xl border border-stone-200/90 shadow-2xs overflow-hidden">
+          <ProductBrandVisual product={product} />
+          <div className="p-4 sm:p-5 space-y-2">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <div className="text-[11px] font-bold uppercase tracking-wider text-stone-500">
+                  {product.brand}
+                </div>
+                <h1 className="text-xl sm:text-2xl font-extrabold text-stone-900 tracking-tight leading-tight mt-0.5">
+                  {product.name}
+                </h1>
+                {product.subtitle && (
+                  <p className="text-xs sm:text-sm font-semibold text-[#721428] mt-1">
+                    {product.subtitle}
+                  </p>
+                )}
+              </div>
+              <div className="text-right shrink-0">
+                <span className="text-[10px] uppercase tracking-wide text-stone-600 block">
+                  Starting from
+                </span>
+                <span className="text-base sm:text-lg font-extrabold text-[#721428] tabular-nums">
+                  {formatETB(product.priceETB)}
+                </span>
+              </div>
+            </div>
 
-        <p className="text-xs text-stone-600 leading-relaxed font-normal pt-1">
-          {product.shortDescription}
-        </p>
+            <p className="text-xs text-stone-600 leading-relaxed font-normal pt-1">
+              {product.shortDescription}
+            </p>
 
-        {/* Feature quick tags */}
-        <div className="flex items-center gap-3 pt-2 text-[11px] text-stone-600 border-t border-stone-100 flex-wrap">
-          <div className="flex items-center gap-1.5">
-            <Zap className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-            <span>Instant Telegram Delivery</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-            <span>100% Genuine License</span>
+            <div className="flex items-center gap-3 pt-2 text-[11px] text-stone-600 border-t border-stone-100 flex-wrap">
+              <div className="flex items-center gap-1.5">
+                <Zap className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                <span>Instant Telegram Delivery</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                <span>100% Genuine License</span>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-
-      {/* 4. Overview (Refined Context) */}
-      <div className="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-2">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-stone-500">
-          Overview
-        </h3>
-        <p className="text-xs text-stone-700 leading-relaxed font-normal">
-          {product.fullDescription}
-        </p>
-      </div>
+      )}
 
       {/* 5. Why FXReplay Pro? (Horizontal Minimal & Compact Benefit Cards with Swipe Hint & Dots) */}
       {isEssentialFX && (
