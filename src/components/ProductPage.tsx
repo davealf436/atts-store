@@ -496,7 +496,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
       {isEssentialFX && (
         <div className="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-stone-500">
+            <h3 className="text-xs sm:text-sm font-bold text-stone-900 tracking-tight">
               Why FXReplay Pro?
             </h3>
             <div className="flex items-center gap-1.5">
