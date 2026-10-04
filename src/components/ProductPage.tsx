@@ -210,6 +210,58 @@ export const ProductPage: React.FC<ProductPageProps> = ({
     },
   ];
 
+  const fxComparisonFeatures = [
+    {
+      name: 'Tick-by-tick replay',
+      d6: true,
+      w2: true,
+      m1: true,
+      m3: true,
+    },
+    {
+      name: 'Multi-timeframe charts',
+      d6: true,
+      w2: true,
+      m1: true,
+      m3: true,
+    },
+    {
+      name: 'Spread simulation',
+      d6: true,
+      w2: true,
+      m1: true,
+      m3: true,
+    },
+    {
+      name: 'Slippage simulation',
+      d6: false,
+      w2: true,
+      m1: true,
+      m3: true,
+    },
+    {
+      name: 'Automated journaling',
+      d6: false,
+      w2: false,
+      m1: true,
+      m3: true,
+    },
+    {
+      name: 'Backtesting Lab',
+      d6: false,
+      w2: false,
+      m1: 'Add-on',
+      m3: true,
+    },
+    {
+      name: 'Priority support',
+      d6: false,
+      w2: false,
+      m1: true,
+      m3: true,
+    },
+  ];
+
   const [isLiked, setIsLiked] = useState<boolean>(() => isFavorite(product.id));
 
   useEffect(() => {
@@ -547,26 +599,123 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         </p>
       </div>
 
-      {/* 6. Included Specifications (Compact and Premium) */}
-      <div className="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-2.5">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-stone-500">
-          Included Specifications
-        </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-          {product.features.map((feature, idx) => (
-            <div
-              key={idx}
-              className="flex items-start gap-2 p-2 rounded-xl bg-stone-50 border border-stone-200/60 text-xs text-stone-800"
-            >
-              <div className="w-4 h-4 rounded-full bg-[#FAF0F2] text-[#721428] flex items-center justify-center shrink-0 mt-0.5 border border-[#F0D5DA]">
-                <Check className="w-2.5 h-2.5 stroke-[2.5]" />
-              </div>
-              <span className="leading-snug text-xs font-medium text-stone-700">
-                {feature}
-              </span>
-            </div>
-          ))}
+      {/* 6. What's Included (Comparison Table) */}
+      <div className="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-3">
+        <div className="flex items-center justify-between">
+          <h3 className="text-xs sm:text-sm font-bold text-stone-900 tracking-tight">
+            What's Included
+          </h3>
+          <span className="text-[10px] font-semibold text-[#721428] bg-[#FAF0F2] border border-[#F0D5DA] px-2 py-0.5 rounded-full">
+            Plan Comparison
+          </span>
         </div>
+
+        {isEssentialFX ? (
+          <div className="overflow-x-auto -mx-1 px-1">
+            <table className="w-full text-left border-collapse min-w-[340px]">
+              <thead>
+                <tr className="border-b border-stone-200/80">
+                  <th className="pb-2.5 text-[11px] font-bold uppercase tracking-wider text-stone-400 w-[36%]">
+                    Features
+                  </th>
+                  <th
+                    onClick={() => handleSelectPlan('6d')}
+                    className={`pb-2.5 text-center text-xs font-bold w-[16%] cursor-pointer transition-colors ${
+                      selectedPlanId === '6d' ? 'text-[#721428]' : 'text-stone-700 hover:text-stone-900'
+                    }`}
+                  >
+                    <span className="hidden sm:inline">6 Days</span>
+                    <span className="sm:hidden">6D</span>
+                  </th>
+                  <th
+                    onClick={() => handleSelectPlan('2w')}
+                    className={`pb-2.5 text-center text-xs font-bold w-[16%] cursor-pointer transition-colors ${
+                      selectedPlanId === '2w' ? 'text-[#721428]' : 'text-stone-700 hover:text-stone-900'
+                    }`}
+                  >
+                    <span className="hidden sm:inline">2 Weeks</span>
+                    <span className="sm:hidden">2W</span>
+                  </th>
+                  <th
+                    onClick={() => handleSelectPlan('1m')}
+                    className={`pb-2.5 text-center text-xs font-bold w-[16%] cursor-pointer transition-colors ${
+                      selectedPlanId === '1m' ? 'text-[#721428]' : 'text-stone-700 hover:text-stone-900'
+                    }`}
+                  >
+                    <span className="hidden sm:inline">1 Month</span>
+                    <span className="sm:hidden">1M</span>
+                  </th>
+                  <th
+                    onClick={() => handleSelectPlan('3m')}
+                    className={`pb-2.5 text-center text-xs font-bold w-[16%] cursor-pointer transition-colors ${
+                      selectedPlanId === '3m' ? 'text-[#721428]' : 'text-stone-700 hover:text-stone-900'
+                    }`}
+                  >
+                    <span className="hidden sm:inline">3 Months</span>
+                    <span className="sm:hidden">3M</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-stone-100">
+                {fxComparisonFeatures.map((row, idx) => {
+                  const renderCell = (val: boolean | string) => {
+                    if (val === true) {
+                      return (
+                        <div className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]">
+                          <Check className="w-3 h-3 stroke-[2.5]" />
+                        </div>
+                      );
+                    }
+                    if (typeof val === 'string') {
+                      return (
+                        <span className="inline-block text-[9.5px] font-bold text-[#721428] bg-[#FAF0F2] border border-[#F0D5DA] px-1.5 py-0.5 rounded leading-none">
+                          {val}
+                        </span>
+                      );
+                    }
+                    return <span className="text-stone-300 font-bold text-sm select-none">—</span>;
+                  };
+
+                  return (
+                    <tr key={idx} className="hover:bg-stone-50/50 transition-colors">
+                      <td className="py-2.5 pr-2 text-xs font-medium text-stone-800">
+                        {row.name}
+                      </td>
+                      <td className={`py-2.5 text-center ${selectedPlanId === '6d' ? 'bg-[#FAF0F2]/40 rounded' : ''}`}>
+                        {renderCell(row.d6)}
+                      </td>
+                      <td className={`py-2.5 text-center ${selectedPlanId === '2w' ? 'bg-[#FAF0F2]/40 rounded' : ''}`}>
+                        {renderCell(row.w2)}
+                      </td>
+                      <td className={`py-2.5 text-center ${selectedPlanId === '1m' ? 'bg-[#FAF0F2]/40 rounded' : ''}`}>
+                        {renderCell(row.m1)}
+                      </td>
+                      <td className={`py-2.5 text-center ${selectedPlanId === '3m' ? 'bg-[#FAF0F2]/40 rounded' : ''}`}>
+                        {renderCell(row.m3)}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+            {product.features.map((feature, idx) => (
+              <div
+                key={idx}
+                className="flex items-start gap-2 p-2 rounded-xl bg-stone-50 border border-stone-200/60 text-xs text-stone-800"
+              >
+                <div className="w-4 h-4 rounded-full bg-[#FAF0F2] text-[#721428] flex items-center justify-center shrink-0 mt-0.5 border border-[#F0D5DA]">
+                  <Check className="w-2.5 h-2.5 stroke-[2.5]" />
+                </div>
+                <span className="leading-snug text-xs font-medium text-stone-700">
+                  {feature}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* 7. Floating Burgundy Add to Cart Button */}
