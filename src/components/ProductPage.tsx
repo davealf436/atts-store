@@ -271,7 +271,12 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         </div>
       </div>
 
-      {/* 2. Hero Section: Premium Fintech SaaS Hero for FXReplay Pro, standard visual for others */}
+      {/* 2. Hero Card — Compact and Thin */}
+      <div className="rounded-2xl overflow-hidden border border-stone-200/90 shadow-2xs">
+        <ProductBrandVisual product={product} />
+      </div>
+
+      {/* 3. Product Presentation — Outside of the Hero Card */}
       {isEssentialFX ? (
         <FXReplayHero
           productId={product.id}
@@ -279,55 +284,47 @@ export const ProductPage: React.FC<ProductPageProps> = ({
           onChoosePlan={handleScrollToPlans}
         />
       ) : (
-        <>
-          {/* Brand Visual Hero Banner */}
-          <div className="rounded-2xl overflow-hidden border border-stone-200/90 shadow-2xs">
-            <ProductBrandVisual product={product} />
-          </div>
-
-          {/* Product Title, Tier & Subtitle Summary */}
-          <div className="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-2">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <div className="text-[11px] font-bold uppercase tracking-wider text-stone-500">
-                  {product.brand}
-                </div>
-                <h1 className="text-xl sm:text-2xl font-extrabold text-stone-900 tracking-tight leading-tight mt-0.5">
-                  {product.name}
-                </h1>
-                {product.subtitle && (
-                  <p className="text-xs sm:text-sm font-semibold text-[#721428] mt-1">
-                    {product.subtitle}
-                  </p>
-                )}
+        <div className="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-2">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <div className="text-[11px] font-bold uppercase tracking-wider text-stone-500">
+                {product.brand}
               </div>
-              <div className="text-right shrink-0">
-                <span className="text-[10px] uppercase tracking-wide text-stone-600 block">
-                  Starting from
-                </span>
-                <span className="text-base sm:text-lg font-extrabold text-[#721428] tabular-nums">
-                  {formatETB(product.priceETB)}
-                </span>
-              </div>
+              <h1 className="text-xl sm:text-2xl font-extrabold text-stone-900 tracking-tight leading-tight mt-0.5">
+                {product.name}
+              </h1>
+              {product.subtitle && (
+                <p className="text-xs sm:text-sm font-semibold text-[#721428] mt-1">
+                  {product.subtitle}
+                </p>
+              )}
             </div>
-
-            <p className="text-xs text-stone-600 leading-relaxed font-normal pt-1">
-              {product.shortDescription}
-            </p>
-
-            {/* Feature quick tags */}
-            <div className="flex items-center gap-3 pt-2 text-[11px] text-stone-600 border-t border-stone-100 flex-wrap">
-              <div className="flex items-center gap-1.5">
-                <Zap className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-                <span>Instant Telegram Delivery</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                <span>100% Genuine License</span>
-              </div>
+            <div className="text-right shrink-0">
+              <span className="text-[10px] uppercase tracking-wide text-stone-600 block">
+                Starting from
+              </span>
+              <span className="text-base sm:text-lg font-extrabold text-[#721428] tabular-nums">
+                {formatETB(product.priceETB)}
+              </span>
             </div>
           </div>
-        </>
+
+          <p className="text-xs text-stone-600 leading-relaxed font-normal pt-1">
+            {product.shortDescription}
+          </p>
+
+          {/* Feature quick tags */}
+          <div className="flex items-center gap-3 pt-2 text-[11px] text-stone-600 border-t border-stone-100 flex-wrap">
+            <div className="flex items-center gap-1.5">
+              <Zap className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+              <span>Instant Telegram Delivery</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+              <span>100% Genuine License</span>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Special Highlights for Premium Plan */}
