@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Product } from '../types';
 import { ProductBrandVisual } from './ProductBrandVisual';
 import {
@@ -1030,22 +1031,17 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         </div>
       </div>
 
-      {/* 9. Frequently Asked Questions (with Hide & Compact feature) */}
+      {/* 9. Frequently Asked Questions (Compact Framer Motion Accordion) */}
       <div className="bg-white rounded-2xl border border-stone-200/90 shadow-2xs overflow-hidden select-none mb-14 sm:mb-16">
-        {/* FAQ Header with Hide/Compact Toggle - minimized */}
+        {/* FAQ Header with Hide/Compact Toggle (No subtitle) */}
         <div className="p-3 sm:p-3.5 flex items-center justify-between gap-2.5 border-b border-stone-100">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 rounded-lg bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center shrink-0">
               <HelpCircle className="w-3.5 h-3.5 stroke-[2]" />
             </div>
-            <div>
-              <h4 className="text-xs font-bold text-stone-900 leading-tight">
-                Frequently Asked Questions
-              </h4>
-              <p className="text-[10px] text-stone-500 leading-none mt-0.5">
-                5 questions on delivery, warranty &amp; setup
-              </p>
-            </div>
+            <h4 className="text-xs font-bold text-stone-900 leading-tight">
+              Frequently Asked Questions
+            </h4>
           </div>
 
           {/* Hide / Expand Compact Toggle Button */}
@@ -1059,63 +1055,89 @@ export const ProductPage: React.FC<ProductPageProps> = ({
             aria-label={isFaqsCollapsed ? 'Show FAQs' : 'Hide FAQs'}
           >
             <span>{isFaqsCollapsed ? 'Show FAQs' : 'Hide / Compact'}</span>
-            <ChevronDown
-              className={`w-3 h-3 transition-transform duration-200 ${
-                isFaqsCollapsed ? '-rotate-90' : 'rotate-0'
-              }`}
-            />
+            <motion.div
+              animate={{ rotate: isFaqsCollapsed ? -90 : 0 }}
+              transition={{ duration: 0.2, ease: 'easeInOut' }}
+            >
+              <ChevronDown className="w-3 h-3" />
+            </motion.div>
           </button>
         </div>
 
-        {/* Collapsible FAQ Content */}
-        {!isFaqsCollapsed ? (
-          <div className="divide-y divide-stone-100 p-1.5 sm:p-2">
-            {productFaqs.map((faq, idx) => {
-              const isOpen = openFaqIndex === idx;
-              return (
-                <div key={idx} className="rounded-xl transition-colors overflow-hidden">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      triggerHaptic('light');
-                      setOpenFaqIndex(isOpen ? null : idx);
-                    }}
-                    className="w-full py-2 px-2.5 flex items-center justify-between text-left gap-2 hover:bg-stone-50/70 rounded-lg transition-colors cursor-pointer"
-                  >
-                    <span className="text-xs font-semibold text-stone-900 leading-snug">
-                      {faq.q}
-                    </span>
-                    <span className="w-4.5 h-4.5 rounded-md bg-stone-100 text-stone-500 flex items-center justify-center shrink-0">
-                      <ChevronDown
-                        className={`w-3 h-3 transition-transform duration-200 ${
-                          isOpen ? 'rotate-180 text-[#721428]' : 'rotate-0'
-                        }`}
-                      />
-                    </span>
-                  </button>
+        {/* Collapsible FAQ Content with Framer Motion */}
+        <AnimatePresence initial={false}>
+          {!isFaqsCollapsed ? (
+            <motion.div
+              key="faq-list"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] }}
+              className="overflow-hidden divide-y divide-stone-100 p-1.5 sm:p-2"
+            >
+              {productFaqs.map((faq, idx) => {
+                const isOpen = openFaqIndex === idx;
+                return (
+                  <div key={idx} className="rounded-xl transition-colors overflow-hidden">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        triggerHaptic('light');
+                        setOpenFaqIndex(isOpen ? null : idx);
+                      }}
+                      className="w-full py-2 px-2.5 flex items-center justify-between text-left gap-2 hover:bg-stone-50/70 rounded-lg transition-colors cursor-pointer"
+                    >
+                      <span className="text-xs font-semibold text-stone-900 leading-snug">
+                        {faq.q}
+                      </span>
+                      <motion.span
+                        animate={{ rotate: isOpen ? 180 : 0 }}
+                        transition={{ duration: 0.2, ease: 'easeInOut' }}
+                        className="w-4.5 h-4.5 rounded-md bg-stone-100 text-stone-500 flex items-center justify-center shrink-0"
+                      >
+                        <ChevronDown className={`w-3 h-3 ${isOpen ? 'text-[#721428]' : ''}`} />
+                      </motion.span>
+                    </button>
 
-                  {isOpen && (
-                    <div className="px-2.5 pb-2.5 pt-0 text-[11px] text-stone-600 leading-relaxed font-normal">
-                      <div className="p-2 rounded-lg bg-[#FAF0F2]/40 border border-[#F0D5DA]/60 text-stone-700">
-                        {faq.a}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <div
-            onClick={() => {
-              triggerHaptic('light');
-              setIsFaqsCollapsed(false);
-            }}
-            className="p-2.5 text-center text-[11px] text-stone-500 bg-stone-50/60 hover:bg-stone-50 cursor-pointer transition-colors"
-          >
-            <span>FAQs are compacted. Tap to reveal answers.</span>
-          </div>
-        )}
+                    <AnimatePresence initial={false}>
+                      {isOpen && (
+                        <motion.div
+                          key="answer"
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.22, ease: [0.25, 0.1, 0.25, 1] }}
+                          className="overflow-hidden"
+                        >
+                          <div className="px-2.5 pb-2.5 pt-0.5 text-[11px] text-stone-600 leading-relaxed font-normal">
+                            <div className="p-2 rounded-lg bg-[#FAF0F2]/45 border border-[#F0D5DA]/70 text-stone-700">
+                              {faq.a}
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                );
+              })}
+            </motion.div>
+          ) : (
+            <motion.div
+              key="faq-collapsed-hint"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              onClick={() => {
+                triggerHaptic('light');
+                setIsFaqsCollapsed(false);
+              }}
+              className="p-2.5 text-center text-[11px] text-stone-500 bg-stone-50/60 hover:bg-stone-50 cursor-pointer transition-colors"
+            >
+              <span>FAQs are compacted. Tap to reveal answers.</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* 7. Floating Burgundy Add to Cart Button */}
