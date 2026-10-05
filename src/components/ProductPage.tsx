@@ -355,7 +355,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
   };
 
   return (
-    <div className="space-y-4 pb-20 select-none animate-in fade-in duration-200">
+    <div className="space-y-4 pb-1 select-none animate-in fade-in duration-200">
       {/* 1. Top Header with Simple Back Button and Favorite action */}
       <div className="flex items-center justify-between pb-1">
         <button

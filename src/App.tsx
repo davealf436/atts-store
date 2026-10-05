@@ -129,7 +129,7 @@ export const App: React.FC = () => {
         />
 
         {/* Main Content Area */}
-        <main className="flex-1 p-3.5 pb-26 overflow-y-auto">
+        <main className={`flex-1 p-3.5 overflow-y-auto ${currentView === 'product' ? 'pb-16' : 'pb-26'}`}>
           {/* Dedicated Profile View */}
           {currentView === 'profile' && (
             <ProfileScreen
