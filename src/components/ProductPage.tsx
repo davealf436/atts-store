@@ -971,58 +971,58 @@ export const ProductPage: React.FC<ProductPageProps> = ({
       </div>
 
       {/* 8. ATH Guarantee & Delivery Transparency */}
-      <div className="bg-gradient-to-br from-stone-50 to-stone-100/70 rounded-3xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-3 select-none">
-        {/* Header from image UI with ATH branding */}
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center shrink-0">
-            <ShieldCheck className="w-4.5 h-4.5 stroke-[2]" />
+      <div className="bg-gradient-to-br from-stone-50 to-stone-100/70 rounded-2xl border border-stone-200/90 p-3 sm:p-3.5 shadow-2xs space-y-2 select-none">
+        {/* Header from image UI with ATH branding - minimized */}
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 rounded-lg bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center shrink-0">
+            <ShieldCheck className="w-3.5 h-3.5 stroke-[2]" />
           </div>
           <div>
-            <h4 className="text-sm font-bold text-stone-900 leading-tight">
+            <h4 className="text-xs font-bold text-stone-900 leading-tight">
               ATH Verified Delivery &amp; Warranty
             </h4>
-            <p className="text-[11px] text-stone-500 leading-tight mt-0.5">
+            <p className="text-[10px] text-stone-500 leading-none mt-0.5">
               Guaranteed by ATH Store Ethiopia
             </p>
           </div>
         </div>
 
-        {/* 3 Vertically Stacked Cards matching image UI */}
-        <div className="space-y-2.5 pt-0.5">
+        {/* 3 Vertically Stacked Minimized Cards */}
+        <div className="space-y-1.5">
           {/* Card 1: Telegram Delivery */}
-          <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-white border border-stone-200/80 shadow-2xs">
-            <Zap className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+          <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-white border border-stone-200/80 shadow-2xs">
+            <Zap className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
             <div className="min-w-0">
-              <span className="text-xs sm:text-sm font-bold text-stone-900 block leading-tight">
+              <span className="text-xs font-bold text-stone-900 block leading-tight">
                 Instant Telegram Delivery
               </span>
-              <span className="text-xs text-stone-500 leading-normal block mt-0.5 font-normal">
+              <span className="text-[10.5px] text-stone-500 leading-tight block mt-0.5 font-normal">
                 Credentials sent to your bot within 5 Minutes.
               </span>
             </div>
           </div>
 
           {/* Card 2: Full Duration Warranty */}
-          <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-white border border-stone-200/80 shadow-2xs">
-            <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+          <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-white border border-stone-200/80 shadow-2xs">
+            <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
             <div className="min-w-0">
-              <span className="text-xs sm:text-sm font-bold text-stone-900 block leading-tight">
+              <span className="text-xs font-bold text-stone-900 block leading-tight">
                 Full Duration Warranty
               </span>
-              <span className="text-xs text-stone-500 leading-normal block mt-0.5 font-normal">
+              <span className="text-[10.5px] text-stone-500 leading-tight block mt-0.5 font-normal">
                 100% Guaranteed.
               </span>
             </div>
           </div>
 
           {/* Card 3: Direct Local Support */}
-          <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-white border border-stone-200/80 shadow-2xs">
-            <Radio className="w-5 h-5 text-[#721428] shrink-0 mt-0.5" />
+          <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-white border border-stone-200/80 shadow-2xs">
+            <Radio className="w-4 h-4 text-[#721428] shrink-0 mt-0.5" />
             <div className="min-w-0">
-              <span className="text-xs sm:text-sm font-bold text-stone-900 block leading-tight">
+              <span className="text-xs font-bold text-stone-900 block leading-tight">
                 Direct Local Support
               </span>
-              <span className="text-xs text-stone-500 leading-normal block mt-0.5 font-normal">
+              <span className="text-[10.5px] text-stone-500 leading-tight block mt-0.5 font-normal">
                 Dedicated Telegram assistance 7 days/wk
               </span>
             </div>
@@ -1031,18 +1031,18 @@ export const ProductPage: React.FC<ProductPageProps> = ({
       </div>
 
       {/* 9. Frequently Asked Questions (with Hide & Compact feature) */}
-      <div className="bg-white rounded-3xl border border-stone-200/90 shadow-2xs overflow-hidden select-none mb-14 sm:mb-16">
-        {/* FAQ Header with Hide/Compact Toggle */}
-        <div className="p-4 sm:p-5 flex items-center justify-between gap-3 border-b border-stone-100">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center shrink-0">
-              <HelpCircle className="w-4.5 h-4.5 stroke-[2]" />
+      <div className="bg-white rounded-2xl border border-stone-200/90 shadow-2xs overflow-hidden select-none mb-14 sm:mb-16">
+        {/* FAQ Header with Hide/Compact Toggle - minimized */}
+        <div className="p-3 sm:p-3.5 flex items-center justify-between gap-2.5 border-b border-stone-100">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded-lg bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center shrink-0">
+              <HelpCircle className="w-3.5 h-3.5 stroke-[2]" />
             </div>
             <div>
-              <h4 className="text-sm font-bold text-stone-900 leading-tight">
+              <h4 className="text-xs font-bold text-stone-900 leading-tight">
                 Frequently Asked Questions
               </h4>
-              <p className="text-[11px] text-stone-500 leading-tight mt-0.5">
+              <p className="text-[10px] text-stone-500 leading-none mt-0.5">
                 5 questions on delivery, warranty &amp; setup
               </p>
             </div>
@@ -1055,12 +1055,12 @@ export const ProductPage: React.FC<ProductPageProps> = ({
               triggerHaptic('light');
               setIsFaqsCollapsed(!isFaqsCollapsed);
             }}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-stone-100/90 hover:bg-stone-200/70 active:bg-stone-200 text-stone-700 text-xs font-bold transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-stone-100/90 hover:bg-stone-200/70 active:bg-stone-200 text-stone-700 text-[11px] font-bold transition-colors cursor-pointer"
             aria-label={isFaqsCollapsed ? 'Show FAQs' : 'Hide FAQs'}
           >
             <span>{isFaqsCollapsed ? 'Show FAQs' : 'Hide / Compact'}</span>
             <ChevronDown
-              className={`w-3.5 h-3.5 transition-transform duration-200 ${
+              className={`w-3 h-3 transition-transform duration-200 ${
                 isFaqsCollapsed ? '-rotate-90' : 'rotate-0'
               }`}
             />
@@ -1069,7 +1069,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
 
         {/* Collapsible FAQ Content */}
         {!isFaqsCollapsed ? (
-          <div className="divide-y divide-stone-100 p-2 sm:p-3">
+          <div className="divide-y divide-stone-100 p-1.5 sm:p-2">
             {productFaqs.map((faq, idx) => {
               const isOpen = openFaqIndex === idx;
               return (
@@ -1080,14 +1080,14 @@ export const ProductPage: React.FC<ProductPageProps> = ({
                       triggerHaptic('light');
                       setOpenFaqIndex(isOpen ? null : idx);
                     }}
-                    className="w-full py-2.5 px-3 flex items-center justify-between text-left gap-3 hover:bg-stone-50/70 rounded-xl transition-colors cursor-pointer"
+                    className="w-full py-2 px-2.5 flex items-center justify-between text-left gap-2 hover:bg-stone-50/70 rounded-lg transition-colors cursor-pointer"
                   >
-                    <span className="text-xs sm:text-[13px] font-semibold text-stone-900 leading-snug">
+                    <span className="text-xs font-semibold text-stone-900 leading-snug">
                       {faq.q}
                     </span>
-                    <span className="w-5 h-5 rounded-lg bg-stone-100 text-stone-500 flex items-center justify-center shrink-0">
+                    <span className="w-4.5 h-4.5 rounded-md bg-stone-100 text-stone-500 flex items-center justify-center shrink-0">
                       <ChevronDown
-                        className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                        className={`w-3 h-3 transition-transform duration-200 ${
                           isOpen ? 'rotate-180 text-[#721428]' : 'rotate-0'
                         }`}
                       />
@@ -1095,8 +1095,8 @@ export const ProductPage: React.FC<ProductPageProps> = ({
                   </button>
 
                   {isOpen && (
-                    <div className="px-3 pb-3 pt-0 text-xs text-stone-600 leading-relaxed font-normal">
-                      <div className="p-2.5 rounded-xl bg-[#FAF0F2]/40 border border-[#F0D5DA]/60 text-stone-700">
+                    <div className="px-2.5 pb-2.5 pt-0 text-[11px] text-stone-600 leading-relaxed font-normal">
+                      <div className="p-2 rounded-lg bg-[#FAF0F2]/40 border border-[#F0D5DA]/60 text-stone-700">
                         {faq.a}
                       </div>
                     </div>
@@ -1111,7 +1111,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
               triggerHaptic('light');
               setIsFaqsCollapsed(false);
             }}
-            className="p-3 text-center text-xs text-stone-500 bg-stone-50/60 hover:bg-stone-50 cursor-pointer transition-colors"
+            className="p-2.5 text-center text-[11px] text-stone-500 bg-stone-50/60 hover:bg-stone-50 cursor-pointer transition-colors"
           >
             <span>FAQs are compacted. Tap to reveal answers.</span>
           </div>
