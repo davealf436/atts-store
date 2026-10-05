@@ -941,55 +941,61 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         </div>
       </div>
 
-      {/* 8. ATTS Guarantee & Delivery Transparency */}
-      <div className="bg-gradient-to-br from-stone-50 to-stone-100/70 rounded-2xl border border-stone-200/90 p-4 shadow-2xs space-y-3">
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-lg bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center shrink-0">
-            <ShieldCheck className="w-3.5 h-3.5 stroke-[2]" />
+      {/* 8. ATH Guarantee & Delivery Transparency */}
+      <div className="bg-white rounded-2xl border border-stone-200/90 p-3 sm:p-3.5 shadow-2xs space-y-2 select-none">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 rounded-lg bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center shrink-0">
+              <ShieldCheck className="w-3 h-3 stroke-[2.25]" />
+            </div>
+            <div>
+              <h4 className="text-xs font-bold text-stone-900 leading-tight">
+                ATH Verified Delivery &amp; Warranty
+              </h4>
+              <p className="text-[9.5px] text-stone-500 leading-none mt-0.5">
+                Guaranteed by ATH Store Ethiopia
+              </p>
+            </div>
           </div>
-          <div>
-            <h4 className="text-xs font-bold text-stone-900 leading-tight">
-              ATTS Verified Delivery &amp; Warranty
-            </h4>
-            <p className="text-[10px] text-stone-500">
-              Guaranteed by ATTS Store Ethiopia
-            </p>
-          </div>
+          <span className="text-[9.5px] font-extrabold uppercase tracking-wider text-[#721428] bg-[#FAF0F2] border border-[#F0D5DA] px-2 py-0.5 rounded-full">
+            ATH Verified
+          </span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-0.5">
-          <div className="flex items-start gap-2 p-2.5 rounded-xl bg-white border border-stone-200/70 shadow-2xs">
-            <Zap className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+        {/* 3 Horizontal, Compact & Minimal Cards */}
+        <div className="grid grid-cols-3 gap-1.5 sm:gap-2 pt-0.5">
+          <div className="flex items-center gap-2 p-2 sm:p-2.5 rounded-xl bg-stone-50 border border-stone-200/60">
+            <Zap className="w-3.5 h-3.5 text-amber-500 shrink-0" />
             <div className="min-w-0">
-              <span className="text-[11px] font-bold text-stone-900 block leading-tight">
-                Instant Telegram Delivery
+              <span className="text-[10.5px] sm:text-xs font-bold text-stone-900 block leading-tight truncate">
+                &lt; 60s Delivery
               </span>
-              <span className="text-[10px] text-stone-500 leading-tight block mt-0.5">
-                Credentials sent to your bot within 60s
+              <span className="text-[9px] sm:text-[10px] text-stone-500 block leading-tight truncate">
+                Telegram bot
               </span>
             </div>
           </div>
 
-          <div className="flex items-start gap-2 p-2.5 rounded-xl bg-white border border-stone-200/70 shadow-2xs">
-            <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+          <div className="flex items-center gap-2 p-2 sm:p-2.5 rounded-xl bg-stone-50 border border-stone-200/60">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
             <div className="min-w-0">
-              <span className="text-[11px] font-bold text-stone-900 block leading-tight">
-                Full Duration Warranty
+              <span className="text-[10.5px] sm:text-xs font-bold text-stone-900 block leading-tight truncate">
+                100% Warranty
               </span>
-              <span className="text-[10px] text-stone-500 leading-tight block mt-0.5">
-                100% replacement guarantee
+              <span className="text-[9px] sm:text-[10px] text-stone-500 block leading-tight truncate">
+                Full duration
               </span>
             </div>
           </div>
 
-          <div className="flex items-start gap-2 p-2.5 rounded-xl bg-white border border-stone-200/70 shadow-2xs">
-            <Radio className="w-4 h-4 text-[#721428] shrink-0 mt-0.5" />
+          <div className="flex items-center gap-2 p-2 sm:p-2.5 rounded-xl bg-stone-50 border border-stone-200/60">
+            <Radio className="w-3.5 h-3.5 text-[#721428] shrink-0" />
             <div className="min-w-0">
-              <span className="text-[11px] font-bold text-stone-900 block leading-tight">
-                Direct Local Support
+              <span className="text-[10.5px] sm:text-xs font-bold text-stone-900 block leading-tight truncate">
+                Local Support
               </span>
-              <span className="text-[10px] text-stone-500 leading-tight block mt-0.5">
-                Dedicated Telegram assistance 7 days/wk
+              <span className="text-[9px] sm:text-[10px] text-stone-500 block leading-tight truncate">
+                7 days / week
               </span>
             </div>
           </div>
