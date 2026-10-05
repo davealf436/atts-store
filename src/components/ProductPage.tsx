@@ -971,19 +971,19 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         </div>
       </div>
 
-      {/* 8. ATH Guarantee & Delivery Transparency */}
+      {/* 8. Buyer Protection & Delivery Transparency */}
       <div className="bg-gradient-to-br from-stone-50 to-stone-100/70 rounded-2xl border border-stone-200/90 p-3 sm:p-3.5 shadow-2xs space-y-2 select-none">
-        {/* Header from image UI with ATH branding - minimized without Ethiopia */}
+        {/* Header: Buyer Protection with authentic and secure subtitle */}
         <div className="flex items-center gap-2">
           <div className="w-6 h-6 rounded-lg bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center shrink-0">
             <ShieldCheck className="w-3.5 h-3.5 stroke-[2]" />
           </div>
           <div>
             <h4 className="text-xs font-bold text-stone-900 leading-tight">
-              ATH Verified Delivery &amp; Warranty
+              Buyer Protection
             </h4>
             <p className="text-[10px] text-stone-500 leading-none mt-0.5">
-              Guaranteed by ATH Store
+              Your order is authentic, secure, and backed by ATH Store
             </p>
           </div>
         </div>
