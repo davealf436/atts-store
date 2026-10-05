@@ -44,6 +44,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
 }) => {
   const isEssentialFX = product.id === 'fxreplay-pro';
   const isPremiumFX = product.id === 'fxreplay-premium';
+  const isFXReplay = product.brand === 'FXReplay' || isEssentialFX || isPremiumFX;
 
   // State for optional bundle with Backtesting Lab on Essential Plan
   const [bundleJournal, setBundleJournal] = useState<boolean>(false);
@@ -370,63 +371,208 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         </div>
       </div>
 
-      {/* 2. Brand Visual Hero Banner */}
-      <div className="rounded-2xl overflow-hidden border border-stone-200/90 shadow-2xs">
-        <ProductBrandVisual product={product} />
-      </div>
+      {/* 2. Hero Card & Spec Strip — Concept 3: Editorial Minimalist / Apple Store Style */}
+      {isFXReplay ? (
+        <div className="space-y-3">
+          {/* Obsidian & Deep Burgundy Ambient Glow Hero Card */}
+          <div className="relative rounded-3xl overflow-hidden bg-gradient-to-b from-[#090B10] via-[#120B15] to-[#180A12] border border-white/10 p-5 sm:p-6 shadow-[0_12px_36px_rgba(114,20,40,0.18)] select-none">
+            {/* Deep burgundy radial ambient glows */}
+            <div
+              className="absolute -top-20 -right-20 w-72 h-72 rounded-full pointer-events-none opacity-45 blur-3xl"
+              style={{ background: 'radial-gradient(circle, #721428 0%, rgba(114, 20, 40, 0) 70%)' }}
+            />
+            <div
+              className="absolute -bottom-24 -left-12 w-64 h-64 rounded-full pointer-events-none opacity-35 blur-3xl"
+              style={{ background: 'radial-gradient(circle, #831843 0%, rgba(131, 24, 67, 0) 70%)' }}
+            />
+            {/* Luxury micro-grid overlay */}
+            <div
+              className="absolute inset-0 opacity-[0.06] pointer-events-none"
+              style={{
+                backgroundImage: 'radial-gradient(circle, #FFFFFF 1px, transparent 1px)',
+                backgroundSize: '22px 22px',
+              }}
+            />
 
-      {/* 3. Product Title, Tier & Subtitle Summary */}
-      <div className="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-2">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <div className="text-[11px] font-bold uppercase tracking-wider text-stone-500">
-              {product.brand}
+            <div className="relative z-10 space-y-4">
+              {/* Top Kicker & Price Row */}
+              <div className="flex items-start justify-between gap-3">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white shadow-2xs">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span className="text-[10px] font-extrabold uppercase tracking-widest text-white/90">
+                    FXReplay Official
+                  </span>
+                </div>
+
+                <div className="text-right">
+                  <span className="text-[10px] uppercase font-bold tracking-wider text-rose-200/60 block leading-tight">
+                    Starting from
+                  </span>
+                  <div className="text-lg sm:text-xl font-black text-white tabular-nums tracking-tight mt-0.5">
+                    {formatETB(product.priceETB)}
+                  </div>
+                  <span className="text-[10px] text-white/60 font-medium">
+                    ~${(product.priceETB / 140).toFixed(1)} USD
+                  </span>
+                </div>
+              </div>
+
+              {/* Large Typography Headline & Sub-kicker */}
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight leading-tight">
+                  {product.name}
+                </h1>
+                <p className="text-xs sm:text-sm font-semibold text-rose-200/90 tracking-tight mt-1">
+                  Professional Market Replay for Serious Traders
+                </p>
+              </div>
+
+              {/* Editorial Candlestick Ambient Graphic */}
+              <div className="relative pt-1 pb-1">
+                <div className="h-10 sm:h-12 w-full flex items-end justify-between gap-1 opacity-75">
+                  {[
+                    { h: 35, color: '#10B981' },
+                    { h: 25, color: '#EF4444' },
+                    { h: 20, color: '#EF4444' },
+                    { h: 45, color: '#10B981' },
+                    { h: 55, color: '#10B981' },
+                    { h: 40, color: '#EF4444' },
+                    { h: 65, color: '#10B981' },
+                    { h: 80, color: '#10B981' },
+                    { h: 70, color: '#EF4444' },
+                    { h: 90, color: '#10B981' },
+                    { h: 95, color: '#10B981' },
+                    { h: 85, color: '#10B981' },
+                  ].map((bar, i) => (
+                    <div key={i} className="flex-1 flex flex-col items-center justify-end h-full">
+                      <div
+                        className="w-full max-w-[14px] rounded-xs transition-all"
+                        style={{
+                          height: `${bar.h}%`,
+                          backgroundColor: bar.color,
+                          opacity: 0.85,
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+                {/* Glow highlight line */}
+                <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#FB7185]/60 to-transparent" />
+              </div>
+
+              {/* Verified Tag Strip */}
+              <div className="flex items-center gap-4 text-[11px] text-white/70 pt-1 border-t border-white/10 flex-wrap">
+                <div className="flex items-center gap-1.5">
+                  <Zap className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span>Instant Telegram Delivery</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <span>100% Genuine License</span>
+                </div>
+              </div>
             </div>
-            <h1 className="text-xl sm:text-2xl font-extrabold text-stone-900 tracking-tight leading-tight mt-0.5">
-              {product.name}
-            </h1>
-            {product.subtitle && (
-              <p className="text-xs sm:text-sm font-semibold text-[#721428] mt-1">
-                {product.subtitle}
-              </p>
-            )}
           </div>
-          <div className="text-right shrink-0">
-            <span className="text-[10px] uppercase tracking-wide text-stone-600 block">
-              Starting from
-            </span>
-            <span className="text-base sm:text-lg font-extrabold text-[#721428] tabular-nums">
-              {formatETB(product.priceETB)}
-            </span>
+
+          {/* Compact "At a Glance" Spec Strip */}
+          <div className="bg-white rounded-2xl border border-stone-200/90 shadow-2xs p-3.5 sm:p-4 select-none">
+            <div className="text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2.5 px-0.5 flex items-center justify-between">
+              <span>At a Glance Specifications</span>
+              <span className="text-[9.5px] font-semibold text-[#721428]">Pro Edition</span>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-2 divide-y sm:divide-y-0 sm:divide-x divide-stone-100">
+              {/* Spec 1: Data Depth */}
+              <div className="pt-1.5 sm:pt-0 sm:px-2.5 first:pt-0 first:pl-0">
+                <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider block">
+                  Data Depth
+                </span>
+                <span className="text-xs sm:text-sm font-extrabold text-stone-900 block mt-0.5">
+                  2003 – Present
+                </span>
+                <span className="text-[10px] text-stone-500 font-medium">Tick-by-tick history</span>
+              </div>
+
+              {/* Spec 2: Timeframes */}
+              <div className="pt-2 sm:pt-0 sm:px-2.5">
+                <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider block">
+                  Timeframes
+                </span>
+                <span className="text-xs sm:text-sm font-extrabold text-stone-900 block mt-0.5">
+                  Down to 1-Sec
+                </span>
+                <span className="text-[10px] text-stone-500 font-medium">Multi-chart sync</span>
+              </div>
+
+              {/* Spec 3: Feeds */}
+              <div className="pt-2 sm:pt-0 sm:px-2.5">
+                <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider block">
+                  Feeds
+                </span>
+                <span className="text-xs sm:text-sm font-extrabold text-stone-900 block mt-0.5 truncate">
+                  Forex · Crypto · CME
+                </span>
+                <span className="text-[10px] text-stone-500 font-medium">Real-time data feeds</span>
+              </div>
+
+              {/* Spec 4: Delivery */}
+              <div className="pt-2 sm:pt-0 sm:px-2.5">
+                <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider block">
+                  Delivery
+                </span>
+                <span className="text-xs sm:text-sm font-extrabold text-emerald-600 block mt-0.5">
+                  &lt; 60s Telegram
+                </span>
+                <span className="text-[10px] text-stone-500 font-medium">Instant credentials</span>
+              </div>
+            </div>
           </div>
         </div>
-
-        <p className="text-xs text-stone-600 leading-relaxed font-normal pt-1">
-          {product.shortDescription}
-        </p>
-
-        {/* Feature quick tags */}
-        <div className="flex items-center gap-3 pt-2 text-[11px] text-stone-600 border-t border-stone-100 flex-wrap">
-          <div className="flex items-center gap-1.5">
-            <Zap className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-            <span>Instant Telegram Delivery</span>
+      ) : (
+        <div className="space-y-4">
+          <div className="rounded-2xl overflow-hidden border border-stone-200/90 shadow-2xs">
+            <ProductBrandVisual product={product} />
           </div>
-          <div className="flex items-center gap-1.5">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-            <span>100% Genuine License</span>
+          <div className="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-2">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <div className="text-[11px] font-bold uppercase tracking-wider text-stone-500">
+                  {product.brand}
+                </div>
+                <h1 className="text-xl sm:text-2xl font-extrabold text-stone-900 tracking-tight leading-tight mt-0.5">
+                  {product.name}
+                </h1>
+                {product.subtitle && (
+                  <p className="text-xs sm:text-sm font-semibold text-[#721428] mt-1">
+                    {product.subtitle}
+                  </p>
+                )}
+              </div>
+              <div className="text-right shrink-0">
+                <span className="text-[10px] uppercase tracking-wide text-stone-600 block">
+                  Starting from
+                </span>
+                <span className="text-base sm:text-lg font-extrabold text-[#721428] tabular-nums">
+                  {formatETB(product.priceETB)}
+                </span>
+              </div>
+            </div>
+            <p className="text-xs text-stone-600 leading-relaxed font-normal pt-1">
+              {product.shortDescription}
+            </p>
+            <div className="flex items-center gap-3 pt-2 text-[11px] text-stone-600 border-t border-stone-100 flex-wrap">
+              <div className="flex items-center gap-1.5">
+                <Zap className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                <span>Instant Telegram Delivery</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                <span>100% Genuine License</span>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-
-      {/* 4. Overview (Refined Context) */}
-      <div className="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-2">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-stone-500">
-          Overview
-        </h3>
-        <p className="text-xs text-stone-700 leading-relaxed font-normal">
-          {product.fullDescription}
-        </p>
-      </div>
+      )}
 
       {/* 5. Why FXReplay Pro? (Horizontal Minimal & Compact Benefit Cards with Swipe Hint & Dots) */}
       {isEssentialFX && (
