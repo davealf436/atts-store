@@ -942,83 +942,61 @@ export const ProductPage: React.FC<ProductPageProps> = ({
       </div>
 
       {/* 8. ATH Guarantee & Delivery Transparency */}
-      <div className="bg-white rounded-2xl border border-stone-200/90 p-3.5 sm:p-4 shadow-2xs space-y-2.5 select-none">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded-lg bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center shrink-0">
-              <ShieldCheck className="w-3 h-3 stroke-[2.25]" />
-            </div>
-            <div>
-              <h4 className="text-xs font-bold text-stone-900 leading-tight">
-                ATH Verified Delivery &amp; Warranty
-              </h4>
-              <p className="text-[9.5px] text-stone-500 leading-none mt-0.5">
-                Guaranteed by ATH Store Ethiopia
-              </p>
-            </div>
+      <div className="bg-gradient-to-br from-stone-50 to-stone-100/70 rounded-3xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-3 select-none">
+        {/* Header from image UI with ATH branding */}
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-xl bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center shrink-0">
+            <ShieldCheck className="w-4.5 h-4.5 stroke-[2]" />
           </div>
-          <span className="text-[9.5px] font-extrabold uppercase tracking-wider text-[#721428] bg-[#FAF0F2] border border-[#F0D5DA] px-2 py-0.5 rounded-full">
-            ATH Verified
-          </span>
+          <div>
+            <h4 className="text-sm font-bold text-stone-900 leading-tight">
+              ATH Verified Delivery &amp; Warranty
+            </h4>
+            <p className="text-[11px] text-stone-500 leading-tight mt-0.5">
+              Guaranteed by ATH Store Ethiopia
+            </p>
+          </div>
         </div>
 
-        {/* 3 Vertically Stacked Compact & Minimal Rows */}
-        <div className="space-y-1.5 pt-0.5">
-          <div className="flex items-center justify-between p-2 sm:p-2.5 rounded-xl bg-stone-50/80 border border-stone-200/60">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-6 h-6 rounded-lg bg-amber-50 text-amber-600 border border-amber-200/60 flex items-center justify-center shrink-0">
-                <Zap className="w-3.5 h-3.5" />
-              </div>
-              <div className="min-w-0">
-                <span className="text-xs font-bold text-stone-900 block leading-tight">
-                  5-Minute Delivery
-                </span>
-                <span className="text-[10px] text-stone-500 block leading-tight truncate">
-                  Credentials sent directly to your Telegram bot within 5 minutes
-                </span>
-              </div>
+        {/* 3 Vertically Stacked Cards matching image UI */}
+        <div className="space-y-2.5 pt-0.5">
+          {/* Card 1: Telegram Delivery */}
+          <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-white border border-stone-200/80 shadow-2xs">
+            <Zap className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+            <div className="min-w-0">
+              <span className="text-xs sm:text-sm font-bold text-stone-900 block leading-tight">
+                Instant Telegram Delivery
+              </span>
+              <span className="text-xs text-stone-500 leading-normal block mt-0.5 font-normal">
+                Credentials sent to your bot within 5 Minutes.
+              </span>
             </div>
-            <span className="text-[9.5px] font-bold text-amber-700 bg-amber-100/70 border border-amber-200 px-1.5 py-0.5 rounded-md shrink-0 ml-2">
-              &lt; 5 min
-            </span>
           </div>
 
-          <div className="flex items-center justify-between p-2 sm:p-2.5 rounded-xl bg-stone-50/80 border border-stone-200/60">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200/60 flex items-center justify-center shrink-0">
-                <ShieldCheck className="w-3.5 h-3.5" />
-              </div>
-              <div className="min-w-0">
-                <span className="text-xs font-bold text-stone-900 block leading-tight">
-                  Full Duration Warranty
-                </span>
-                <span className="text-[10px] text-stone-500 block leading-tight truncate">
-                  100% account replacement guaranteed throughout your active pass
-                </span>
-              </div>
+          {/* Card 2: Full Duration Warranty */}
+          <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-white border border-stone-200/80 shadow-2xs">
+            <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+            <div className="min-w-0">
+              <span className="text-xs sm:text-sm font-bold text-stone-900 block leading-tight">
+                Full Duration Warranty
+              </span>
+              <span className="text-xs text-stone-500 leading-normal block mt-0.5 font-normal">
+                100% Guaranteed.
+              </span>
             </div>
-            <span className="text-[9.5px] font-bold text-emerald-700 bg-emerald-100/70 border border-emerald-200 px-1.5 py-0.5 rounded-md shrink-0 ml-2">
-              100%
-            </span>
           </div>
 
-          <div className="flex items-center justify-between p-2 sm:p-2.5 rounded-xl bg-stone-50/80 border border-stone-200/60">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-6 h-6 rounded-lg bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center shrink-0">
-                <Radio className="w-3.5 h-3.5" />
-              </div>
-              <div className="min-w-0">
-                <span className="text-xs font-bold text-stone-900 block leading-tight">
-                  Direct Local Support
-                </span>
-                <span className="text-[10px] text-stone-500 block leading-tight truncate">
-                  Dedicated Ethiopian support team available on Telegram 7 days/wk
-                </span>
-              </div>
+          {/* Card 3: Direct Local Support */}
+          <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-white border border-stone-200/80 shadow-2xs">
+            <Radio className="w-5 h-5 text-[#721428] shrink-0 mt-0.5" />
+            <div className="min-w-0">
+              <span className="text-xs sm:text-sm font-bold text-stone-900 block leading-tight">
+                Direct Local Support
+              </span>
+              <span className="text-xs text-stone-500 leading-normal block mt-0.5 font-normal">
+                Dedicated Telegram assistance 7 days/wk
+              </span>
             </div>
-            <span className="text-[9.5px] font-bold text-[#721428] bg-[#FAF0F2] border border-[#F0D5DA] px-1.5 py-0.5 rounded-md shrink-0 ml-2">
-              7 Days/Wk
-            </span>
           </div>
         </div>
       </div>
