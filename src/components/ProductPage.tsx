@@ -464,7 +464,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
               <div className="flex items-center gap-4 text-[11px] text-white/70 pt-1 border-t border-white/10 flex-wrap">
                 <div className="flex items-center gap-1.5">
                   <Zap className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                  <span>Instant Telegram Delivery</span>
+                  <span>5-Min Telegram Delivery</span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
@@ -521,7 +521,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
                   Delivery
                 </span>
                 <span className="text-xs sm:text-sm font-extrabold text-emerald-600 block mt-0.5">
-                  &lt; 60s Telegram
+                  &lt; 5 min Telegram
                 </span>
                 <span className="text-[10px] text-stone-500 font-medium">Instant credentials</span>
               </div>
@@ -942,7 +942,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
       </div>
 
       {/* 8. ATH Guarantee & Delivery Transparency */}
-      <div className="bg-white rounded-2xl border border-stone-200/90 p-3 sm:p-3.5 shadow-2xs space-y-2 select-none">
+      <div className="bg-white rounded-2xl border border-stone-200/90 p-3.5 sm:p-4 shadow-2xs space-y-2.5 select-none">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-5 h-5 rounded-lg bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center shrink-0">
@@ -962,42 +962,63 @@ export const ProductPage: React.FC<ProductPageProps> = ({
           </span>
         </div>
 
-        {/* 3 Horizontal, Compact & Minimal Cards */}
-        <div className="grid grid-cols-3 gap-1.5 sm:gap-2 pt-0.5">
-          <div className="flex items-center gap-2 p-2 sm:p-2.5 rounded-xl bg-stone-50 border border-stone-200/60">
-            <Zap className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-            <div className="min-w-0">
-              <span className="text-[10.5px] sm:text-xs font-bold text-stone-900 block leading-tight truncate">
-                &lt; 60s Delivery
-              </span>
-              <span className="text-[9px] sm:text-[10px] text-stone-500 block leading-tight truncate">
-                Telegram bot
-              </span>
+        {/* 3 Vertically Stacked Compact & Minimal Rows */}
+        <div className="space-y-1.5 pt-0.5">
+          <div className="flex items-center justify-between p-2 sm:p-2.5 rounded-xl bg-stone-50/80 border border-stone-200/60">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-6 h-6 rounded-lg bg-amber-50 text-amber-600 border border-amber-200/60 flex items-center justify-center shrink-0">
+                <Zap className="w-3.5 h-3.5" />
+              </div>
+              <div className="min-w-0">
+                <span className="text-xs font-bold text-stone-900 block leading-tight">
+                  5-Minute Delivery
+                </span>
+                <span className="text-[10px] text-stone-500 block leading-tight truncate">
+                  Credentials sent directly to your Telegram bot within 5 minutes
+                </span>
+              </div>
             </div>
+            <span className="text-[9.5px] font-bold text-amber-700 bg-amber-100/70 border border-amber-200 px-1.5 py-0.5 rounded-md shrink-0 ml-2">
+              &lt; 5 min
+            </span>
           </div>
 
-          <div className="flex items-center gap-2 p-2 sm:p-2.5 rounded-xl bg-stone-50 border border-stone-200/60">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-            <div className="min-w-0">
-              <span className="text-[10.5px] sm:text-xs font-bold text-stone-900 block leading-tight truncate">
-                100% Warranty
-              </span>
-              <span className="text-[9px] sm:text-[10px] text-stone-500 block leading-tight truncate">
-                Full duration
-              </span>
+          <div className="flex items-center justify-between p-2 sm:p-2.5 rounded-xl bg-stone-50/80 border border-stone-200/60">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200/60 flex items-center justify-center shrink-0">
+                <ShieldCheck className="w-3.5 h-3.5" />
+              </div>
+              <div className="min-w-0">
+                <span className="text-xs font-bold text-stone-900 block leading-tight">
+                  Full Duration Warranty
+                </span>
+                <span className="text-[10px] text-stone-500 block leading-tight truncate">
+                  100% account replacement guaranteed throughout your active pass
+                </span>
+              </div>
             </div>
+            <span className="text-[9.5px] font-bold text-emerald-700 bg-emerald-100/70 border border-emerald-200 px-1.5 py-0.5 rounded-md shrink-0 ml-2">
+              100%
+            </span>
           </div>
 
-          <div className="flex items-center gap-2 p-2 sm:p-2.5 rounded-xl bg-stone-50 border border-stone-200/60">
-            <Radio className="w-3.5 h-3.5 text-[#721428] shrink-0" />
-            <div className="min-w-0">
-              <span className="text-[10.5px] sm:text-xs font-bold text-stone-900 block leading-tight truncate">
-                Local Support
-              </span>
-              <span className="text-[9px] sm:text-[10px] text-stone-500 block leading-tight truncate">
-                7 days / week
-              </span>
+          <div className="flex items-center justify-between p-2 sm:p-2.5 rounded-xl bg-stone-50/80 border border-stone-200/60">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-6 h-6 rounded-lg bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center shrink-0">
+                <Radio className="w-3.5 h-3.5" />
+              </div>
+              <div className="min-w-0">
+                <span className="text-xs font-bold text-stone-900 block leading-tight">
+                  Direct Local Support
+                </span>
+                <span className="text-[10px] text-stone-500 block leading-tight truncate">
+                  Dedicated Ethiopian support team available on Telegram 7 days/wk
+                </span>
+              </div>
             </div>
+            <span className="text-[9.5px] font-bold text-[#721428] bg-[#FAF0F2] border border-[#F0D5DA] px-1.5 py-0.5 rounded-md shrink-0 ml-2">
+              7 Days/Wk
+            </span>
           </div>
         </div>
       </div>
