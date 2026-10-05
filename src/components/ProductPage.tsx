@@ -90,7 +90,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         priceETB: 2100,
         priceUSD: 15.0,
         savingsBadge: 'Build Your Edge',
-        billingText: 'Billed once • 90 days full access to prove & refine your system',
+        billingText: 'Every Week • 90 days full access to prove & refine your system',
       },
       {
         id: '1m',
@@ -100,7 +100,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         priceUSD: 5.7,
         savingsBadge: 'Popular Choice',
         isPopular: true,
-        billingText: 'Billed once • 36 days full backtesting access',
+        billingText: 'Every Week • 36 days full backtesting access',
       },
       {
         id: '2w',
@@ -109,7 +109,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         priceETB: 500,
         priceUSD: 3.6,
         savingsBadge: 'Best Value',
-        billingText: 'Billed once • 14 days full backtesting access',
+        billingText: 'Every Week • 14 days full backtesting access',
       },
       {
         id: '6d',
@@ -118,7 +118,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         priceETB: 250,
         priceUSD: 1.8,
         savingsBadge: 'Strategy Sprint',
-        billingText: 'Billed once • 6 days full backtesting access',
+        billingText: 'Every Week • 6 days full backtesting access',
       },
     ];
   } else if (isPremiumFX) {
@@ -355,7 +355,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
   };
 
   return (
-    <div className="space-y-4 pb-28 select-none animate-in fade-in duration-200">
+    <div className="space-y-4 pb-20 select-none animate-in fade-in duration-200">
       {/* 1. Top Header with Simple Back Button and Favorite action */}
       <div className="flex items-center justify-between pb-1">
         <button
@@ -949,7 +949,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         {/* Selected Plan Summary Banner */}
         <div className="p-3 rounded-xl bg-stone-50 border border-stone-200/80 flex items-center justify-between text-xs">
           <div>
-            <span className="text-[10px] font-bold text-stone-500 uppercase tracking-wide block">
+            <span className="text-[10.5px] font-semibold text-stone-500 block">
               Selected Duration
             </span>
             <span className="font-semibold text-stone-900">
@@ -957,7 +957,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
               {isEssentialFX && bundleJournal ? ' + Backtesting Lab' : ''}
             </span>
             <span className="text-[10px] text-stone-500 block mt-0.5">
-              {selectedPlan.billingText}
+              {selectedPlan.billingText.replace(/Billed once/gi, 'Every Week')}
             </span>
           </div>
           <div className="text-right">
@@ -973,7 +973,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
 
       {/* 8. ATH Guarantee & Delivery Transparency */}
       <div className="bg-gradient-to-br from-stone-50 to-stone-100/70 rounded-2xl border border-stone-200/90 p-3 sm:p-3.5 shadow-2xs space-y-2 select-none">
-        {/* Header from image UI with ATH branding - minimized */}
+        {/* Header from image UI with ATH branding - minimized without Ethiopia */}
         <div className="flex items-center gap-2">
           <div className="w-6 h-6 rounded-lg bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center shrink-0">
             <ShieldCheck className="w-3.5 h-3.5 stroke-[2]" />
@@ -983,7 +983,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
               ATH Verified Delivery &amp; Warranty
             </h4>
             <p className="text-[10px] text-stone-500 leading-none mt-0.5">
-              Guaranteed by ATH Store Ethiopia
+              Guaranteed by ATH Store
             </p>
           </div>
         </div>
@@ -1032,7 +1032,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
       </div>
 
       {/* 9. Frequently Asked Questions (Compact Framer Motion Accordion) */}
-      <div className="bg-white rounded-2xl border border-stone-200/90 shadow-2xs overflow-hidden select-none mb-14 sm:mb-16">
+      <div className="bg-white rounded-2xl border border-stone-200/90 shadow-2xs overflow-hidden select-none">
         {/* FAQ Header with Hide/Compact Toggle (No subtitle) */}
         <div className="p-3 sm:p-3.5 flex items-center justify-between gap-2.5 border-b border-stone-100">
           <div className="flex items-center gap-2">
