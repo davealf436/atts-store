@@ -16,7 +16,6 @@ import {
   Radio,
   ChevronDown,
   HelpCircle,
-  Lock,
 } from 'lucide-react';
 import { triggerHaptic, triggerNotificationHaptic } from '../services/telegram';
 import { formatETB } from '../services/wallet';
@@ -1036,152 +1035,113 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         </div>
       </div>
 
-      {/* 9. Frequently Asked Questions & Secure Digital Delivery Trust Card Beside It */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-2.5 select-none">
-        {/* Clean Accordion FAQ */}
-        <div className="md:col-span-8 bg-white rounded-2xl border border-stone-200/90 shadow-2xs overflow-hidden flex flex-col justify-between">
-          <div>
-            {/* FAQ Header with Hide/Compact Toggle (No subtitle) */}
-            <div className="p-3 sm:p-3.5 flex items-center justify-between gap-2.5 border-b border-stone-100">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-lg bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center shrink-0">
-                  <HelpCircle className="w-3.5 h-3.5 stroke-[2]" />
-                </div>
-                <h4 className="text-xs font-bold text-stone-900 leading-tight">
-                  Frequently Asked Questions
-                </h4>
-              </div>
-
-              {/* Hide / Expand Compact Toggle Button */}
-              <button
-                type="button"
-                onClick={() => {
-                  triggerHaptic('light');
-                  setIsFaqsCollapsed(!isFaqsCollapsed);
-                }}
-                className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-stone-100/90 hover:bg-stone-200/70 active:bg-stone-200 text-stone-700 text-[11px] font-bold transition-colors cursor-pointer"
-                aria-label={isFaqsCollapsed ? 'Show FAQs' : 'Hide FAQs'}
-              >
-                <span>{isFaqsCollapsed ? 'Show FAQs' : 'Hide / Compact'}</span>
-                <motion.div
-                  animate={{ rotate: isFaqsCollapsed ? -90 : 0 }}
-                  transition={{ duration: 0.2, ease: 'easeInOut' }}
-                >
-                  <ChevronDown className="w-3 h-3" />
-                </motion.div>
-              </button>
+      {/* 9. Frequently Asked Questions (Clean Framer Motion Accordion) */}
+      <div className="bg-white rounded-2xl border border-stone-200/90 shadow-2xs overflow-hidden select-none">
+        {/* FAQ Header with Hide/Compact Toggle (No subtitle) */}
+        <div className="p-3 sm:p-3.5 flex items-center justify-between gap-2.5 border-b border-stone-100">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded-lg bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center shrink-0">
+              <HelpCircle className="w-3.5 h-3.5 stroke-[2]" />
             </div>
+            <h4 className="text-xs font-bold text-stone-900 leading-tight">
+              Frequently Asked Questions
+            </h4>
+          </div>
 
-            {/* Collapsible FAQ Content with Framer Motion */}
-            <AnimatePresence initial={false}>
-              {!isFaqsCollapsed ? (
-                <motion.div
-                  key="faq-list"
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] }}
-                  className="overflow-hidden divide-y divide-stone-100 p-1.5 sm:p-2"
-                >
-                  {productFaqs.map((faq, idx) => {
-                    const isOpen = openFaqIndex === idx;
-                    return (
-                      <div key={idx} className="rounded-xl transition-colors overflow-hidden">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            triggerHaptic('light');
-                            setOpenFaqIndex(isOpen ? null : idx);
-                          }}
-                          className="w-full py-2 px-2.5 flex items-center justify-between text-left gap-2 hover:bg-stone-50/70 rounded-lg transition-colors cursor-pointer"
+          {/* Hide / Expand Compact Toggle Button */}
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic('light');
+              setIsFaqsCollapsed(!isFaqsCollapsed);
+            }}
+            className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-stone-100/90 hover:bg-stone-200/70 active:bg-stone-200 text-stone-700 text-[11px] font-bold transition-colors cursor-pointer"
+            aria-label={isFaqsCollapsed ? 'Show FAQs' : 'Hide FAQs'}
+          >
+            <span>{isFaqsCollapsed ? 'Show FAQs' : 'Hide / Compact'}</span>
+            <motion.div
+              animate={{ rotate: isFaqsCollapsed ? -90 : 0 }}
+              transition={{ duration: 0.2, ease: 'easeInOut' }}
+            >
+              <ChevronDown className="w-3 h-3" />
+            </motion.div>
+          </button>
+        </div>
+
+        {/* Collapsible FAQ Content with Framer Motion */}
+        <AnimatePresence initial={false}>
+          {!isFaqsCollapsed ? (
+            <motion.div
+              key="faq-list"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] }}
+              className="overflow-hidden divide-y divide-stone-100 p-1.5 sm:p-2"
+            >
+              {productFaqs.map((faq, idx) => {
+                const isOpen = openFaqIndex === idx;
+                return (
+                  <div key={idx} className="rounded-xl transition-colors overflow-hidden">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        triggerHaptic('light');
+                        setOpenFaqIndex(isOpen ? null : idx);
+                      }}
+                      className="w-full py-2 px-2.5 flex items-center justify-between text-left gap-2 hover:bg-stone-50/70 rounded-lg transition-colors cursor-pointer"
+                    >
+                      <span className="text-xs font-semibold text-stone-900 leading-snug">
+                        {faq.q}
+                      </span>
+                      <motion.span
+                        animate={{ rotate: isOpen ? 180 : 0 }}
+                        transition={{ duration: 0.2, ease: 'easeInOut' }}
+                        className="w-4.5 h-4.5 rounded-md bg-stone-100 text-stone-500 flex items-center justify-center shrink-0"
+                      >
+                        <ChevronDown className={`w-3 h-3 ${isOpen ? 'text-[#721428]' : ''}`} />
+                      </motion.span>
+                    </button>
+
+                    <AnimatePresence initial={false}>
+                      {isOpen && (
+                        <motion.div
+                          key="answer"
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.22, ease: [0.25, 0.1, 0.25, 1] }}
+                          className="overflow-hidden"
                         >
-                          <span className="text-xs font-semibold text-stone-900 leading-snug">
-                            {faq.q}
-                          </span>
-                          <motion.span
-                            animate={{ rotate: isOpen ? 180 : 0 }}
-                            transition={{ duration: 0.2, ease: 'easeInOut' }}
-                            className="w-4.5 h-4.5 rounded-md bg-stone-100 text-stone-500 flex items-center justify-center shrink-0"
-                          >
-                            <ChevronDown className={`w-3 h-3 ${isOpen ? 'text-[#721428]' : ''}`} />
-                          </motion.span>
-                        </button>
-
-                        <AnimatePresence initial={false}>
-                          {isOpen && (
-                            <motion.div
-                              key="answer"
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: 'auto', opacity: 1 }}
-                              exit={{ height: 0, opacity: 0 }}
-                              transition={{ duration: 0.22, ease: [0.25, 0.1, 0.25, 1] }}
-                              className="overflow-hidden"
-                            >
-                              <div className="px-2.5 pb-2.5 pt-0.5 text-[11px] text-stone-600 leading-relaxed font-normal">
-                                <div className="p-2 rounded-lg bg-[#FAF0F2]/45 border border-[#F0D5DA]/70 text-stone-700">
-                                  {faq.a}
-                                </div>
-                              </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                    );
-                  })}
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="faq-collapsed-hint"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.15 }}
-                  onClick={() => {
-                    triggerHaptic('light');
-                    setIsFaqsCollapsed(false);
-                  }}
-                  className="p-2.5 text-center text-[11px] text-stone-500 bg-stone-50/60 hover:bg-stone-50 cursor-pointer transition-colors"
-                >
-                  <span>FAQs are compacted. Tap to reveal answers.</span>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
-
-        {/* Small "Secure Digital Delivery" Trust Card Beside It */}
-        <div className="md:col-span-4 bg-gradient-to-br from-stone-900 via-stone-900 to-[#22070D] text-white rounded-2xl p-3 sm:p-3.5 border border-stone-800 shadow-2xs flex flex-col justify-between gap-2.5">
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <div className="w-6 h-6 rounded-lg bg-[#721428] text-white flex items-center justify-center shrink-0 shadow-xs">
-                <Lock className="w-3.5 h-3.5" />
-              </div>
-              <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-300 bg-emerald-950/90 px-1.5 py-0.5 rounded-md border border-emerald-700/50">
-                100% Encrypted
-              </span>
-            </div>
-
-            <div>
-              <h5 className="text-xs font-bold text-white leading-tight">
-                Secure Digital Delivery
-              </h5>
-              <p className="text-[10px] text-stone-300 mt-1 leading-normal">
-                Credentials dispatched directly to your private Telegram bot session.
-              </p>
-            </div>
-          </div>
-
-          <div className="pt-2 border-t border-stone-800 space-y-1.5 text-[10px] text-stone-300">
-            <div className="flex items-center gap-1.5">
-              <Zap className="w-3 h-3 text-amber-400 shrink-0" />
-              <span>Instant auto-provisioning</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <ShieldCheck className="w-3 h-3 text-emerald-400 shrink-0" />
-              <span>Full active duration warranty</span>
-            </div>
-          </div>
-        </div>
+                          <div className="px-2.5 pb-2.5 pt-0.5 text-[11px] text-stone-600 leading-relaxed font-normal">
+                            <div className="p-2 rounded-lg bg-[#FAF0F2]/45 border border-[#F0D5DA]/70 text-stone-700">
+                              {faq.a}
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                );
+              })}
+            </motion.div>
+          ) : (
+            <motion.div
+              key="faq-collapsed-hint"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              onClick={() => {
+                triggerHaptic('light');
+                setIsFaqsCollapsed(false);
+              }}
+              className="p-2.5 text-center text-[11px] text-stone-500 bg-stone-50/60 hover:bg-stone-50 cursor-pointer transition-colors"
+            >
+              <span>FAQs are compacted. Tap to reveal answers.</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* 7. Floating Burgundy Add to Cart Button */}
