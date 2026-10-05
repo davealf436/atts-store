@@ -13,6 +13,8 @@ import {
   History,
   LineChart,
   Radio,
+  ChevronDown,
+  HelpCircle,
 } from 'lucide-react';
 import { triggerHaptic, triggerNotificationHaptic } from '../services/telegram';
 import { formatETB } from '../services/wallet';
@@ -48,6 +50,33 @@ export const ProductPage: React.FC<ProductPageProps> = ({
 
   // State for optional bundle with Backtesting Lab on Essential Plan
   const [bundleJournal, setBundleJournal] = useState<boolean>(false);
+
+  // FAQs state: open item index and collapse/compact toggle
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+  const [isFaqsCollapsed, setIsFaqsCollapsed] = useState<boolean>(false);
+
+  const productFaqs = [
+    {
+      q: 'How fast do I receive my credentials after ordering?',
+      a: 'Credentials are automatically generated and sent directly to your Telegram bot within 5 minutes of payment confirmation.',
+    },
+    {
+      q: 'What is covered under the 100% Full Duration Warranty?',
+      a: 'You receive guaranteed uninterrupted access for the full length of your pass (6 days, 2 weeks, 1 month, or 3 months). If any technical issue occurs, we immediately fix or replace it free of charge.',
+    },
+    {
+      q: 'Can I backtest on multiple devices?',
+      a: 'Yes, you can access your FXReplay account from any desktop or laptop browser. Your backtesting sessions, charts, and journal data sync automatically to the cloud.',
+    },
+    {
+      q: 'Which payment methods are accepted in Ethiopia?',
+      a: 'We accept Telebirr, CBE Birr, Awash Bank, Bank of Abyssinia, as well as USDT (TRC-20 / BEP-20) with instant receipt verification.',
+    },
+    {
+      q: 'How do I reach ATH customer support?',
+      a: 'Our dedicated Ethiopian support desk is available on Telegram 7 days a week from 8:00 AM to 11:00 PM (EAT) for instant setup assistance.',
+    },
+  ];
 
   // Generate pricing plans based on product
   let plans: PlanOption[] = [];
@@ -999,6 +1028,94 @@ export const ProductPage: React.FC<ProductPageProps> = ({
             </div>
           </div>
         </div>
+      </div>
+
+      {/* 9. Frequently Asked Questions (with Hide & Compact feature) */}
+      <div className="bg-white rounded-3xl border border-stone-200/90 shadow-2xs overflow-hidden select-none mb-14 sm:mb-16">
+        {/* FAQ Header with Hide/Compact Toggle */}
+        <div className="p-4 sm:p-5 flex items-center justify-between gap-3 border-b border-stone-100">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center shrink-0">
+              <HelpCircle className="w-4.5 h-4.5 stroke-[2]" />
+            </div>
+            <div>
+              <h4 className="text-sm font-bold text-stone-900 leading-tight">
+                Frequently Asked Questions
+              </h4>
+              <p className="text-[11px] text-stone-500 leading-tight mt-0.5">
+                5 questions on delivery, warranty &amp; setup
+              </p>
+            </div>
+          </div>
+
+          {/* Hide / Expand Compact Toggle Button */}
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic('light');
+              setIsFaqsCollapsed(!isFaqsCollapsed);
+            }}
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-stone-100/90 hover:bg-stone-200/70 active:bg-stone-200 text-stone-700 text-xs font-bold transition-colors cursor-pointer"
+            aria-label={isFaqsCollapsed ? 'Show FAQs' : 'Hide FAQs'}
+          >
+            <span>{isFaqsCollapsed ? 'Show FAQs' : 'Hide / Compact'}</span>
+            <ChevronDown
+              className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                isFaqsCollapsed ? '-rotate-90' : 'rotate-0'
+              }`}
+            />
+          </button>
+        </div>
+
+        {/* Collapsible FAQ Content */}
+        {!isFaqsCollapsed ? (
+          <div className="divide-y divide-stone-100 p-2 sm:p-3">
+            {productFaqs.map((faq, idx) => {
+              const isOpen = openFaqIndex === idx;
+              return (
+                <div key={idx} className="rounded-xl transition-colors overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      triggerHaptic('light');
+                      setOpenFaqIndex(isOpen ? null : idx);
+                    }}
+                    className="w-full py-2.5 px-3 flex items-center justify-between text-left gap-3 hover:bg-stone-50/70 rounded-xl transition-colors cursor-pointer"
+                  >
+                    <span className="text-xs sm:text-[13px] font-semibold text-stone-900 leading-snug">
+                      {faq.q}
+                    </span>
+                    <span className="w-5 h-5 rounded-lg bg-stone-100 text-stone-500 flex items-center justify-center shrink-0">
+                      <ChevronDown
+                        className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                          isOpen ? 'rotate-180 text-[#721428]' : 'rotate-0'
+                        }`}
+                      />
+                    </span>
+                  </button>
+
+                  {isOpen && (
+                    <div className="px-3 pb-3 pt-0 text-xs text-stone-600 leading-relaxed font-normal">
+                      <div className="p-2.5 rounded-xl bg-[#FAF0F2]/40 border border-[#F0D5DA]/60 text-stone-700">
+                        {faq.a}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div
+            onClick={() => {
+              triggerHaptic('light');
+              setIsFaqsCollapsed(false);
+            }}
+            className="p-3 text-center text-xs text-stone-500 bg-stone-50/60 hover:bg-stone-50 cursor-pointer transition-colors"
+          >
+            <span>FAQs are compacted. Tap to reveal answers.</span>
+          </div>
+        )}
       </div>
 
       {/* 7. Floating Burgundy Add to Cart Button */}
