@@ -432,14 +432,9 @@ export const ProductPage: React.FC<ProductPageProps> = ({
       {isEssentialFX && (
         <div className="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-3 relative overflow-hidden">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <h3 className="text-xs sm:text-sm font-bold text-stone-900 tracking-tight">
-                Why FXReplay Pro?
-              </h3>
-              <span className="text-[10px] font-semibold text-[#721428] bg-[#FAF0F2] border border-[#F0D5DA] px-2 py-0.5 rounded-full">
-                5 Highlights
-              </span>
-            </div>
+            <h3 className="text-xs sm:text-sm font-bold text-stone-900 tracking-tight">
+              Why FXReplay Pro?
+            </h3>
 
             {/* Dots indicator for swipe awareness */}
             <div className="flex items-center gap-1.5" title="Swipe to view all highlights">
@@ -464,7 +459,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
             <div
               ref={highlightsRef}
               onScroll={handleHighlightsScroll}
-              className="flex items-stretch gap-2.5 overflow-x-auto pb-2 -mx-1 px-1 snap-x snap-mandatory scroll-smooth no-scrollbar"
+              className="flex items-stretch gap-2.5 overflow-x-auto -mx-1 px-1 snap-x snap-mandatory scroll-smooth no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
             >
               {fxReplayBenefits.map((benefit, idx) => {
                 const IconComponent = benefit.icon;
