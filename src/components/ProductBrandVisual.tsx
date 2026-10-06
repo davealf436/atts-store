@@ -279,7 +279,7 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
 
         <div className="relative z-10 flex items-center gap-3 sm:gap-3.5 min-w-0 flex-1">
           <div className="relative shrink-0">
-            <div className={`w-11 h-11 sm:w-12 sm:h-12 rounded-xl overflow-hidden ring-1 ${isPremiumTier ? 'ring-amber-400/30' : 'ring-emerald-400/30'} shadow-[0_4px_14px_rgba(0,0,0,0.35)] flex items-center justify-center bg-[#070D18]`}>
+            <div className={`w-11 h-11 sm:w-12 sm:h-12 rounded-xl overflow-hidden ring-1 ${isPremiumTier ? 'ring-amber-400/30' : 'ring-emerald-400/30'} shadow-[0_4px_14px_rgba(0,0,0,0.35)] flex items-center justify-center bg-black`}>
               <ProductPhotoLogo productId={product.id} size="md" className="w-full h-full" />
             </div>
           </div>
