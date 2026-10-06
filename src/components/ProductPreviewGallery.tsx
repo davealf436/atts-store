@@ -398,14 +398,14 @@ export const ProductPreviewGallery: React.FC = () => {
         setTimeout(() => setIsInteracting(false), 2000);
       }}
     >
-      {/* Subtle Left Navigation Arrow (Vertically centered) */}
+      {/* Premium Minimal Glass Left Navigation Control */}
       <button
         type="button"
         onClick={handlePrevSlide}
-        className="absolute left-0 sm:left-1 top-1/2 -translate-y-1/2 z-20 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/95 text-stone-700 hover:text-stone-950 shadow-md border border-stone-200/90 flex items-center justify-center transition-all active:scale-90 hover:scale-105 cursor-pointer backdrop-blur-xs"
+        className="group/btn absolute left-1 sm:left-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-[34px] sm:h-[34px] rounded-full bg-stone-950/55 hover:bg-stone-950/80 active:bg-stone-950/95 backdrop-blur-md border border-white/12 hover:border-white/25 shadow-[0_4px_12px_rgba(0,0,0,0.25)] flex items-center justify-center transition-all duration-200 active:scale-90 hover:scale-105 cursor-pointer"
         aria-label="Previous screenshot"
       >
-        <ChevronLeft className="w-4 h-4 stroke-[2.2]" />
+        <ChevronLeft className="w-3.5 h-3.5 stroke-[1.6] text-stone-300/80 group-hover/btn:text-white transition-colors duration-200 -ml-0.5" />
       </button>
 
       {/* Edge-to-Edge Horizontal Carousel */}
@@ -434,14 +434,14 @@ export const ProductPreviewGallery: React.FC = () => {
         })}
       </div>
 
-      {/* Subtle Right Navigation Arrow (Vertically centered) */}
+      {/* Premium Minimal Glass Right Navigation Control */}
       <button
         type="button"
         onClick={handleNextSlide}
-        className="absolute right-0 sm:right-1 top-1/2 -translate-y-1/2 z-20 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/95 text-stone-700 hover:text-stone-950 shadow-md border border-stone-200/90 flex items-center justify-center transition-all active:scale-90 hover:scale-105 cursor-pointer backdrop-blur-xs"
+        className="group/btn absolute right-1 sm:right-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-[34px] sm:h-[34px] rounded-full bg-stone-950/55 hover:bg-stone-950/80 active:bg-stone-950/95 backdrop-blur-md border border-white/12 hover:border-white/25 shadow-[0_4px_12px_rgba(0,0,0,0.25)] flex items-center justify-center transition-all duration-200 active:scale-90 hover:scale-105 cursor-pointer"
         aria-label="Next screenshot"
       >
-        <ChevronRight className="w-4 h-4 stroke-[2.2]" />
+        <ChevronRight className="w-3.5 h-3.5 stroke-[1.6] text-stone-300/80 group-hover/btn:text-white transition-colors duration-200 -mr-0.5" />
       </button>
 
       {/* Fullscreen / Lightbox Modal with Swipe Navigation */}
