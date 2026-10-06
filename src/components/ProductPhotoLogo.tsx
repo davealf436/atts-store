@@ -383,15 +383,15 @@ export const ProductPhotoLogo: React.FC<ProductPhotoLogoProps> = ({
         >
           <rect width="100" height="100" fill="#000000" />
 
-          {/* Solid Left Triangle (Play) with smooth rounded corners */}
+          {/* Solid Left Play Triangle matching official 0x0.png */}
           <path
-            d="M 19.4 24.5 C 19.4 20.0 22.6 17.5 26.6 17.5 C 28.5 17.5 30.5 18.2 31.8 19.5 L 42.6 46.2 C 43.8 47.8 43.8 52.2 42.6 53.8 L 31.8 80.5 C 30.5 81.8 28.5 82.5 26.6 82.5 C 22.6 82.5 19.4 80.0 19.4 75.5 Z"
+            d="M 18.5 24.0 C 18.5 20.0 20.5 18.0 24.5 18.0 L 47.5 47.0 C 49.5 49.0 49.5 51.0 47.5 53.0 L 24.5 82.0 C 20.5 82.0 18.5 80.0 18.5 76.0 Z"
             fill="#FFFFFF"
           />
 
-          {/* Hollow Right Chevron with vertical left faces and smooth rounded corners */}
+          {/* Hollow Right Chevron with vertical left faces matching official 0x0.png */}
           <path
-            d="M 44.0 24.5 C 44.0 20.0 47.2 17.5 51.2 17.5 C 52.8 17.5 54.4 18.2 55.6 19.3 L 81.8 46.5 C 83.6 48.2 83.6 51.8 81.8 53.5 L 55.6 80.7 C 54.4 81.8 52.8 82.5 51.2 82.5 C 47.2 82.5 44.0 80.0 44.0 75.5 L 44.0 65.0 C 44.0 62.8 45.4 61.0 47.5 59.8 L 56.5 53.5 C 58.2 52.2 58.2 47.8 56.5 46.5 L 47.5 40.2 C 45.4 39.0 44.0 37.2 44.0 35.0 Z"
+            d="M 44.0 24.5 C 44.0 20.0 46.5 18.0 50.5 18.0 L 79.5 47.0 C 81.5 49.0 81.5 51.0 79.5 53.0 L 50.5 82.0 C 46.5 82.0 44.0 80.0 44.0 75.5 L 44.0 69.5 C 44.0 67.5 45.0 66.0 47.0 64.5 L 64.5 53.0 C 66.0 51.5 66.0 48.5 64.5 47.0 L 47.0 35.5 C 45.0 34.0 44.0 32.5 44.0 30.5 Z"
             fill="#FFFFFF"
           />
         </svg>
