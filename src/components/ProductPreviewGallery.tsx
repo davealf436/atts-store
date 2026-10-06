@@ -9,13 +9,15 @@ interface ScreenshotData {
 }
 
 export const ProductPreviewGallery: React.FC = () => {
-  const [activeIndex, setActiveIndex] = useState<number>(0);
+  // Start on the CENTER screenshot (index 2 of 5: Trade Execution)
+  const initialCenterIndex = 2;
+  const [activeIndex, setActiveIndex] = useState<number>(initialCenterIndex);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [isInteracting, setIsInteracting] = useState<boolean>(false);
   const carouselRef = useRef<HTMLDivElement>(null);
   const autoPlayTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // 5 High-fidelity graphical software screenshots (No extraneous text, pure UI mockups)
+  // 5 High-fidelity graphical software screenshots (No text, pure UI visuals)
   const screenshots: ScreenshotData[] = [
     // 1. Market Replay
     {
@@ -158,7 +160,7 @@ export const ProductPreviewGallery: React.FC = () => {
         </div>
       ),
     },
-    // 3. Trade Execution
+    // 3. Trade Execution (Center Image)
     {
       id: 'trade-execution',
       renderVisual: (isExpanded = false) => (
@@ -289,19 +291,27 @@ export const ProductPreviewGallery: React.FC = () => {
     },
   ];
 
-  // Auto-scroll animation logic
-  const scrollToSlide = useCallback((index: number) => {
+  // Scroll to a specific slide smoothly
+  const scrollToSlide = useCallback((index: number, behavior: ScrollBehavior = 'smooth') => {
     if (!carouselRef.current) return;
     const container = carouselRef.current;
     const card = container.children[index] as HTMLElement;
     if (card) {
       const scrollPos = card.offsetLeft - (container.offsetWidth - card.offsetWidth) / 2;
-      container.scrollTo({ left: scrollPos, behavior: 'smooth' });
+      container.scrollTo({ left: scrollPos, behavior });
     }
     setActiveIndex(index);
   }, []);
 
-  // Set up auto-animation timer (every 3.8s)
+  // When the page opens for the first time, center the carousel on the CENTER screenshot (index 2)
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      scrollToSlide(initialCenterIndex, 'auto');
+    }, 50);
+    return () => clearTimeout(timeout);
+  }, [scrollToSlide]);
+
+  // Handle auto-animation between screenshots
   useEffect(() => {
     if (isInteracting || lightboxIndex !== null) {
       if (autoPlayTimerRef.current) clearInterval(autoPlayTimerRef.current);
@@ -345,6 +355,18 @@ export const ProductPreviewGallery: React.FC = () => {
     }
   };
 
+  const handlePrevSlide = () => {
+    triggerHaptic('light');
+    const prev = activeIndex === 0 ? screenshots.length - 1 : activeIndex - 1;
+    scrollToSlide(prev);
+  };
+
+  const handleNextSlide = () => {
+    triggerHaptic('light');
+    const next = (activeIndex + 1) % screenshots.length;
+    scrollToSlide(next);
+  };
+
   const handleOpenLightbox = (index: number) => {
     triggerHaptic('light');
     setLightboxIndex(index);
@@ -366,8 +388,9 @@ export const ProductPreviewGallery: React.FC = () => {
   };
 
   return (
+    // Free Edge-to-Edge Container (No card border, no background, no box shadow)
     <div
-      className="bg-white rounded-2xl border border-stone-200/90 shadow-2xs p-2 sm:p-2.5 select-none overflow-hidden"
+      className="relative w-full select-none py-1 group"
       onMouseEnter={() => setIsInteracting(true)}
       onMouseLeave={() => setIsInteracting(false)}
       onTouchStart={() => setIsInteracting(true)}
@@ -375,11 +398,21 @@ export const ProductPreviewGallery: React.FC = () => {
         setTimeout(() => setIsInteracting(false), 2000);
       }}
     >
-      {/* Compact Horizontal Swipeable Carousel (Significantly reduced height, NO text) */}
+      {/* Subtle Left Navigation Arrow (Vertically centered) */}
+      <button
+        type="button"
+        onClick={handlePrevSlide}
+        className="absolute left-0 sm:left-1 top-1/2 -translate-y-1/2 z-20 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/95 text-stone-700 hover:text-stone-950 shadow-md border border-stone-200/90 flex items-center justify-center transition-all active:scale-90 hover:scale-105 cursor-pointer backdrop-blur-xs"
+        aria-label="Previous screenshot"
+      >
+        <ChevronLeft className="w-4 h-4 stroke-[2.2]" />
+      </button>
+
+      {/* Edge-to-Edge Horizontal Carousel */}
       <div
         ref={carouselRef}
         onScroll={handleScroll}
-        className="flex gap-2.5 overflow-x-auto snap-x snap-mandatory scrollbar-none py-1 px-1 items-center scroll-smooth"
+        className="flex gap-2.5 sm:gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-none py-1 px-1 sm:px-2 items-center scroll-smooth"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {screenshots.map((item, idx) => {
@@ -389,10 +422,10 @@ export const ProductPreviewGallery: React.FC = () => {
             <div
               key={item.id}
               onClick={() => handleOpenLightbox(idx)}
-              className={`h-24 sm:h-28 w-[72vw] max-w-[260px] sm:w-[220px] md:w-[240px] shrink-0 snap-center rounded-xl sm:rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 ease-out border ${
+              className={`h-24 sm:h-28 w-[74vw] max-w-[270px] sm:w-[220px] md:w-[240px] shrink-0 snap-center rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 ease-out border shadow-xs ${
                 isActive
-                  ? 'scale-100 opacity-100 border-[#721428]/40 shadow-sm ring-1 ring-[#721428]/20'
-                  : 'scale-[0.93] opacity-65 hover:opacity-85 border-stone-800/80 shadow-2xs'
+                  ? 'scale-100 opacity-100 border-[#721428]/45 ring-1 ring-[#721428]/25 shadow-md'
+                  : 'scale-[0.92] opacity-70 hover:opacity-90 border-stone-800/80 shadow-2xs'
               }`}
             >
               {item.renderVisual(false)}
@@ -401,26 +434,15 @@ export const ProductPreviewGallery: React.FC = () => {
         })}
       </div>
 
-      {/* Small Clean Pagination Dots Only (No text) */}
-      <div className="flex items-center justify-center gap-1.5 pt-1.5 pb-0.5" role="tablist" aria-label="Pagination">
-        {screenshots.map((_, idx) => (
-          <button
-            key={idx}
-            type="button"
-            onClick={() => {
-              triggerHaptic('light');
-              scrollToSlide(idx);
-            }}
-            className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
-              activeIndex === idx
-                ? 'w-4 bg-[#721428]'
-                : 'w-1.5 bg-stone-300 hover:bg-stone-400'
-            }`}
-            aria-label={`Slide ${idx + 1}`}
-            aria-selected={activeIndex === idx}
-          />
-        ))}
-      </div>
+      {/* Subtle Right Navigation Arrow (Vertically centered) */}
+      <button
+        type="button"
+        onClick={handleNextSlide}
+        className="absolute right-0 sm:right-1 top-1/2 -translate-y-1/2 z-20 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/95 text-stone-700 hover:text-stone-950 shadow-md border border-stone-200/90 flex items-center justify-center transition-all active:scale-90 hover:scale-105 cursor-pointer backdrop-blur-xs"
+        aria-label="Next screenshot"
+      >
+        <ChevronRight className="w-4 h-4 stroke-[2.2]" />
+      </button>
 
       {/* Fullscreen / Lightbox Modal with Swipe Navigation */}
       <AnimatePresence>
@@ -438,7 +460,7 @@ export const ProductPreviewGallery: React.FC = () => {
               className="flex items-center justify-between z-10 w-full max-w-xl mx-auto"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Minimal Counter Dot Strip */}
+              {/* Minimal Counter Strip */}
               <div className="flex items-center gap-1.5">
                 {screenshots.map((_, idx) => (
                   <span
