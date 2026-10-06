@@ -473,60 +473,6 @@ export const ProductPage: React.FC<ProductPageProps> = ({
 
           {/* Product Preview Gallery — Horizontal Swipeable Google Play Style Carousel */}
           <ProductPreviewGallery />
-
-          {/* Compact "At a Glance" Spec Strip */}
-          <div className="bg-white rounded-2xl border border-stone-200/90 shadow-2xs p-3.5 sm:p-4 select-none">
-            <div className="text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2.5 px-0.5 flex items-center justify-between">
-              <span>At a Glance Specifications</span>
-              <span className="text-[9.5px] font-semibold text-[#721428]">Pro Edition</span>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-2 divide-y sm:divide-y-0 sm:divide-x divide-stone-100">
-              {/* Spec 1: Data Depth */}
-              <div className="pt-1.5 sm:pt-0 sm:px-2.5 first:pt-0 first:pl-0">
-                <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider block">
-                  Data Depth
-                </span>
-                <span className="text-xs sm:text-sm font-extrabold text-stone-900 block mt-0.5">
-                  2003 – Present
-                </span>
-                <span className="text-[10px] text-stone-500 font-medium">Tick-by-tick history</span>
-              </div>
-
-              {/* Spec 2: Timeframes */}
-              <div className="pt-2 sm:pt-0 sm:px-2.5">
-                <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider block">
-                  Timeframes
-                </span>
-                <span className="text-xs sm:text-sm font-extrabold text-stone-900 block mt-0.5">
-                  Down to 1-Sec
-                </span>
-                <span className="text-[10px] text-stone-500 font-medium">Multi-chart sync</span>
-              </div>
-
-              {/* Spec 3: Feeds */}
-              <div className="pt-2 sm:pt-0 sm:px-2.5">
-                <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider block">
-                  Feeds
-                </span>
-                <span className="text-xs sm:text-sm font-extrabold text-stone-900 block mt-0.5 truncate">
-                  Forex · Crypto · CME
-                </span>
-                <span className="text-[10px] text-stone-500 font-medium">Real-time data feeds</span>
-              </div>
-
-              {/* Spec 4: Delivery */}
-              <div className="pt-2 sm:pt-0 sm:px-2.5">
-                <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider block">
-                  Delivery
-                </span>
-                <span className="text-xs sm:text-sm font-extrabold text-emerald-600 block mt-0.5">
-                  &lt; 5 min Telegram
-                </span>
-                <span className="text-[10px] text-stone-500 font-medium">Instant credentials</span>
-              </div>
-            </div>
-          </div>
         </div>
       ) : (
         <div className="space-y-4">
