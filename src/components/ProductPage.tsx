@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Product } from '../types';
 import { ProductBrandVisual } from './ProductBrandVisual';
 import { ProductPhotoLogo } from './ProductPhotoLogo';
+import { ProductPreviewGallery } from './ProductPreviewGallery';
 import {
   ArrowLeft,
   Check,
@@ -469,6 +470,9 @@ export const ProductPage: React.FC<ProductPageProps> = ({
               </div>
             </div>
           </div>
+
+          {/* Product Preview Gallery — Horizontal Swipeable Google Play Style Carousel */}
+          <ProductPreviewGallery />
 
           {/* Compact "At a Glance" Spec Strip */}
           <div className="bg-white rounded-2xl border border-stone-200/90 shadow-2xs p-3.5 sm:p-4 select-none">
