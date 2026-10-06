@@ -434,7 +434,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
                       </span>
                     </div>
                   )}
-                  <h1 className="text-base sm:text-lg font-black text-stone-950 tracking-tight leading-snug truncate">
+                  <h1 className="text-base sm:text-lg font-black text-stone-950 tracking-tight leading-snug truncate uppercase">
                     {product.name}
                   </h1>
                   <div className="text-[11.5px] font-semibold text-stone-600 truncate mt-0.5">
