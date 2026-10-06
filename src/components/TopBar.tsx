@@ -9,9 +9,13 @@ import {
   Zap, 
   User, 
   Settings, 
-  ChevronRight
+  ChevronRight,
+  ArrowLeftRight,
+  RefreshCw,
+  Clock
 } from 'lucide-react';
 import { triggerHaptic, getInitialTelegramUser } from '../services/telegram';
+import { fetchLiveExchangeRates, getCachedExchangeRates, ExchangeRateData } from '../services/exchangeRates';
 
 interface NotificationItem {
   id: string;
@@ -64,13 +68,24 @@ export const TopBar: React.FC<TopBarProps> = ({
 }) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [isRatesOpen, setIsRatesOpen] = useState(false);
+  const [ratesData, setRatesData] = useState<ExchangeRateData>(getCachedExchangeRates);
+  const [isRefreshingRates, setIsRefreshingRates] = useState(false);
   const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS);
 
   const profileRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
+  const ratesRef = useRef<HTMLDivElement>(null);
   const user = getInitialTelegramUser();
 
   const unreadCount = notifications.filter((n) => n.unread).length;
+
+  // Fetch live exchange rates on initial mount
+  useEffect(() => {
+    fetchLiveExchangeRates().then((data) => {
+      setRatesData(data);
+    });
+  }, []);
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -82,15 +97,29 @@ export const TopBar: React.FC<TopBarProps> = ({
       if (notifRef.current && !notifRef.current.contains(target)) {
         setIsNotificationsOpen(false);
       }
+      if (ratesRef.current && !ratesRef.current.contains(target)) {
+        setIsRatesOpen(false);
+      }
     };
 
-    if (isProfileOpen || isNotificationsOpen) {
+    if (isProfileOpen || isNotificationsOpen || isRatesOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isProfileOpen, isNotificationsOpen]);
+  }, [isProfileOpen, isNotificationsOpen, isRatesOpen]);
+
+  const handleRefreshRates = async () => {
+    triggerHaptic('light');
+    setIsRefreshingRates(true);
+    try {
+      const data = await fetchLiveExchangeRates();
+      setRatesData(data);
+    } finally {
+      setIsRefreshingRates(false);
+    }
+  };
 
   const handleMarkAllAsRead = () => {
     triggerHaptic('light');
@@ -117,6 +146,7 @@ export const TopBar: React.FC<TopBarProps> = ({
             onClick={() => {
               triggerHaptic('light');
               setIsNotificationsOpen(false);
+              setIsRatesOpen(false);
               setIsProfileOpen((prev) => !prev);
             }}
             className={`h-9 pl-1.5 pr-2.5 rounded-full flex items-center gap-1.5 transition-all active:scale-95 border ${
@@ -196,14 +226,125 @@ export const TopBar: React.FC<TopBarProps> = ({
           )}
         </div>
 
-        {/* Right side cluster: Bell Icon + ShoppingCart Icon */}
+        {/* Right side cluster: Exchange Rates Icon + Bell Icon + ShoppingCart Icon */}
         <div className="flex items-center gap-2 shrink-0">
+          {/* Exchange Rates Feature (ArrowLeftRight outline icon) */}
+          <div className="relative" ref={ratesRef}>
+            <button
+              onClick={() => {
+                triggerHaptic('light');
+                setIsProfileOpen(false);
+                setIsNotificationsOpen(false);
+                setIsRatesOpen((prev) => !prev);
+              }}
+              className={`relative w-9 h-9 rounded-xl flex items-center justify-center transition-all active:scale-95 border cursor-pointer ${
+                isRatesOpen
+                  ? 'bg-[#FAF0F2] text-[#721428] border-[#721428]/40 shadow-xs'
+                  : 'bg-gray-50/80 hover:bg-gray-100 text-gray-700 hover:text-gray-900 border-gray-200/80'
+              }`}
+              aria-label="Live Exchange Rates"
+              title="Live Exchange Rates (USD & USDT to ETB)"
+            >
+              <ArrowLeftRight className="w-4.5 h-4.5" strokeWidth={1.8} />
+            </button>
+
+            {/* Exchange Rates Popover */}
+            {isRatesOpen && (
+              <div className="absolute right-0 mt-2 w-72 xs:w-80 bg-white rounded-2xl shadow-xl border border-gray-200/90 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-150 select-none">
+                {/* Popover Header */}
+                <div className="px-3.5 py-2.5 border-b border-gray-100 flex items-center justify-between bg-gray-50/60">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs font-bold text-gray-900">Exchange Rates</span>
+                    <span className="inline-flex items-center gap-1 text-[9.5px] font-bold bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded-full border border-emerald-200/70">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      Live
+                    </span>
+                  </div>
+                  <button
+                    onClick={handleRefreshRates}
+                    disabled={isRefreshingRates}
+                    className="p-1 text-gray-400 hover:text-[#721428] rounded-md hover:bg-gray-200/60 transition-colors disabled:opacity-50 cursor-pointer"
+                    title="Refresh live exchange rates"
+                    aria-label="Refresh rates"
+                  >
+                    <RefreshCw className={`w-3.5 h-3.5 ${isRefreshingRates ? 'animate-spin text-[#721428]' : ''}`} />
+                  </button>
+                </div>
+
+                {/* Popover Body: USD/ETB & USDT/ETB Pairs */}
+                <div className="p-2.5 space-y-2">
+                  {/* Pair 1: USD / ETB */}
+                  <div className="p-2.5 rounded-xl bg-stone-50/80 border border-stone-200/80 flex items-center justify-between transition-colors hover:bg-stone-50">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-lg bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] font-bold text-xs flex items-center justify-center shrink-0">
+                        $
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-gray-900 leading-none">
+                          USD / ETB
+                        </div>
+                        <span className="text-[10px] text-gray-500 block mt-0.5">
+                          US Dollar Rate
+                        </span>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-sm font-extrabold text-[#721428] tabular-nums leading-none">
+                        {ratesData.usdToEtb.toFixed(2)}
+                      </div>
+                      <span className="text-[10px] font-semibold text-gray-400 block mt-0.5">
+                        ETB
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Pair 2: USDT / ETB */}
+                  <div className="p-2.5 rounded-xl bg-stone-50/80 border border-stone-200/80 flex items-center justify-between transition-colors hover:bg-stone-50">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200/80 font-bold text-xs flex items-center justify-center shrink-0">
+                        ₮
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-gray-900 leading-none">
+                          USDT / ETB
+                        </div>
+                        <span className="text-[10px] text-gray-500 block mt-0.5">
+                          Tether P2P Rate
+                        </span>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-sm font-extrabold text-[#721428] tabular-nums leading-none">
+                        {ratesData.usdtToEtb.toFixed(2)}
+                      </div>
+                      <span className="text-[10px] font-semibold text-gray-400 block mt-0.5">
+                        ETB
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Popover Footer: Timestamp & Source */}
+                <div className="px-3 py-2 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between text-[10px] text-gray-500">
+                  <div className="flex items-center gap-1 text-gray-400">
+                    <Clock className="w-3 h-3 text-gray-400 shrink-0" />
+                    <span>Updated: {ratesData.lastUpdated}</span>
+                  </div>
+                  <span className="text-[9.5px] font-medium text-stone-400">
+                    ATH Market Feed
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* 1. Bell Icon Feature */}
           <div className="relative" ref={notifRef}>
             <button
               onClick={() => {
                 triggerHaptic('light');
                 setIsProfileOpen(false);
+                setIsRatesOpen(false);
                 setIsNotificationsOpen((prev) => !prev);
               }}
               className={`relative w-9 h-9 rounded-xl flex items-center justify-center transition-all active:scale-95 border ${
@@ -322,6 +463,7 @@ export const TopBar: React.FC<TopBarProps> = ({
               triggerHaptic('medium');
               setIsProfileOpen(false);
               setIsNotificationsOpen(false);
+              setIsRatesOpen(false);
               onOpenCart();
             }}
             className="relative w-9 h-9 rounded-xl flex items-center justify-center bg-gray-50/80 hover:bg-gray-100 text-gray-700 hover:text-gray-900 border border-gray-200/80 transition-all active:scale-95 shrink-0"
