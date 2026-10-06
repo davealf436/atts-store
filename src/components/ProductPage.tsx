@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Product } from '../types';
 import { ProductBrandVisual } from './ProductBrandVisual';
+import { ProductPhotoLogo } from './ProductPhotoLogo';
 import {
   ArrowLeft,
   Check,
@@ -375,8 +376,8 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         </button>
 
         <div className="flex items-center gap-2">
-          {/* Badge indicator */}
-          {product.badge && (
+          {/* Badge indicator (for non-hero products) */}
+          {!isFXReplay && product.badge && (
             <span
               className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]"
             >
@@ -405,105 +406,74 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         </div>
       </div>
 
-      {/* 2. Hero Card & Spec Strip — Concept 3: Editorial Minimalist / Apple Store Style */}
+      {/* 2. Hero Card & Spec Strip — Clean, Premium, White Aesthetic (Matching Photo 2) */}
       {isFXReplay ? (
         <div className="space-y-3">
-          {/* Obsidian & Deep Burgundy Ambient Glow Hero Card */}
-          <div className="relative rounded-3xl overflow-hidden bg-gradient-to-b from-[#090B10] via-[#120B15] to-[#180A12] border border-white/10 p-5 sm:p-6 shadow-[0_12px_36px_rgba(114,20,40,0.18)] select-none">
-            {/* Deep burgundy radial ambient glows */}
-            <div
-              className="absolute -top-20 -right-20 w-72 h-72 rounded-full pointer-events-none opacity-45 blur-3xl"
-              style={{ background: 'radial-gradient(circle, #721428 0%, rgba(114, 20, 40, 0) 70%)' }}
-            />
-            <div
-              className="absolute -bottom-24 -left-12 w-64 h-64 rounded-full pointer-events-none opacity-35 blur-3xl"
-              style={{ background: 'radial-gradient(circle, #831843 0%, rgba(131, 24, 67, 0) 70%)' }}
-            />
-            {/* Luxury micro-grid overlay */}
-            <div
-              className="absolute inset-0 opacity-[0.06] pointer-events-none"
-              style={{
-                backgroundImage: 'radial-gradient(circle, #FFFFFF 1px, transparent 1px)',
-                backgroundSize: '22px 22px',
-              }}
-            />
-
-            <div className="relative z-10 space-y-4">
-              {/* Top Kicker & Price Row */}
-              <div className="flex items-start justify-between gap-3">
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white shadow-2xs">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                  <span className="text-[10px] font-extrabold uppercase tracking-widest text-white/90">
-                    FXReplay Official
-                  </span>
-                </div>
-
-                <div className="text-right">
-                  <span className="text-[10px] uppercase font-bold tracking-wider text-rose-200/60 block leading-tight">
-                    Starting from
-                  </span>
-                  <div className="text-lg sm:text-xl font-black text-white tabular-nums tracking-tight mt-0.5">
-                    {formatETB(product.priceETB)}
-                  </div>
-                  <span className="text-[10px] text-white/60 font-medium">
-                    ~${(product.priceETB / 140).toFixed(1)} USD
-                  </span>
+          {/* Clean White Product Identity Card (Matching Photo 2) */}
+          <div className="bg-white rounded-2xl border border-stone-200/90 shadow-2xs p-3.5 sm:p-4 select-none">
+            <div className="flex items-center gap-3">
+              {/* Product Logo / Visual (Left) */}
+              <div className="shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-black border border-stone-800 p-1 flex items-center justify-center overflow-hidden shadow-2xs">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center">
+                  <ProductPhotoLogo
+                    productId={product.id}
+                    size="banner"
+                    className="w-full h-full object-contain"
+                  />
                 </div>
               </div>
 
-              {/* Large Typography Headline & Sub-kicker */}
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight leading-tight">
+              {/* Product Info (Middle) */}
+              <div className="flex-1 min-w-0">
+                {product.badge && (
+                  <div className="mb-0.5 leading-none">
+                    <span className="inline-flex items-center px-1.5 py-[2px] rounded text-[9.5px] font-bold tracking-tight bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]/80">
+                      {product.badge}
+                    </span>
+                  </div>
+                )}
+                <h1 className="text-[15px] sm:text-[17px] font-bold text-gray-900 leading-snug truncate">
                   {product.name}
                 </h1>
-                <p className="text-xs sm:text-sm font-semibold text-rose-200/90 tracking-tight mt-1">
-                  Professional Market Replay for Serious Traders
-                </p>
+                <div className="text-[11.5px] font-semibold text-stone-500 truncate mt-0.5">
+                  Starting at {formatETB(product.priceETB)}
+                  <span className="text-stone-400 font-normal ml-1">
+                    (~${(product.priceETB / 140).toFixed(1)} USD)
+                  </span>
+                </div>
               </div>
 
-              {/* Editorial Candlestick Ambient Graphic */}
-              <div className="relative pt-1 pb-1">
-                <div className="h-10 sm:h-12 w-full flex items-end justify-between gap-1 opacity-75">
-                  {[
-                    { h: 35, color: '#10B981' },
-                    { h: 25, color: '#EF4444' },
-                    { h: 20, color: '#EF4444' },
-                    { h: 45, color: '#10B981' },
-                    { h: 55, color: '#10B981' },
-                    { h: 40, color: '#EF4444' },
-                    { h: 65, color: '#10B981' },
-                    { h: 80, color: '#10B981' },
-                    { h: 70, color: '#EF4444' },
-                    { h: 90, color: '#10B981' },
-                    { h: 95, color: '#10B981' },
-                    { h: 85, color: '#10B981' },
-                  ].map((bar, i) => (
-                    <div key={i} className="flex-1 flex flex-col items-center justify-end h-full">
-                      <div
-                        className="w-full max-w-[14px] rounded-xs transition-all"
-                        style={{
-                          height: `${bar.h}%`,
-                          backgroundColor: bar.color,
-                          opacity: 0.85,
-                        }}
-                      />
-                    </div>
-                  ))}
-                </div>
-                {/* Glow highlight line */}
-                <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#FB7185]/60 to-transparent" />
+              {/* Starting Price Pill (Right) */}
+              <div className="shrink-0 text-right pl-1">
+                <span className="text-[9.5px] uppercase font-bold tracking-wider text-stone-400 block leading-tight">
+                  From
+                </span>
+                <span className="text-sm sm:text-base font-extrabold text-[#721428] tabular-nums leading-tight">
+                  {formatETB(product.priceETB)}
+                </span>
               </div>
+            </div>
 
-              {/* Verified Tag Strip */}
-              <div className="flex items-center gap-4 text-[11px] text-white/70 pt-1 border-t border-white/10 flex-wrap">
-                <div className="flex items-center gap-1.5">
-                  <Zap className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                  <span>5-Min Telegram Delivery</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                  <span>100% Genuine License</span>
-                </div>
+            {/* Subtitle / Description */}
+            <div className="pt-2.5 mt-2.5 border-t border-stone-100 flex items-center justify-between gap-2 text-xs text-stone-600">
+              <span className="font-medium text-stone-700">
+                {product.subtitle || 'Professional Market Replay for Serious Traders'}
+              </span>
+              <span className="inline-flex items-center gap-1 text-[10.5px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/60 shrink-0">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                Official Simulator
+              </span>
+            </div>
+
+            {/* Delivery & Warranty Trust Strip */}
+            <div className="flex items-center gap-3.5 pt-2 mt-2 text-[11px] text-stone-500 border-t border-stone-100/80 flex-wrap">
+              <div className="flex items-center gap-1.5">
+                <Zap className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                <span>5-Min Telegram Delivery</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                <span>100% Genuine License</span>
               </div>
             </div>
           </div>
