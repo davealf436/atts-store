@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Product } from '../types';
-import { ProductBrandVisual } from './ProductBrandVisual';
 import { ProductPhotoLogo } from './ProductPhotoLogo';
 import { ProductPreviewGallery } from './ProductPreviewGallery';
 import {
@@ -407,118 +406,72 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         </div>
       </div>
 
-      {/* 2. Hero Card & Spec Strip — Clean, Premium, White Aesthetic with Bold Burgundy Elements */}
-      {isFXReplay ? (
-        <div className="space-y-3">
-          {/* Clean White Product Identity Card (Matching Photo 2 with Burgundy Action) */}
-          <div className="bg-white rounded-2xl border border-stone-200/90 hover:border-[#721428]/30 shadow-2xs p-3.5 sm:p-4 select-none transition-colors">
-            <div className="flex items-center justify-between gap-3">
-              {/* Left & Middle: Product Logo + Info */}
-              <div className="flex items-center gap-3 min-w-0 flex-1">
-                {/* Product Logo / Visual (Left) */}
-                <div className="shrink-0 w-12 h-12 sm:w-13 sm:h-13 rounded-xl bg-black border border-stone-800 p-1 flex items-center justify-center overflow-hidden shadow-2xs ring-1 ring-[#721428]/25">
-                  <div className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center">
-                    <ProductPhotoLogo
-                      productId={product.id}
-                      size="banner"
-                      className="w-full h-full object-contain"
-                    />
-                  </div>
-                </div>
-
-                {/* Product Info (Middle) */}
-                <div className="min-w-0 flex-1">
-                  {product.badge && (
-                    <div className="mb-0.5 leading-none">
-                      <span className="inline-flex items-center px-1.5 py-[2px] rounded text-[9.5px] font-bold tracking-tight bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]">
-                        {product.badge}
-                      </span>
-                    </div>
-                  )}
-                  <h1 className="text-base sm:text-lg font-black text-stone-950 tracking-tight leading-snug truncate uppercase">
-                    {product.name}
-                  </h1>
-                  <div className="text-[11.5px] font-semibold text-stone-600 truncate mt-0.5">
-                    Starting at{' '}
-                    <span className="text-[#721428] font-bold">
-                      {formatETB(product.priceETB)}
-                    </span>
-                    <span className="text-stone-400 font-normal ml-1">
-                      (~${(product.priceETB / 140).toFixed(1)} USD)
-                    </span>
-                  </div>
+      {/* 2. Unified Hero Card & Product Preview Gallery for ALL Products */}
+      <div className="space-y-3">
+        {/* Clean White Product Identity Card (Matching Photo 2 with Burgundy Action) */}
+        <div className="bg-white rounded-2xl border border-stone-200/90 hover:border-[#721428]/30 shadow-2xs p-3.5 sm:p-4 select-none transition-colors">
+          <div className="flex items-center justify-between gap-3">
+            {/* Left & Middle: Product Logo + Info */}
+            <div className="flex items-center gap-3 min-w-0 flex-1">
+              {/* Product Logo / Visual (Left) */}
+              <div className="shrink-0 w-12 h-12 sm:w-13 sm:h-13 rounded-xl bg-black border border-stone-800 p-1 flex items-center justify-center overflow-hidden shadow-2xs ring-1 ring-[#721428]/25">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center">
+                  <ProductPhotoLogo
+                    productId={product.id}
+                    size="banner"
+                    className="w-full h-full object-contain"
+                  />
                 </div>
               </div>
 
-              {/* Right Side: Bold Burgundy Action Button */}
-              <div className="shrink-0 pl-1">
-                <button
-                  type="button"
-                  onClick={() => {
-                    triggerHaptic('light');
-                    const el = document.getElementById('choose-plan-section');
-                    if (el) {
-                      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                  }}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-[#721428] hover:bg-[#5A0E1E] active:scale-95 text-white text-xs font-bold transition-all shadow-2xs hover:shadow-xs cursor-pointer select-none"
-                  aria-label="Choose plan options"
-                >
-                  <span>Choose Plan</span>
-                  <ChevronDown className="w-3.5 h-3.5 stroke-[2.5]" />
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Product Preview Gallery — Horizontal Swipeable Google Play Style Carousel */}
-          <ProductPreviewGallery />
-        </div>
-      ) : (
-        <div className="space-y-4">
-          <div className="rounded-2xl overflow-hidden border border-stone-200/90 shadow-2xs">
-            <ProductBrandVisual product={product} />
-          </div>
-          <div className="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-2">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <div className="text-[11px] font-bold uppercase tracking-wider text-stone-500">
-                  {product.brand}
-                </div>
-                <h1 className="text-xl sm:text-2xl font-extrabold text-stone-900 tracking-tight leading-tight mt-0.5">
+              {/* Product Info (Middle) */}
+              <div className="min-w-0 flex-1">
+                {product.badge && (
+                  <div className="mb-0.5 leading-none">
+                    <span className="inline-flex items-center px-1.5 py-[2px] rounded text-[9.5px] font-bold tracking-tight bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]">
+                      {product.badge}
+                    </span>
+                  </div>
+                )}
+                <h1 className="text-base sm:text-lg font-black text-stone-950 tracking-tight leading-snug truncate uppercase">
                   {product.name}
                 </h1>
-                {product.subtitle && (
-                  <p className="text-xs sm:text-sm font-semibold text-[#721428] mt-1">
-                    {product.subtitle}
-                  </p>
-                )}
-              </div>
-              <div className="text-right shrink-0">
-                <span className="text-[10px] uppercase tracking-wide text-stone-600 block">
-                  Starting from
-                </span>
-                <span className="text-base sm:text-lg font-extrabold text-[#721428] tabular-nums">
-                  {formatETB(product.priceETB)}
-                </span>
+                <div className="text-[11.5px] font-semibold text-stone-600 truncate mt-0.5">
+                  Starting at{' '}
+                  <span className="text-[#721428] font-bold">
+                    {formatETB(product.priceETB)}
+                  </span>
+                  <span className="text-stone-400 font-normal ml-1">
+                    (~${(product.priceETB / 140).toFixed(1)} USD)
+                  </span>
+                </div>
               </div>
             </div>
-            <p className="text-xs text-stone-600 leading-relaxed font-normal pt-1">
-              {product.shortDescription}
-            </p>
-            <div className="flex items-center gap-3 pt-2 text-[11px] text-stone-600 border-t border-stone-100 flex-wrap">
-              <div className="flex items-center gap-1.5">
-                <Zap className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-                <span>Instant Telegram Delivery</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                <span>100% Genuine License</span>
-              </div>
+
+            {/* Right Side: Bold Burgundy Action Button */}
+            <div className="shrink-0 pl-1">
+              <button
+                type="button"
+                onClick={() => {
+                  triggerHaptic('light');
+                  const el = document.getElementById('choose-plan-section');
+                  if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+                }}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-[#721428] hover:bg-[#5A0E1E] active:scale-95 text-white text-xs font-bold transition-all shadow-2xs hover:shadow-xs cursor-pointer select-none"
+                aria-label="Choose plan options"
+              >
+                <span>Choose Plan</span>
+                <ChevronDown className="w-3.5 h-3.5 stroke-[2.5]" />
+              </button>
             </div>
           </div>
         </div>
-      )}
+
+        {/* Product Preview Gallery — Horizontal Swipeable Google Play Style Carousel for ALL Products */}
+        <ProductPreviewGallery product={product} />
+      </div>
 
       {/* 5. Why FXReplay Pro? (Horizontal Minimal & Compact Benefit Cards with Swipe Hint & Dots) */}
       {isEssentialFX && (
