@@ -1,59 +1,56 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Play, LineChart, LayoutGrid, CheckCircle2, TrendingUp, Layers, BookOpen, BarChart3, ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, ChevronLeft, ChevronRight, Play } from 'lucide-react';
 import { triggerHaptic } from '../services/telegram';
 
-interface ScreenshotItem {
+interface ScreenshotData {
   id: string;
-  title: string;
-  subtitle: string;
-  tag: string;
-  preview: React.ReactNode;
+  renderVisual: (isExpanded?: boolean) => React.ReactNode;
 }
 
 export const ProductPreviewGallery: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState<number>(0);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [isInteracting, setIsInteracting] = useState<boolean>(false);
   const carouselRef = useRef<HTMLDivElement>(null);
+  const autoPlayTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const screenshots: ScreenshotItem[] = [
+  // 5 High-fidelity graphical software screenshots (No extraneous text, pure UI mockups)
+  const screenshots: ScreenshotData[] = [
+    // 1. Market Replay
     {
       id: 'market-replay',
-      title: 'Market Replay',
-      subtitle: 'Tick-by-tick TradingView simulation with speed controls',
-      tag: 'Core Simulator',
-      preview: (
-        <div className="w-full h-full bg-[#0C0F17] p-2.5 flex flex-col justify-between font-mono text-[9px] text-stone-300 select-none relative overflow-hidden">
-          {/* Chart Header Bar */}
-          <div className="flex items-center justify-between border-b border-stone-800/80 pb-1.5 text-[9px]">
+      renderVisual: (isExpanded = false) => (
+        <div className="w-full h-full bg-[#0B0E14] p-2 sm:p-3 flex flex-col justify-between font-mono select-none relative overflow-hidden">
+          {/* Header Bar */}
+          <div className="flex items-center justify-between border-b border-stone-800/80 pb-1.5">
             <div className="flex items-center gap-1.5">
-              <span className="font-bold text-white tracking-wider">EURUSD</span>
-              <span className="px-1 py-0.5 rounded bg-stone-800 text-stone-300 text-[8px]">15m</span>
-              <span className="text-emerald-400 font-semibold">1.08425</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <div className="h-2 w-12 bg-stone-700/80 rounded-xs" />
+              <div className="h-2 w-6 bg-stone-800 rounded-xs" />
             </div>
-            <div className="flex items-center gap-1 text-[8px] text-stone-400">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>Replay: 1x</span>
+            <div className="flex items-center gap-1">
+              <div className="h-2 w-8 bg-emerald-950/80 border border-emerald-800/60 rounded-xs" />
             </div>
           </div>
 
-          {/* Realistic Candlestick Canvas Simulation */}
+          {/* Candlestick Canvas */}
           <div className="relative flex-1 my-1.5 flex items-end justify-between px-1">
-            {/* Horizontal Grid lines */}
-            <div className="absolute inset-x-0 top-1/4 border-b border-stone-800/40" />
-            <div className="absolute inset-x-0 top-2/4 border-b border-stone-800/40" />
-            <div className="absolute inset-x-0 top-3/4 border-b border-stone-800/40" />
+            <div className="absolute inset-x-0 top-1/4 border-b border-stone-800/30" />
+            <div className="absolute inset-x-0 top-2/4 border-b border-stone-800/30" />
+            <div className="absolute inset-x-0 top-3/4 border-b border-stone-800/30" />
 
-            {/* Candlesticks Sequence */}
             {[
-              { o: 40, c: 55, h: 62, l: 36, bull: true },
-              { o: 55, c: 48, h: 58, l: 42, bull: false },
-              { o: 48, c: 62, h: 66, l: 45, bull: true },
-              { o: 62, c: 75, h: 80, l: 58, bull: true },
-              { o: 75, c: 68, h: 78, l: 64, bull: false },
-              { o: 68, c: 84, h: 90, l: 65, bull: true },
-              { o: 84, c: 78, h: 87, l: 72, bull: false },
-              { o: 78, c: 92, h: 96, l: 75, bull: true },
-              { o: 92, c: 88, h: 95, l: 83, bull: false },
-              { o: 88, c: 100, h: 104, l: 85, bull: true },
+              { o: 38, c: 54, h: 62, l: 34, bull: true },
+              { o: 54, c: 46, h: 58, l: 40, bull: false },
+              { o: 46, c: 62, h: 68, l: 44, bull: true },
+              { o: 62, c: 74, h: 80, l: 58, bull: true },
+              { o: 74, c: 66, h: 78, l: 62, bull: false },
+              { o: 66, c: 84, h: 90, l: 64, bull: true },
+              { o: 84, c: 76, h: 88, l: 70, bull: false },
+              { o: 76, c: 92, h: 96, l: 74, bull: true },
+              { o: 92, c: 86, h: 94, l: 82, bull: false },
+              { o: 86, c: 100, h: 104, l: 84, bull: true },
             ].map((candle, idx) => {
               const bottom = Math.min(candle.o, candle.c);
               const height = Math.abs(candle.c - candle.o) || 4;
@@ -62,67 +59,53 @@ export const ProductPreviewGallery: React.FC = () => {
 
               return (
                 <div key={idx} className="relative flex-1 flex justify-center h-full items-end pb-1">
-                  {/* Wick */}
                   <div
                     className={`absolute w-px ${candle.bull ? 'bg-emerald-400' : 'bg-rose-500'}`}
                     style={{ bottom: `${wickBottom * 0.7}%`, height: `${wickHeight * 0.7}%` }}
                   />
-                  {/* Body */}
                   <div
-                    className={`relative w-2.5 rounded-[1px] ${candle.bull ? 'bg-emerald-400' : 'bg-rose-500'}`}
+                    className={`relative ${isExpanded ? 'w-4' : 'w-2 sm:w-2.5'} rounded-[1px] ${candle.bull ? 'bg-emerald-400' : 'bg-rose-500'}`}
                     style={{ bottom: `${bottom * 0.7}%`, height: `${height * 0.7}%` }}
                   />
                 </div>
               );
             })}
 
-            {/* Replay Vertical Cut Line */}
-            <div className="absolute right-4 inset-y-0 w-px border-r border-dashed border-amber-400 flex items-start">
-              <span className="bg-amber-400 text-stone-950 font-bold px-1 rounded-[2px] text-[7px] -mt-1 -ml-3">
-                NOW
-              </span>
-            </div>
+            {/* Dotted Replay Marker Line */}
+            <div className="absolute right-5 inset-y-0 w-px border-r border-dashed border-amber-400/90" />
           </div>
 
-          {/* Replay Controller Bar */}
-          <div className="bg-[#141824] rounded-lg p-1.5 border border-stone-800 flex items-center justify-between text-[8px]">
-            <div className="flex items-center gap-1.5 text-stone-300">
-              <button type="button" className="w-5 h-5 rounded bg-stone-800 flex items-center justify-center hover:bg-stone-700">
-                <Play className="w-2.5 h-2.5 fill-emerald-400 text-emerald-400" />
-              </button>
-              <span>0.5s / bar</span>
+          {/* Bottom Replay Control Panel */}
+          <div className="bg-[#141824] rounded-lg p-1 border border-stone-800 flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <div className="w-4 h-4 rounded bg-stone-800 flex items-center justify-center">
+                <Play className="w-2 h-2 fill-emerald-400 text-emerald-400" />
+              </div>
+              <div className="h-1.5 w-10 bg-stone-700/60 rounded-full" />
             </div>
             <div className="flex items-center gap-1">
-              <span className="px-1.5 py-0.5 rounded bg-[#721428]/30 border border-[#721428]/60 text-rose-300 font-bold">1x</span>
-              <span className="px-1.5 py-0.5 rounded bg-stone-800 text-stone-400 font-bold">3x</span>
-              <span className="px-1.5 py-0.5 rounded bg-stone-800 text-stone-400 font-bold">5x</span>
+              <div className="w-4 h-3 rounded bg-[#721428]/40 border border-[#721428]/60" />
+              <div className="w-4 h-3 rounded bg-stone-800" />
+              <div className="w-4 h-3 rounded bg-stone-800" />
             </div>
           </div>
         </div>
       ),
     },
+    // 2. Multi-Timeframe Charts
     {
       id: 'multi-timeframe',
-      title: 'Multi-Timeframe Charts',
-      subtitle: 'Quad sync charts across Daily, 4H, 15m and 1m intervals',
-      tag: 'Quad View',
-      preview: (
-        <div className="w-full h-full bg-[#0C0F17] p-2 flex flex-col font-mono text-[9px] text-stone-300 select-none">
-          {/* Top Quad Label */}
-          <div className="flex items-center justify-between pb-1 mb-1 border-b border-stone-800 text-[8px] text-stone-400">
-            <span>4-Chart Synchronized Layout</span>
-            <span className="text-emerald-400 font-bold">Cursor Linked</span>
-          </div>
-
+      renderVisual: (isExpanded = false) => (
+        <div className="w-full h-full bg-[#0B0E14] p-1.5 sm:p-2 flex flex-col justify-between font-mono select-none">
           {/* 4 Quadrants Grid */}
           <div className="grid grid-cols-2 grid-rows-2 gap-1.5 flex-1">
-            {/* Quadrant 1: 1D */}
-            <div className="bg-[#131722] rounded border border-stone-800 p-1 flex flex-col justify-between">
-              <div className="flex justify-between text-[7px] text-stone-400">
-                <span className="font-bold text-white">Daily</span>
-                <span className="text-emerald-400">Bullish Trend</span>
+            {/* Chart 1: Daily */}
+            <div className="bg-[#131722] rounded border border-stone-800 p-1 flex flex-col justify-between overflow-hidden">
+              <div className="flex justify-between items-center">
+                <div className="h-1.5 w-6 bg-stone-600 rounded-xs" />
+                <div className="h-1.5 w-4 bg-emerald-500/80 rounded-xs" />
               </div>
-              <div className="h-6 flex items-end gap-0.5">
+              <div className="h-6 flex items-end gap-1">
                 <div className="flex-1 bg-emerald-400/80 h-3 rounded-xs" />
                 <div className="flex-1 bg-emerald-400/80 h-4 rounded-xs" />
                 <div className="flex-1 bg-rose-500/80 h-2 rounded-xs" />
@@ -130,13 +113,13 @@ export const ProductPreviewGallery: React.FC = () => {
               </div>
             </div>
 
-            {/* Quadrant 2: 4H */}
-            <div className="bg-[#131722] rounded border border-stone-800 p-1 flex flex-col justify-between">
-              <div className="flex justify-between text-[7px] text-stone-400">
-                <span className="font-bold text-white">4H</span>
-                <span className="text-amber-400">Key POI Tap</span>
+            {/* Chart 2: 4H */}
+            <div className="bg-[#131722] rounded border border-stone-800 p-1 flex flex-col justify-between overflow-hidden">
+              <div className="flex justify-between items-center">
+                <div className="h-1.5 w-5 bg-stone-600 rounded-xs" />
+                <div className="h-1.5 w-5 bg-amber-500/80 rounded-xs" />
               </div>
-              <div className="h-6 flex items-end gap-0.5">
+              <div className="h-6 flex items-end gap-1">
                 <div className="flex-1 bg-rose-500/80 h-4 rounded-xs" />
                 <div className="flex-1 bg-emerald-400/80 h-5 rounded-xs" />
                 <div className="flex-1 bg-emerald-400/80 h-6 rounded-xs" />
@@ -144,13 +127,13 @@ export const ProductPreviewGallery: React.FC = () => {
               </div>
             </div>
 
-            {/* Quadrant 3: 15m */}
-            <div className="bg-[#131722] rounded border border-stone-800 p-1 flex flex-col justify-between">
-              <div className="flex justify-between text-[7px] text-stone-400">
-                <span className="font-bold text-white">15m</span>
-                <span className="text-emerald-400">Structure Shift</span>
+            {/* Chart 3: 15m */}
+            <div className="bg-[#131722] rounded border border-stone-800 p-1 flex flex-col justify-between overflow-hidden">
+              <div className="flex justify-between items-center">
+                <div className="h-1.5 w-6 bg-stone-600 rounded-xs" />
+                <div className="h-1.5 w-4 bg-emerald-500/80 rounded-xs" />
               </div>
-              <div className="h-6 flex items-end gap-0.5">
+              <div className="h-6 flex items-end gap-1">
                 <div className="flex-1 bg-emerald-400/80 h-2 rounded-xs" />
                 <div className="flex-1 bg-emerald-400/80 h-4 rounded-xs" />
                 <div className="flex-1 bg-emerald-400/80 h-6 rounded-xs" />
@@ -158,13 +141,13 @@ export const ProductPreviewGallery: React.FC = () => {
               </div>
             </div>
 
-            {/* Quadrant 4: 1m */}
-            <div className="bg-[#131722] rounded border border-[#721428]/50 p-1 flex flex-col justify-between relative overflow-hidden">
-              <div className="flex justify-between text-[7px] text-stone-400">
-                <span className="font-bold text-rose-300">1m Entry</span>
-                <span className="text-emerald-400 font-bold">1:3.4 R:R</span>
+            {/* Chart 4: 1m with Entry Line */}
+            <div className="bg-[#131722] rounded border border-[#721428]/60 p-1 flex flex-col justify-between overflow-hidden relative">
+              <div className="flex justify-between items-center">
+                <div className="h-1.5 w-5 bg-rose-400/80 rounded-xs" />
+                <div className="h-1.5 w-6 bg-emerald-400 rounded-xs" />
               </div>
-              <div className="h-6 flex items-end gap-0.5">
+              <div className="h-6 flex items-end gap-1">
                 <div className="flex-1 bg-rose-500/80 h-2 rounded-xs" />
                 <div className="flex-1 bg-emerald-400/80 h-5 rounded-xs" />
                 <div className="flex-1 bg-emerald-400/80 h-6 rounded-xs" />
@@ -175,316 +158,369 @@ export const ProductPreviewGallery: React.FC = () => {
         </div>
       ),
     },
+    // 3. Trade Execution
     {
       id: 'trade-execution',
-      title: 'Trade Execution',
-      subtitle: 'Realistic order tickets with automated risk and TP/SL zones',
-      tag: 'Order Panel',
-      preview: (
-        <div className="w-full h-full bg-[#0C0F17] p-2 flex flex-col justify-between font-mono text-[9px] text-stone-300 select-none">
-          {/* Header */}
-          <div className="flex items-center justify-between pb-1 border-b border-stone-800 text-[8px]">
-            <span className="font-bold text-white">ORDER EXECUTION</span>
-            <span className="px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-400 border border-emerald-800/60 font-bold">ACTIVE ORDER</span>
-          </div>
+      renderVisual: (isExpanded = false) => (
+        <div className="w-full h-full bg-[#0B0E14] p-1.5 sm:p-2 flex flex-col justify-between font-mono select-none">
+          <div className="grid grid-cols-2 gap-1.5 flex-1">
+            {/* Chart Side with Green TP Box & Red SL Box */}
+            <div className="bg-[#131722] rounded border border-stone-800 p-1.5 flex flex-col justify-between overflow-hidden">
+              <div className="h-1.5 w-10 bg-stone-600 rounded-xs" />
 
-          {/* Split Chart + Order Ticket */}
-          <div className="grid grid-cols-2 gap-2 flex-1 my-1">
-            {/* Left: Chart with Risk/Reward Box */}
-            <div className="bg-[#131722] rounded border border-stone-800 p-1.5 flex flex-col justify-between relative overflow-hidden">
-              <span className="text-[7.5px] text-stone-400">EURUSD Long Setup</span>
-              
-              {/* Visual Take Profit (Green Box) */}
-              <div className="bg-emerald-500/20 border-t border-b border-emerald-500/60 h-7 rounded-xs p-1 flex items-center justify-between text-[7.5px] text-emerald-300">
-                <span>TP: 1.08850</span>
-                <span className="font-bold">+3.2R</span>
+              {/* Take Profit Zone (Green) */}
+              <div className="bg-emerald-500/25 border-t border-b border-emerald-500/60 h-6 rounded-xs p-1 flex items-center justify-between">
+                <div className="h-1.5 w-8 bg-emerald-300 rounded-xs" />
+                <div className="h-2 w-5 bg-emerald-400/80 rounded-xs" />
               </div>
-              
-              {/* Visual Stop Loss (Red Box) */}
-              <div className="bg-rose-500/20 border-t border-b border-rose-500/60 h-3 rounded-xs p-1 flex items-center justify-between text-[7.5px] text-rose-300 -mt-1">
-                <span>SL: 1.08210</span>
-                <span className="font-bold">-1R</span>
+
+              {/* Stop Loss Zone (Red) */}
+              <div className="bg-rose-500/25 border-t border-b border-rose-500/60 h-3 rounded-xs p-1 flex items-center justify-between -mt-1">
+                <div className="h-1.5 w-6 bg-rose-300 rounded-xs" />
+                <div className="h-2 w-4 bg-rose-400/80 rounded-xs" />
               </div>
             </div>
 
-            {/* Right: Realistic Order Settings */}
-            <div className="bg-[#141824] rounded border border-stone-800 p-1.5 flex flex-col justify-between text-[8px]">
-              <div>
-                <div className="flex justify-between text-stone-400 mb-1">
-                  <span>Risk Size</span>
-                  <span className="text-white font-bold">1.0% ($1,000)</span>
-                </div>
-                <div className="flex justify-between text-stone-400 mb-1">
-                  <span>Lots</span>
-                  <span className="text-white font-bold">2.45 Lots</span>
-                </div>
-                <div className="flex justify-between text-stone-400">
-                  <span>Risk / Reward</span>
-                  <span className="text-emerald-400 font-bold">1 : 3.20</span>
-                </div>
+            {/* Order Settings Side */}
+            <div className="bg-[#141824] rounded border border-stone-800 p-1.5 flex flex-col justify-between">
+              <div className="space-y-1">
+                <div className="h-1.5 w-full bg-stone-700/60 rounded-xs" />
+                <div className="h-1.5 w-3/4 bg-stone-700/60 rounded-xs" />
+                <div className="h-1.5 w-full bg-emerald-950 border border-emerald-800/60 rounded-xs" />
               </div>
 
-              {/* Order Buttons */}
+              {/* Buy / Sell Buttons */}
               <div className="grid grid-cols-2 gap-1 pt-1 border-t border-stone-800">
-                <button type="button" className="py-1 rounded bg-rose-600/80 text-white font-bold text-[8px] text-center">
-                  SELL
-                </button>
-                <button type="button" className="py-1 rounded bg-emerald-600 text-white font-bold text-[8px] text-center">
-                  BUY
-                </button>
+                <div className="h-4 sm:h-5 rounded bg-rose-600/80 flex items-center justify-center">
+                  <div className="h-1.5 w-6 bg-white/80 rounded-xs" />
+                </div>
+                <div className="h-4 sm:h-5 rounded bg-emerald-600 flex items-center justify-center">
+                  <div className="h-1.5 w-6 bg-white rounded-xs" />
+                </div>
               </div>
             </div>
-          </div>
-
-          <div className="text-[7.5px] text-stone-400 text-center">
-            P&L Calculated instantly with realistic slippage & spread
           </div>
         </div>
       ),
     },
+    // 4. Trading Journal
     {
       id: 'trading-journal',
-      title: 'Trading Journal',
-      subtitle: 'Complete trade logs, session tags, and screenshot logs',
-      tag: 'Playbook',
-      preview: (
-        <div className="w-full h-full bg-[#0C0F17] p-2 flex flex-col justify-between font-mono text-[9px] text-stone-300 select-none">
-          {/* Header */}
-          <div className="flex items-center justify-between pb-1 border-b border-stone-800 text-[8px]">
-            <span className="font-bold text-white">PLAYBOOK & TRADE LOG</span>
-            <span className="text-stone-400">Total: 48 Trades</span>
+      renderVisual: (isExpanded = false) => (
+        <div className="w-full h-full bg-[#0B0E14] p-1.5 sm:p-2 flex flex-col justify-between font-mono select-none">
+          {/* Log Table Rows */}
+          <div className="space-y-1 flex-1">
+            {[
+              { win: true, width: 'w-14', badge: 'bg-emerald-950 border-emerald-800' },
+              { win: true, width: 'w-10', badge: 'bg-emerald-950 border-emerald-800' },
+              { win: false, width: 'w-12', badge: 'bg-rose-950 border-rose-800' },
+              ...(isExpanded ? [{ win: true, width: 'w-16', badge: 'bg-emerald-950 border-emerald-800' }] : []),
+            ].map((row, idx) => (
+              <div
+                key={idx}
+                className="p-1 rounded bg-[#141824] border border-stone-800 flex items-center justify-between"
+              >
+                <div className="flex items-center gap-1.5">
+                  <span className={`w-1.5 h-1.5 rounded-full ${row.win ? 'bg-emerald-400' : 'bg-rose-500'}`} />
+                  <div className={`h-1.5 ${row.width} bg-stone-600 rounded-xs`} />
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <div className={`h-2.5 w-7 rounded border ${row.badge}`} />
+                  <div className={`h-2.5 w-8 rounded ${row.win ? 'bg-emerald-500/25' : 'bg-rose-500/25'}`} />
+                </div>
+              </div>
+            ))}
           </div>
 
-          {/* Trade Rows Table */}
-          <div className="space-y-1 my-1 flex-1">
-            {/* Trade Row 1 */}
-            <div className="p-1 rounded bg-[#141824] border border-stone-800 flex items-center justify-between text-[8px]">
-              <div className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                <span className="font-bold text-white">EURUSD Long</span>
-                <span className="text-stone-500">London Open</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="px-1 py-0.2 rounded bg-stone-800 text-stone-300 text-[7px]">Liquidity Sweep</span>
-                <span className="font-bold text-emerald-400">+$1,420</span>
-              </div>
-            </div>
-
-            {/* Trade Row 2 */}
-            <div className="p-1 rounded bg-[#141824] border border-stone-800 flex items-center justify-between text-[8px]">
-              <div className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                <span className="font-bold text-white">GBPUSD Short</span>
-                <span className="text-stone-500">NY Session</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="px-1 py-0.2 rounded bg-stone-800 text-stone-300 text-[7px]">Order Block</span>
-                <span className="font-bold text-emerald-400">+$980</span>
-              </div>
-            </div>
-
-            {/* Trade Row 3 */}
-            <div className="p-1 rounded bg-[#141824] border border-stone-800 flex items-center justify-between text-[8px]">
-              <div className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
-                <span className="font-bold text-white">NAS100 Long</span>
-                <span className="text-stone-500">NY Open</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="px-1 py-0.2 rounded bg-stone-800 text-stone-300 text-[7px]">Breakout</span>
-                <span className="font-bold text-rose-400">-$350</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Footer Metrics */}
-          <div className="flex justify-between items-center pt-1 border-t border-stone-800 text-[8px]">
-            <span className="text-stone-400">Weekly Gain: <strong className="text-emerald-400">+7.8R</strong></span>
-            <span className="text-stone-400">Win Rate: <strong className="text-white">68.2%</strong></span>
+          {/* Footer Bar */}
+          <div className="flex justify-between items-center pt-1 border-t border-stone-800">
+            <div className="h-1.5 w-12 bg-stone-700/60 rounded-xs" />
+            <div className="h-1.5 w-10 bg-emerald-500/60 rounded-xs" />
           </div>
         </div>
       ),
     },
+    // 5. Performance Analytics
     {
       id: 'performance-analytics',
-      title: 'Performance Analytics',
-      subtitle: 'Equity curve growth, win-loss ratio, and drawdown analysis',
-      tag: 'Edge Metrics',
-      preview: (
-        <div className="w-full h-full bg-[#0C0F17] p-2 flex flex-col justify-between font-mono text-[9px] text-stone-300 select-none">
-          {/* Header */}
-          <div className="flex items-center justify-between pb-1 border-b border-stone-800 text-[8px]">
-            <span className="font-bold text-white">EQUITY GROWTH & EDGE</span>
-            <span className="text-emerald-400 font-bold">+$18,450 (+36.9%)</span>
-          </div>
-
-          {/* Key KPI Strip */}
-          <div className="grid grid-cols-3 gap-1 my-1 text-[8px]">
-            <div className="bg-[#141824] p-1 rounded border border-stone-800 text-center">
-              <span className="text-stone-400 block text-[7px]">Win Rate</span>
-              <span className="font-bold text-emerald-400">68.4%</span>
+      renderVisual: (isExpanded = false) => (
+        <div className="w-full h-full bg-[#0B0E14] p-1.5 sm:p-2 flex flex-col justify-between font-mono select-none">
+          {/* Top KPI Metrics Strip */}
+          <div className="grid grid-cols-3 gap-1 mb-1">
+            <div className="bg-[#141824] p-1 rounded border border-stone-800 flex flex-col items-center gap-0.5">
+              <div className="h-1 w-6 bg-stone-600 rounded-xs" />
+              <div className="h-2 w-7 bg-emerald-400/80 rounded-xs" />
             </div>
-            <div className="bg-[#141824] p-1 rounded border border-stone-800 text-center">
-              <span className="text-stone-400 block text-[7px]">Profit Factor</span>
-              <span className="font-bold text-white">2.85</span>
+            <div className="bg-[#141824] p-1 rounded border border-stone-800 flex flex-col items-center gap-0.5">
+              <div className="h-1 w-7 bg-stone-600 rounded-xs" />
+              <div className="h-2 w-6 bg-white/80 rounded-xs" />
             </div>
-            <div className="bg-[#141824] p-1 rounded border border-stone-800 text-center">
-              <span className="text-stone-400 block text-[7px]">Max DD</span>
-              <span className="font-bold text-amber-400">-3.4%</span>
+            <div className="bg-[#141824] p-1 rounded border border-stone-800 flex flex-col items-center gap-0.5">
+              <div className="h-1 w-6 bg-stone-600 rounded-xs" />
+              <div className="h-2 w-6 bg-amber-400/80 rounded-xs" />
             </div>
           </div>
 
-          {/* Smooth Ascending Equity Line Chart */}
-          <div className="h-10 bg-[#131722] rounded border border-stone-800 p-1 flex items-end relative overflow-hidden">
-            <svg viewBox="0 0 100 35" className="w-full h-full overflow-visible">
+          {/* Ascending Green Equity Curve SVG */}
+          <div className="flex-1 bg-[#131722] rounded border border-stone-800 p-1 flex items-end relative overflow-hidden">
+            <svg viewBox="0 0 100 32" className="w-full h-full overflow-visible" preserveAspectRatio="none">
               <defs>
-                <linearGradient id="eqGrad" x1="0" y1="0" x2="0" y2="1">
+                <linearGradient id="eqCurveGrad" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#10B981" stopOpacity="0.45" />
                   <stop offset="100%" stopColor="#10B981" stopOpacity="0.0" />
                 </linearGradient>
               </defs>
               <path
-                d="M 0 32 Q 15 28 25 30 T 45 22 T 65 14 T 85 10 T 100 4 L 100 35 L 0 35 Z"
-                fill="url(#eqGrad)"
+                d="M 0 30 Q 15 27 25 28 T 45 20 T 65 12 T 85 8 T 100 3 L 100 32 L 0 32 Z"
+                fill="url(#eqCurveGrad)"
               />
               <path
-                d="M 0 32 Q 15 28 25 30 T 45 22 T 65 14 T 85 10 T 100 4"
+                d="M 0 30 Q 15 27 25 28 T 45 20 T 65 12 T 85 8 T 100 3"
                 fill="none"
                 stroke="#10B981"
-                strokeWidth="2"
+                strokeWidth={isExpanded ? '2' : '1.8'}
                 strokeLinecap="round"
               />
-              <circle cx="100" cy="4" r="2.5" fill="#10B981" className="animate-pulse" />
+              <circle cx="100" cy="3" r="2" fill="#10B981" />
             </svg>
-          </div>
-
-          <div className="flex justify-between items-center pt-1 border-t border-stone-800 text-[8px] text-stone-400">
-            <span>Expectancy: <strong className="text-white">+1.24R / trade</strong></span>
-            <span className="text-emerald-400">Sharpe: 2.14</span>
           </div>
         </div>
       ),
     },
   ];
 
-  const handleScroll = () => {
+  // Auto-scroll animation logic
+  const scrollToSlide = useCallback((index: number) => {
     if (!carouselRef.current) return;
-    const { scrollLeft, clientWidth } = carouselRef.current;
-    if (clientWidth === 0) return;
-    // Calculate nearest card based on scroll position
-    const cardWidth = carouselRef.current.firstElementChild?.clientWidth || 300;
-    const gap = 12; // gap-3 is 12px
-    const index = Math.round(scrollLeft / (cardWidth + gap));
-    setActiveIndex(Math.min(Math.max(index, 0), screenshots.length - 1));
-  };
-
-  const scrollToIndex = (index: number) => {
-    if (!carouselRef.current) return;
-    triggerHaptic('light');
-    const card = carouselRef.current.children[index] as HTMLElement;
+    const container = carouselRef.current;
+    const card = container.children[index] as HTMLElement;
     if (card) {
-      card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+      const scrollPos = card.offsetLeft - (container.offsetWidth - card.offsetWidth) / 2;
+      container.scrollTo({ left: scrollPos, behavior: 'smooth' });
     }
     setActiveIndex(index);
+  }, []);
+
+  // Set up auto-animation timer (every 3.8s)
+  useEffect(() => {
+    if (isInteracting || lightboxIndex !== null) {
+      if (autoPlayTimerRef.current) clearInterval(autoPlayTimerRef.current);
+      return;
+    }
+
+    autoPlayTimerRef.current = setInterval(() => {
+      setActiveIndex((prev) => {
+        const next = (prev + 1) % screenshots.length;
+        scrollToSlide(next);
+        return next;
+      });
+    }, 3800);
+
+    return () => {
+      if (autoPlayTimerRef.current) clearInterval(autoPlayTimerRef.current);
+    };
+  }, [isInteracting, lightboxIndex, screenshots.length, scrollToSlide]);
+
+  // Update active index based on scroll position
+  const handleScroll = () => {
+    if (!carouselRef.current) return;
+    const container = carouselRef.current;
+    const center = container.scrollLeft + container.offsetWidth / 2;
+
+    let closestIdx = 0;
+    let minDistance = Infinity;
+
+    Array.from(container.children).forEach((child, idx) => {
+      const card = child as HTMLElement;
+      const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+      const distance = Math.abs(center - cardCenter);
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestIdx = idx;
+      }
+    });
+
+    if (closestIdx !== activeIndex) {
+      setActiveIndex(closestIdx);
+    }
+  };
+
+  const handleOpenLightbox = (index: number) => {
+    triggerHaptic('light');
+    setLightboxIndex(index);
+  };
+
+  const handleCloseLightbox = () => {
+    triggerHaptic('light');
+    setLightboxIndex(null);
+  };
+
+  const handlePrevLightbox = () => {
+    triggerHaptic('light');
+    setLightboxIndex((prev) => (prev !== null ? (prev === 0 ? screenshots.length - 1 : prev - 1) : 0));
+  };
+
+  const handleNextLightbox = () => {
+    triggerHaptic('light');
+    setLightboxIndex((prev) => (prev !== null ? (prev + 1) % screenshots.length : 0));
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-stone-200/90 shadow-2xs p-3.5 sm:p-4 select-none space-y-3">
-      {/* Gallery Header Bar */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-lg bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center shrink-0">
-            <LineChart className="w-3.5 h-3.5 stroke-[2]" />
-          </div>
-          <div>
-            <h3 className="text-xs sm:text-sm font-bold text-stone-900 leading-tight">
-              Product Preview Gallery
-            </h3>
-            <span className="text-[10px] text-stone-500 leading-none mt-0.5 block">
-              Official TradingView simulation engine screenshots
-            </span>
-          </div>
-        </div>
-
-        {/* Counter indicator */}
-        <span className="text-[10px] font-bold text-[#721428] bg-[#FAF0F2] border border-[#F0D5DA] px-2 py-0.5 rounded-full">
-          {activeIndex + 1} / {screenshots.length}
-        </span>
-      </div>
-
-      {/* Horizontal Swipeable Screenshot Carousel */}
+    <div
+      className="bg-white rounded-2xl border border-stone-200/90 shadow-2xs p-2 sm:p-2.5 select-none overflow-hidden"
+      onMouseEnter={() => setIsInteracting(true)}
+      onMouseLeave={() => setIsInteracting(false)}
+      onTouchStart={() => setIsInteracting(true)}
+      onTouchEnd={() => {
+        setTimeout(() => setIsInteracting(false), 2000);
+      }}
+    >
+      {/* Compact Horizontal Swipeable Carousel (Significantly reduced height, NO text) */}
       <div
         ref={carouselRef}
         onScroll={handleScroll}
-        className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-none py-1 -mx-0.5 px-0.5 scroll-smooth"
+        className="flex gap-2.5 overflow-x-auto snap-x snap-mandatory scrollbar-none py-1 px-1 items-center scroll-smooth"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        {screenshots.map((item, idx) => (
-          <div
-            key={item.id}
-            className="w-[84vw] max-w-[340px] sm:w-[290px] md:w-[310px] shrink-0 snap-start bg-stone-950 rounded-xl sm:rounded-2xl border border-stone-800 shadow-sm overflow-hidden flex flex-col transition-all hover:border-stone-700"
-          >
-            {/* Window Chrome Header */}
-            <div className="bg-[#121622] px-3 py-1.5 border-b border-stone-800/90 flex items-center justify-between text-[10px]">
-              <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-rose-500/80 inline-block" />
-                <span className="w-2 h-2 rounded-full bg-amber-500/80 inline-block" />
-                <span className="w-2 h-2 rounded-full bg-emerald-500/80 inline-block" />
-                <span className="text-stone-400 font-mono text-[9.5px] ml-1 font-semibold truncate max-w-[130px]">
-                  {item.title}
-                </span>
-              </div>
-              <span className="text-[9px] font-bold uppercase tracking-wider text-[#FB7185] bg-[#721428]/25 border border-[#721428]/40 px-1.5 py-0.5 rounded">
-                {item.tag}
-              </span>
-            </div>
+        {screenshots.map((item, idx) => {
+          const isActive = activeIndex === idx;
 
-            {/* Simulated Live UI Canvas Area */}
-            <div className="h-44 sm:h-46 w-full relative">
-              {item.preview}
+          return (
+            <div
+              key={item.id}
+              onClick={() => handleOpenLightbox(idx)}
+              className={`h-24 sm:h-28 w-[72vw] max-w-[260px] sm:w-[220px] md:w-[240px] shrink-0 snap-center rounded-xl sm:rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 ease-out border ${
+                isActive
+                  ? 'scale-100 opacity-100 border-[#721428]/40 shadow-sm ring-1 ring-[#721428]/20'
+                  : 'scale-[0.93] opacity-65 hover:opacity-85 border-stone-800/80 shadow-2xs'
+              }`}
+            >
+              {item.renderVisual(false)}
             </div>
+          );
+        })}
+      </div>
 
-            {/* Card Caption Footer */}
-            <div className="bg-[#10141F] p-2.5 border-t border-stone-800/80">
-              <div className="flex items-center justify-between">
-                <h4 className="text-xs font-bold text-white tracking-tight">
-                  {idx + 1}. {item.title}
-                </h4>
-                <span className="text-[9px] text-stone-400 font-medium">FXReplay v3</span>
-              </div>
-              <p className="text-[10px] text-stone-400 mt-0.5 leading-snug">
-                {item.subtitle}
-              </p>
-            </div>
-          </div>
+      {/* Small Clean Pagination Dots Only (No text) */}
+      <div className="flex items-center justify-center gap-1.5 pt-1.5 pb-0.5" role="tablist" aria-label="Pagination">
+        {screenshots.map((_, idx) => (
+          <button
+            key={idx}
+            type="button"
+            onClick={() => {
+              triggerHaptic('light');
+              scrollToSlide(idx);
+            }}
+            className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+              activeIndex === idx
+                ? 'w-4 bg-[#721428]'
+                : 'w-1.5 bg-stone-300 hover:bg-stone-400'
+            }`}
+            aria-label={`Slide ${idx + 1}`}
+            aria-selected={activeIndex === idx}
+          />
         ))}
       </div>
 
-      {/* Clean Navigation Dots & Arrows */}
-      <div className="flex items-center justify-between pt-1">
-        {/* Swipe Hint */}
-        <span className="text-[10px] text-stone-400 sm:text-stone-500 font-medium">
-          ← Swipe horizontally to preview all features →
-        </span>
+      {/* Fullscreen / Lightbox Modal with Swipe Navigation */}
+      <AnimatePresence>
+        {lightboxIndex !== null && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex flex-col justify-between p-3 sm:p-5 select-none"
+            onClick={handleCloseLightbox}
+          >
+            {/* Lightbox Top Bar */}
+            <div
+              className="flex items-center justify-between z-10 w-full max-w-xl mx-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Minimal Counter Dot Strip */}
+              <div className="flex items-center gap-1.5">
+                {screenshots.map((_, idx) => (
+                  <span
+                    key={idx}
+                    className={`h-1.5 rounded-full transition-all ${
+                      lightboxIndex === idx ? 'w-4 bg-[#FB7185]' : 'w-1.5 bg-white/30'
+                    }`}
+                  />
+                ))}
+              </div>
 
-        {/* 5 Navigation Dots */}
-        <div className="flex items-center gap-1.5" role="tablist" aria-label="Gallery pagination">
-          {screenshots.map((_, idx) => (
-            <button
-              key={idx}
-              type="button"
-              onClick={() => scrollToIndex(idx)}
-              className={`h-1.5 rounded-full transition-all cursor-pointer ${
-                activeIndex === idx
-                  ? 'w-5 bg-[#721428]'
-                  : 'w-1.5 bg-stone-300 hover:bg-stone-400'
-              }`}
-              aria-label={`Go to screenshot ${idx + 1}`}
-              aria-selected={activeIndex === idx}
-            />
-          ))}
-        </div>
-      </div>
+              {/* Close Button */}
+              <button
+                type="button"
+                onClick={handleCloseLightbox}
+                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 active:bg-white/30 text-white flex items-center justify-center transition-colors cursor-pointer"
+                aria-label="Close fullscreen preview"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Lightbox Center Expanded Screenshot Canvas (Swipeable) */}
+            <div
+              className="relative flex-1 flex items-center justify-center w-full max-w-xl mx-auto py-2"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Prev Arrow */}
+              <button
+                type="button"
+                onClick={handlePrevLightbox}
+                className="absolute left-1 sm:left-2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black/60 hover:bg-black/90 text-white flex items-center justify-center border border-white/15 transition-all active:scale-95 cursor-pointer"
+                aria-label="Previous screenshot"
+              >
+                <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+              </button>
+
+              {/* Animated Expanded Screenshot with Drag/Swipe Support */}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={lightboxIndex}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.22, ease: [0.25, 0.1, 0.25, 1] }}
+                  drag="x"
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={0.4}
+                  onDragEnd={(_, info) => {
+                    if (info.offset.x > 50) {
+                      handlePrevLightbox();
+                    } else if (info.offset.x < -50) {
+                      handleNextLightbox();
+                    }
+                  }}
+                  className="w-full h-[62vh] sm:h-[68vh] max-h-[440px] rounded-2xl overflow-hidden border border-white/15 shadow-2xl relative cursor-grab active:cursor-grabbing"
+                >
+                  {screenshots[lightboxIndex].renderVisual(true)}
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Next Arrow */}
+              <button
+                type="button"
+                onClick={handleNextLightbox}
+                className="absolute right-1 sm:right-2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black/60 hover:bg-black/90 text-white flex items-center justify-center border border-white/15 transition-all active:scale-95 cursor-pointer"
+                aria-label="Next screenshot"
+              >
+                <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+              </button>
+            </div>
+
+            {/* Bottom Swipe Hint Indicator */}
+            <div
+              className="text-center text-[10px] text-white/40 pb-1"
+              onClick={(e) => e.stopPropagation()}
+            >
+              Swipe left or right to browse screenshots
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
