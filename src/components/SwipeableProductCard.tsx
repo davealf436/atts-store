@@ -40,7 +40,7 @@ export const SwipeableProductCard: React.FC<SwipeableProductCardProps> = ({
     : isGoogleAI
     ? 'bg-white'
     : isFXReplay
-    ? 'bg-[#070D18]'
+    ? 'bg-black'
     : 'bg-black';
 
   return (

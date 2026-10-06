@@ -367,7 +367,7 @@ export const ProductPhotoLogo: React.FC<ProductPhotoLogoProps> = ({
     );
   }
 
-  // 6. Official FXReplay Logo (matching uploaded monochrome icon: solid rounded play triangle + thick hollow rounded chevron on solid black)
+  // 6. Official FXReplay Logo (matching official brandmark: solid rounded play triangle + hollow rounded chevron with vertical left faces on solid black)
   if (productId === 'fxreplay-pro' || productId === 'fxreplay-premium') {
     return (
       <div
@@ -385,18 +385,14 @@ export const ProductPhotoLogo: React.FC<ProductPhotoLogoProps> = ({
 
           {/* Solid Left Triangle (Play) with smooth rounded corners */}
           <path
-            d="M 23 20 C 19.5 20 17 22.5 17 26 L 17 74 C 17 77.5 19.5 80 23 80 C 25.2 80 27.2 78.8 28.6 77.2 L 44.2 52.8 C 45.6 51.2 45.6 48.8 44.2 47.2 L 28.6 22.8 C 27.2 21.2 25.2 20 23 20 Z"
+            d="M 19.4 24.5 C 19.4 20.0 22.6 17.5 26.6 17.5 C 28.5 17.5 30.5 18.2 31.8 19.5 L 42.6 46.2 C 43.8 47.8 43.8 52.2 42.6 53.8 L 31.8 80.5 C 30.5 81.8 28.5 82.5 26.6 82.5 C 22.6 82.5 19.4 80.0 19.4 75.5 Z"
             fill="#FFFFFF"
           />
 
-          {/* Hollow Right Chevron with rounded endpoints and rounded apex */}
+          {/* Hollow Right Chevron with vertical left faces and smooth rounded corners */}
           <path
-            d="M 48 22 L 77.5 50 L 48 78"
-            fill="none"
-            stroke="#FFFFFF"
-            strokeWidth="12"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+            d="M 44.0 24.5 C 44.0 20.0 47.2 17.5 51.2 17.5 C 52.8 17.5 54.4 18.2 55.6 19.3 L 81.8 46.5 C 83.6 48.2 83.6 51.8 81.8 53.5 L 55.6 80.7 C 54.4 81.8 52.8 82.5 51.2 82.5 C 47.2 82.5 44.0 80.0 44.0 75.5 L 44.0 65.0 C 44.0 62.8 45.4 61.0 47.5 59.8 L 56.5 53.5 C 58.2 52.2 58.2 47.8 56.5 46.5 L 47.5 40.2 C 45.4 39.0 44.0 37.2 44.0 35.0 Z"
+            fill="#FFFFFF"
           />
         </svg>
       </div>
