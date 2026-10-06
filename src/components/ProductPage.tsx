@@ -406,41 +406,66 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         </div>
       </div>
 
-      {/* 2. Hero Card & Spec Strip — Clean, Premium, White Aesthetic (Matching Photo 2) */}
+      {/* 2. Hero Card & Spec Strip — Clean, Premium, White Aesthetic with Bold Burgundy Elements */}
       {isFXReplay ? (
         <div className="space-y-3">
-          {/* Clean White Product Identity Card (Matching Photo 2) */}
-          <div className="bg-white rounded-2xl border border-stone-200/90 shadow-2xs p-3.5 sm:p-4 select-none">
-            <div className="flex items-center gap-3">
-              {/* Product Logo / Visual (Left) */}
-              <div className="shrink-0 w-12 h-12 sm:w-13 sm:h-13 rounded-xl bg-black border border-stone-800 p-1 flex items-center justify-center overflow-hidden shadow-2xs">
-                <div className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center">
-                  <ProductPhotoLogo
-                    productId={product.id}
-                    size="banner"
-                    className="w-full h-full object-contain"
-                  />
+          {/* Clean White Product Identity Card (Matching Photo 2 with Burgundy Action) */}
+          <div className="bg-white rounded-2xl border border-stone-200/90 hover:border-[#721428]/30 shadow-2xs p-3.5 sm:p-4 select-none transition-colors">
+            <div className="flex items-center justify-between gap-3">
+              {/* Left & Middle: Product Logo + Info */}
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                {/* Product Logo / Visual (Left) */}
+                <div className="shrink-0 w-12 h-12 sm:w-13 sm:h-13 rounded-xl bg-black border border-stone-800 p-1 flex items-center justify-center overflow-hidden shadow-2xs ring-1 ring-[#721428]/25">
+                  <div className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center">
+                    <ProductPhotoLogo
+                      productId={product.id}
+                      size="banner"
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                </div>
+
+                {/* Product Info (Middle) */}
+                <div className="min-w-0 flex-1">
+                  {product.badge && (
+                    <div className="mb-0.5 leading-none">
+                      <span className="inline-flex items-center px-1.5 py-[2px] rounded text-[9.5px] font-bold tracking-tight bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]">
+                        {product.badge}
+                      </span>
+                    </div>
+                  )}
+                  <h1 className="text-base sm:text-lg font-black text-stone-950 tracking-tight leading-snug truncate">
+                    {product.name}
+                  </h1>
+                  <div className="text-[11.5px] font-semibold text-stone-600 truncate mt-0.5">
+                    Starting at{' '}
+                    <span className="text-[#721428] font-bold">
+                      {formatETB(product.priceETB)}
+                    </span>
+                    <span className="text-stone-400 font-normal ml-1">
+                      (~${(product.priceETB / 140).toFixed(1)} USD)
+                    </span>
+                  </div>
                 </div>
               </div>
 
-              {/* Product Info (Middle) */}
-              <div className="flex-1 min-w-0">
-                {product.badge && (
-                  <div className="mb-0.5 leading-none">
-                    <span className="inline-flex items-center px-1.5 py-[2px] rounded text-[9.5px] font-bold tracking-tight bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]/80">
-                      {product.badge}
-                    </span>
-                  </div>
-                )}
-                <h1 className="text-[15px] sm:text-[17px] font-bold text-gray-900 leading-snug truncate">
-                  {product.name}
-                </h1>
-                <div className="text-[11.5px] font-semibold text-stone-500 truncate mt-0.5">
-                  Starting at {formatETB(product.priceETB)}
-                  <span className="text-stone-400 font-normal ml-1">
-                    (~${(product.priceETB / 140).toFixed(1)} USD)
-                  </span>
-                </div>
+              {/* Right Side: Bold Burgundy Action Button */}
+              <div className="shrink-0 pl-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('light');
+                    const el = document.getElementById('choose-plan-section');
+                    if (el) {
+                      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-[#721428] hover:bg-[#5A0E1E] active:scale-95 text-white text-xs font-bold transition-all shadow-2xs hover:shadow-xs cursor-pointer select-none"
+                  aria-label="Choose plan options"
+                >
+                  <span>Choose Plan</span>
+                  <ChevronDown className="w-3.5 h-3.5 stroke-[2.5]" />
+                </button>
               </div>
             </div>
           </div>
@@ -780,7 +805,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
       )}
 
       {/* 7. Choose Your Plan Section */}
-      <div className="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-3">
+      <div id="choose-plan-section" className="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-3 scroll-mt-4">
         <div className="flex items-center justify-between">
           <h3 className="text-xs sm:text-sm font-bold text-stone-900 tracking-tight flex items-center gap-1.5">
             <Clock className="w-4 h-4 text-[#721428]" />
