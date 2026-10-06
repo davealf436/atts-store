@@ -413,7 +413,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
           <div className="bg-white rounded-2xl border border-stone-200/90 shadow-2xs p-3.5 sm:p-4 select-none">
             <div className="flex items-center gap-3">
               {/* Product Logo / Visual (Left) */}
-              <div className="shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-black border border-stone-800 p-1 flex items-center justify-center overflow-hidden shadow-2xs">
+              <div className="shrink-0 w-12 h-12 sm:w-13 sm:h-13 rounded-xl bg-black border border-stone-800 p-1 flex items-center justify-center overflow-hidden shadow-2xs">
                 <div className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center">
                   <ProductPhotoLogo
                     productId={product.id}
@@ -441,39 +441,6 @@ export const ProductPage: React.FC<ProductPageProps> = ({
                     (~${(product.priceETB / 140).toFixed(1)} USD)
                   </span>
                 </div>
-              </div>
-
-              {/* Starting Price Pill (Right) */}
-              <div className="shrink-0 text-right pl-1">
-                <span className="text-[9.5px] uppercase font-bold tracking-wider text-stone-400 block leading-tight">
-                  From
-                </span>
-                <span className="text-sm sm:text-base font-extrabold text-[#721428] tabular-nums leading-tight">
-                  {formatETB(product.priceETB)}
-                </span>
-              </div>
-            </div>
-
-            {/* Subtitle / Description */}
-            <div className="pt-2.5 mt-2.5 border-t border-stone-100 flex items-center justify-between gap-2 text-xs text-stone-600">
-              <span className="font-medium text-stone-700">
-                {product.subtitle || 'Professional Market Replay for Serious Traders'}
-              </span>
-              <span className="inline-flex items-center gap-1 text-[10.5px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/60 shrink-0">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                Official Simulator
-              </span>
-            </div>
-
-            {/* Delivery & Warranty Trust Strip */}
-            <div className="flex items-center gap-3.5 pt-2 mt-2 text-[11px] text-stone-500 border-t border-stone-100/80 flex-wrap">
-              <div className="flex items-center gap-1.5">
-                <Zap className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-                <span>5-Min Telegram Delivery</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                <span>100% Genuine License</span>
               </div>
             </div>
           </div>
