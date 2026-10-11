@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import crypto from 'crypto';
 import { accountDb } from './accountDb';
-import { validateTelegramInitData, generateSignedInitData } from './authTelegram';
+import { validateTelegramInitData, generateSignedInitData, getAuthErrorMessage } from './authTelegram';
 import { isTelegramAdminId } from './adminAuth';
 import { AthAccount } from '../types';
 
@@ -90,10 +90,10 @@ authRouter.post('/telegram', (req: Request, res: Response) => {
     const { initData } = req.body;
 
     if (!initData || typeof initData !== 'string') {
-      res.status(401).json({
+      res.status(400).json({
         success: false,
         error: 'MISSING_INIT_DATA',
-        message: 'Unable to connect your Telegram account. Please reopen ATH from Telegram.',
+        message: getAuthErrorMessage('MISSING_INIT_DATA'),
       });
       return;
     }
@@ -102,14 +102,13 @@ authRouter.post('/telegram', (req: Request, res: Response) => {
     const validation = validateTelegramInitData(initData);
 
     if (!validation.valid || !validation.user) {
-      console.warn('[AuthRouter] Telegram verification failed:', validation.error);
-      const isExpired = validation.error === 'EXPIRED_INIT_DATA';
-      res.status(401).json({
+      const errorCode = validation.error || 'UNVERIFIED_TELEGRAM_SESSION';
+      console.warn('[AuthRouter] Telegram verification failed:', errorCode);
+      const statusCode = errorCode === 'MISSING_INIT_DATA' ? 400 : 401;
+      res.status(statusCode).json({
         success: false,
-        error: validation.error || 'UNVERIFIED_TELEGRAM_SESSION',
-        message: isExpired
-          ? 'Authentication session expired. Please reopen ATH from Telegram.'
-          : 'Unable to connect your Telegram account. Please reopen ATH from Telegram.',
+        error: errorCode,
+        message: getAuthErrorMessage(errorCode),
       });
       return;
     }
@@ -131,8 +130,8 @@ authRouter.post('/telegram', (req: Request, res: Response) => {
     console.error('[AuthRouter] Error in /telegram auth:', err);
     res.status(500).json({
       success: false,
-      error: 'INTERNAL_AUTH_ERROR',
-      message: 'Unable to connect your Telegram account. Please reopen ATH from Telegram.',
+      error: 'SERVER_ERROR',
+      message: getAuthErrorMessage('SERVER_ERROR'),
     });
   }
 });

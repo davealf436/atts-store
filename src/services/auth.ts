@@ -1,5 +1,5 @@
 import { AthAccount } from '../types';
-import { getTelegramWebApp } from './telegram';
+import { getTelegramWebApp, initTelegramApp } from './telegram';
 
 export type AuthState = 'loading' | 'authenticated' | 'error';
 
@@ -35,6 +35,41 @@ function notifyListeners() {
 }
 
 /**
+ * Extracts raw initData from Telegram WebApp SDK, URL hash, or URL search query.
+ */
+function extractTelegramInitData(): string {
+  const tg = getTelegramWebApp();
+  if (tg?.initData && typeof tg.initData === 'string' && tg.initData.trim() !== '') {
+    return tg.initData.trim();
+  }
+
+  if (typeof window !== 'undefined') {
+    // 1. Check URL hash (e.g. #tgWebAppData=... or hash with tgWebAppData key)
+    if (window.location.hash) {
+      const hashContent = window.location.hash.replace(/^#/, '');
+      const hashParams = new URLSearchParams(hashContent);
+      const fromHash = hashParams.get('tgWebAppData');
+      if (fromHash) return fromHash;
+      if (hashParams.has('hash') && (hashParams.has('user') || hashParams.has('auth_date'))) {
+        return hashContent;
+      }
+    }
+
+    // 2. Check URL search query (e.g. ?tgWebAppData=...)
+    if (window.location.search) {
+      const searchParams = new URLSearchParams(window.location.search);
+      const fromSearch = searchParams.get('tgWebAppData');
+      if (fromSearch) return fromSearch;
+      if (searchParams.has('hash') && (searchParams.has('user') || searchParams.has('auth_date'))) {
+        return window.location.search.replace(/^\?/, '');
+      }
+    }
+  }
+
+  return '';
+}
+
+/**
  * Automatically authenticates the Telegram Mini App user with the backend.
  */
 export async function initAuth(): Promise<boolean> {
@@ -46,19 +81,27 @@ export async function initAuth(): Promise<boolean> {
     notifyListeners();
 
     try {
-      const tg = getTelegramWebApp();
-      let initData = tg?.initData || '';
+      // Ensure Telegram WebApp environment is ready
+      initTelegramApp();
+
+      let initData = extractTelegramInitData();
 
       // Check if simulation query parameter requested error state for testing
+      let simulateMissing = false;
       if (typeof window !== 'undefined') {
         const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('auth_error') === '1' || urlParams.get('auth_error') === 'true') {
-          initData = 'invalid_tampered_preview_signature';
+        if (urlParams.get('auth_missing') === '1' || urlParams.get('auth_missing') === 'true') {
+          simulateMissing = true;
+          initData = '';
+        } else if (urlParams.get('auth_error') === '1' || urlParams.get('auth_error') === 'true') {
+          initData = 'user=%7B%22id%22%3A999999999%7D&auth_date=1728639000&hash=0000000000000000000000000000000000000000000000000000000000000000';
+        } else if (urlParams.get('auth_expired') === '1' || urlParams.get('auth_expired') === 'true') {
+          initData = 'user=%7B%22id%22%3A999999999%7D&auth_date=1600000000&hash=0000000000000000000000000000000000000000000000000000000000000000';
         }
       }
 
       // If running in browser preview outside native Telegram, get preview signed initData
-      if (!initData) {
+      if (!initData && !simulateMissing) {
         try {
           const previewRes = await fetch('/api/auth/preview-initdata');
           if (previewRes.ok) {
@@ -74,25 +117,46 @@ export async function initAuth(): Promise<boolean> {
 
       if (!initData) {
         currentAuthState = 'error';
-        currentAuthError = 'Unable to connect your Telegram account. Please reopen ATH from Telegram.';
+        currentAuthError = 'Missing Telegram launch data. Please launch ATH directly from the Telegram bot.';
+        currentAccount = null;
         notifyListeners();
         return false;
       }
 
       // Send initData to backend for HMAC-SHA256 validation
-      const response = await fetch('/api/auth/telegram', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ initData }),
-      });
+      let response: Response;
+      try {
+        response = await fetch('/api/auth/telegram', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ initData }),
+        });
+      } catch (netErr) {
+        console.warn('[AuthService] Network error reaching /api/auth/telegram:', netErr);
+        currentAuthState = 'error';
+        currentAuthError = 'Server connection error. Please check your network and retry.';
+        currentAccount = null;
+        notifyListeners();
+        return false;
+      }
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
+        let errorData: any = null;
+        try {
+          errorData = await response.json();
+        } catch {}
+
         currentAuthState = 'error';
-        currentAuthError =
-          errorData.message || 'Unable to connect your Telegram account. Please reopen ATH from Telegram.';
+        if (errorData?.message) {
+          currentAuthError = errorData.message;
+        } else if (response.status === 405 || response.status === 404 || response.status >= 500) {
+          currentAuthError = `Server connection error (${response.status}). Please check your network and retry.`;
+        } else {
+          currentAuthError = 'Unable to verify your Telegram account. Please reopen ATH from Telegram.';
+        }
+
         currentAccount = null;
         try {
           localStorage.removeItem(AUTH_TOKEN_KEY);
@@ -102,9 +166,9 @@ export async function initAuth(): Promise<boolean> {
         return false;
       }
 
-      const data = await response.json();
+      const data = await response.json().catch(() => null);
 
-      if (data.success && data.account) {
+      if (data && data.success && data.account) {
         currentAuthState = 'authenticated';
         currentAccount = data.account;
         currentAuthError = null;
@@ -123,13 +187,15 @@ export async function initAuth(): Promise<boolean> {
       }
 
       currentAuthState = 'error';
-      currentAuthError = 'Unable to connect your Telegram account. Please reopen ATH from Telegram.';
+      currentAuthError = data?.message || 'Unable to verify your Telegram account. Please reopen ATH from Telegram.';
+      currentAccount = null;
       notifyListeners();
       return false;
     } catch (err) {
       console.error('[AuthService] Authentication error:', err);
       currentAuthState = 'error';
-      currentAuthError = 'Unable to connect your Telegram account. Please reopen ATH from Telegram.';
+      currentAuthError = 'Server connection error. Please check your network and retry.';
+      currentAccount = null;
       notifyListeners();
       return false;
     }
@@ -140,6 +206,7 @@ export async function initAuth(): Promise<boolean> {
 
 export function retryAuth(): Promise<boolean> {
   initPromise = null;
+  initTelegramApp();
   return initAuth();
 }
 

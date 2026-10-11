@@ -18,6 +18,34 @@ export const MAX_ALLOWED_CLOCK_SKEW_SECONDS = 300; // 5 minutes future tolerance
 
 const DEFAULT_DEV_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || 'ATH_TELEGRAM_BOT_DEFAULT_SECRET_2026';
 
+export function getAuthErrorMessage(errorCode?: string): string {
+  switch (errorCode) {
+    case 'MISSING_INIT_DATA':
+      return 'Missing Telegram launch data. Please launch ATH directly from the Telegram bot.';
+    case 'EXPIRED_INIT_DATA':
+      return 'Telegram authentication session expired. Please reopen ATH from Telegram.';
+    case 'INVALID_TELEGRAM_SIGNATURE':
+    case 'MISSING_HASH':
+      return 'Invalid Telegram verification signature. The launch data could not be verified.';
+    case 'FUTURE_AUTH_DATE':
+    case 'INVALID_AUTH_DATE':
+    case 'MISSING_AUTH_DATE':
+      return 'Invalid authentication timestamp. Please check your device clock.';
+    case 'MISSING_BOT_CREDENTIALS':
+      return 'Server bot credentials not configured. Please contact ATH support.';
+    case 'MALFORMED_USER_PAYLOAD':
+    case 'MISSING_USER_PAYLOAD':
+    case 'INVALID_USER_ID':
+      return 'Malformed Telegram user profile. Please reopen ATH from Telegram.';
+    case 'NETWORK_ERROR':
+      return 'Server connection error. Please check your network and retry.';
+    case 'SERVER_ERROR':
+      return 'Server error during authentication. Please retry in a few moments.';
+    default:
+      return 'Unable to verify your Telegram account. Please reopen ATH from Telegram.';
+  }
+}
+
 /**
  * Validates Telegram Mini App initData on the backend using HMAC-SHA256 signature verification.
  * Follows the official Telegram WebApp authentication protocol.
@@ -25,20 +53,51 @@ const DEFAULT_DEV_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || 'ATH_TELEGRAM_BO
  */
 export function validateTelegramInitData(
   initData: string,
-  botToken: string = DEFAULT_DEV_BOT_TOKEN,
+  botToken?: string,
   options?: TelegramAuthOptions
 ): TelegramAuthValidationResult {
   if (!initData || typeof initData !== 'string') {
     return { valid: false, error: 'MISSING_INIT_DATA' };
   }
 
-  if (!botToken || typeof botToken !== 'string' || botToken.trim() === '') {
+  const effectiveToken = botToken !== undefined
+    ? botToken
+    : (process.env.TELEGRAM_BOT_TOKEN || DEFAULT_DEV_BOT_TOKEN);
+
+  if (!effectiveToken || typeof effectiveToken !== 'string' || effectiveToken.trim() === '') {
     return { valid: false, error: 'MISSING_BOT_CREDENTIALS' };
   }
 
   try {
-    const params = new URLSearchParams(initData);
-    const hash = params.get('hash');
+    let cleanInitData = initData.trim();
+    if (cleanInitData.startsWith('#')) {
+      cleanInitData = cleanInitData.slice(1);
+    }
+    if (cleanInitData.startsWith('tgWebAppData=')) {
+      cleanInitData = cleanInitData.slice('tgWebAppData='.length);
+    }
+    if (!cleanInitData.includes('&') && cleanInitData.includes('%')) {
+      try {
+        cleanInitData = decodeURIComponent(cleanInitData);
+      } catch {}
+    }
+
+    const params = new URLSearchParams(cleanInitData);
+    let hash = params.get('hash');
+
+    // If hash not found but string still contains encoded characters, attempt secondary decode
+    if (!hash && cleanInitData.includes('%')) {
+      try {
+        const decoded = decodeURIComponent(cleanInitData);
+        const secondParams = new URLSearchParams(decoded);
+        if (secondParams.has('hash')) {
+          cleanInitData = decoded;
+          params.forEach((_, k) => params.delete(k));
+          secondParams.forEach((v, k) => params.set(k, v));
+          hash = secondParams.get('hash');
+        }
+      } catch {}
+    }
 
     if (!hash) {
       return { valid: false, error: 'MISSING_HASH' };
@@ -95,9 +154,9 @@ export function validateTelegramInitData(
       .join('\n');
 
     // Calculate HMAC-SHA256:
-    // secret_key = HMAC_SHA256("WebAppData", botToken)
+    // secret_key = HMAC_SHA256("WebAppData", effectiveToken)
     // calculated_hash = HMAC_SHA256(secret_key, dataCheckString)
-    const secretKey = crypto.createHmac('sha256', 'WebAppData').update(botToken).digest();
+    const secretKey = crypto.createHmac('sha256', 'WebAppData').update(effectiveToken).digest();
     const calculatedHash = crypto.createHmac('sha256', secretKey).update(dataCheckString).digest('hex');
 
     // Secure timing-safe comparison to prevent timing attacks

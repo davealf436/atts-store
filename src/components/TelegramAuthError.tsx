@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { AthLogo } from './AthLogo';
 import { ShieldAlert, RotateCw, ExternalLink } from 'lucide-react';
-import { retryAuth } from '../services/auth';
-import { triggerHaptic, openTelegramSupport } from '../services/telegram';
+import { retryAuth, getAuthError } from '../services/auth';
+import { triggerHaptic, openTelegramMiniApp } from '../services/telegram';
 
 interface TelegramAuthErrorProps {
   errorMessage?: string;
@@ -14,15 +14,26 @@ export const TelegramAuthError: React.FC<TelegramAuthErrorProps> = ({
   onRetrySuccess,
 }) => {
   const [isRetrying, setIsRetrying] = useState(false);
+  const [localError, setLocalError] = useState<string | null>(null);
+
+  const displayMessage = localError || errorMessage;
 
   const handleRetry = async () => {
     triggerHaptic('medium');
     setIsRetrying(true);
+    setLocalError(null);
     try {
       const success = await retryAuth();
       if (success) {
         onRetrySuccess?.();
+      } else {
+        const latestError = getAuthError();
+        if (latestError) {
+          setLocalError(latestError);
+        }
       }
+    } catch {
+      setLocalError('Server connection error. Please check your network and retry.');
     } finally {
       setIsRetrying(false);
     }
@@ -51,7 +62,7 @@ export const TelegramAuthError: React.FC<TelegramAuthErrorProps> = ({
             Telegram Verification
           </h2>
           <p className="text-xs font-semibold text-gray-700 leading-relaxed px-1">
-            {errorMessage}
+            {displayMessage}
           </p>
           <p className="text-[11px] text-gray-400 leading-normal max-w-xs mx-auto pt-1">
             ATH uses authentic Telegram session verification to securely link your orders, licenses, and wallet without passwords.
@@ -74,7 +85,7 @@ export const TelegramAuthError: React.FC<TelegramAuthErrorProps> = ({
             type="button"
             onClick={() => {
               triggerHaptic('light');
-              openTelegramSupport();
+              openTelegramMiniApp();
             }}
             className="w-full py-2.5 px-4 rounded-xl bg-gray-100 hover:bg-gray-150 text-gray-700 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
           >

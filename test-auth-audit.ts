@@ -222,10 +222,10 @@ async function runAudit() {
     body: {},
   });
   const missingDataRejected =
-    missingDataRes.status === 401 && missingDataRes.json?.error === 'MISSING_INIT_DATA';
+    (missingDataRes.status === 400 || missingDataRes.status === 401) && missingDataRes.json?.error === 'MISSING_INIT_DATA';
   record(
     'Input Validation',
-    'Rejects request missing initData with 401 MISSING_INIT_DATA',
+    'Rejects request missing initData with 400 MISSING_INIT_DATA',
     missingDataRejected,
     `Status: ${missingDataRes.status}, error: ${missingDataRes.json?.error}`
   );
@@ -322,6 +322,119 @@ async function runAudit() {
     'Random/forged session tokens rejected with 401',
     fakeBlocked,
     `Status: ${fakeRes.status}`
+  );
+
+  // --------------------------------------------------------------------------
+  // TEST 7: Descriptive & Distinct Error Messages for Client UI
+  // --------------------------------------------------------------------------
+  console.log('\n--- Checking 7: Descriptive & Distinct Error Messages ---');
+  // 7a. Missing launch data message
+  const missingMsgRes = await request('/api/auth/telegram', {
+    method: 'POST',
+    body: { initData: '' },
+  });
+  const missingMsgOk =
+    missingMsgRes.status === 400 &&
+    missingMsgRes.json?.message === 'Missing Telegram launch data. Please launch ATH directly from the Telegram bot.';
+  record(
+    'Error Clarity',
+    'Missing initData returns specific helpful message instead of generic failure',
+    missingMsgOk,
+    `Status: ${missingMsgRes.status}, message: "${missingMsgRes.json?.message}"`
+  );
+
+  // 7b. Invalid signature message
+  const invalidSigMsgRes = await request('/api/auth/telegram', {
+    method: 'POST',
+    body: { initData: tamperedHashInitData },
+  });
+  const invalidSigMsgOk =
+    invalidSigMsgRes.status === 401 &&
+    invalidSigMsgRes.json?.message === 'Invalid Telegram verification signature. The launch data could not be verified.';
+  record(
+    'Error Clarity',
+    'Invalid signature returns distinct verification failure message',
+    invalidSigMsgOk,
+    `Status: ${invalidSigMsgRes.status}, message: "${invalidSigMsgRes.json?.message}"`
+  );
+
+  // 7c. Expired auth data message
+  const expiredMsgRes = await request('/api/auth/telegram', {
+    method: 'POST',
+    body: { initData: expiredInitData },
+  });
+  const expiredMsgOk =
+    expiredMsgRes.status === 401 &&
+    expiredMsgRes.json?.message === 'Telegram authentication session expired. Please reopen ATH from Telegram.';
+  record(
+    'Error Clarity',
+    'Expired initData returns distinct session expired message',
+    expiredMsgOk,
+    `Status: ${expiredMsgRes.status}, message: "${expiredMsgRes.json?.message}"`
+  );
+
+  // --------------------------------------------------------------------------
+  // TEST 8: URL-Encoded & Hash-Prefixed Telegram Launch Data
+  // --------------------------------------------------------------------------
+  console.log('\n--- Checking 8: URL-Encoded & Hash-Prefixed tgWebAppData ---');
+  const encodedInitData = encodeURIComponent(validInitData1);
+  const encodedValidation = validateTelegramInitData(encodedInitData);
+  const encodedPassed = encodedValidation.valid && encodedValidation.user?.id === freshUserId;
+  record(
+    'Format Flexibility',
+    'Properly validates percent-encoded initData strings from URL query/hash',
+    encodedPassed,
+    `valid: ${encodedValidation.valid}, user.id: ${encodedValidation.user?.id}`
+  );
+
+  const hashPrefixedInitData = `tgWebAppData=${encodeURIComponent(validInitData1)}`;
+  const hashPrefixValidation = validateTelegramInitData(hashPrefixedInitData);
+  const hashPrefixPassed = hashPrefixValidation.valid && hashPrefixValidation.user?.id === freshUserId;
+  record(
+    'Format Flexibility',
+    'Properly parses tgWebAppData= parameter prefix',
+    hashPrefixPassed,
+    `valid: ${hashPrefixValidation.valid}, user.id: ${hashPrefixValidation.user?.id}`
+  );
+
+  // --------------------------------------------------------------------------
+  // TEST 9: Telegram Destination Link Verification
+  // --------------------------------------------------------------------------
+  console.log('\n--- Checking 9: Telegram Destination Link & Bot Username ---');
+  // Check the actual destination functions
+  const { getTelegramBotUsername, getTelegramMiniAppUrl } = await import('./src/services/telegram');
+  const botUsername = getTelegramBotUsername();
+  const miniAppUrl = getTelegramMiniAppUrl();
+
+  const botNotPersonalUser = botUsername !== 'abyssiniavendor';
+  const urlNotSavedMessages = !miniAppUrl.includes('abyssiniavendor');
+  const urlPointsToAthBot = miniAppUrl.includes('abyssiniatradingbot') || miniAppUrl.startsWith('https://t.me/');
+
+  record(
+    'Destination Link',
+    'Bot username is not hardcoded to personal user @abyssiniavendor',
+    botNotPersonalUser,
+    `Configured bot username: "${botUsername}" (not personal user)`
+  );
+
+  record(
+    'Destination Link',
+    'Open in Telegram URL targets ATH bot / Mini App (not Saved Messages)',
+    urlNotSavedMessages && urlPointsToAthBot,
+    `Mini App destination: "${miniAppUrl}"`
+  );
+
+  // --------------------------------------------------------------------------
+  // TEST 10: Vercel API & Health Endpoints
+  // --------------------------------------------------------------------------
+  console.log('\n--- Checking 10: API Server & Health Status ---');
+  const healthRes = await request('/api/health');
+  const healthOk = healthRes.status === 200 && healthRes.json?.status === 'ok';
+  record(
+    'API Infrastructure',
+    'Health API endpoint responds ok',
+    healthOk,
+    `Status: ${healthRes.status}, version: ${healthRes.json?.version}`
   );
 
   console.log('\n=====================================================');

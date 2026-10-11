@@ -179,7 +179,61 @@ export const shareToTelegram = (text: string, url: string) => {
   }
 };
 
-export const openTelegramSupport = (username: string = 'abyssiniavendor') => {
+export const getTelegramBotUsername = (): string => {
+  const envBot = typeof import.meta !== 'undefined' ? (import.meta as any).env?.VITE_TELEGRAM_BOT_USERNAME : undefined;
+  if (envBot && typeof envBot === 'string' && envBot.trim() !== '') {
+    return envBot.replace('@', '').trim();
+  }
+  return 'abyssiniatradingbot';
+};
+
+export const getTelegramMiniAppUrl = (): string => {
+  const envUrl = typeof import.meta !== 'undefined' ? (import.meta as any).env?.VITE_TELEGRAM_MINI_APP_URL : undefined;
+  if (envUrl && typeof envUrl === 'string' && envUrl.trim() !== '') {
+    return envUrl.trim();
+  }
+  const bot = getTelegramBotUsername();
+  return `https://t.me/${bot}`;
+};
+
+export const openTelegramMiniApp = () => {
+  const url = getTelegramMiniAppUrl();
+  const tg = getTelegramWebApp();
+  if (tg?.openTelegramLink) {
+    tg.openTelegramLink(url);
+  } else if (tg?.openLink) {
+    tg.openLink(url);
+  } else if (typeof window !== 'undefined') {
+    const a = document.createElement('a');
+    a.href = url;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+};
+
+export const openTelegramBot = (startParam?: string) => {
+  const bot = getTelegramBotUsername();
+  const url = startParam ? `https://t.me/${bot}?start=${encodeURIComponent(startParam)}` : `https://t.me/${bot}`;
+  const tg = getTelegramWebApp();
+  if (tg?.openTelegramLink) {
+    tg.openTelegramLink(url);
+  } else if (tg?.openLink) {
+    tg.openLink(url);
+  } else if (typeof window !== 'undefined') {
+    const a = document.createElement('a');
+    a.href = url;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+};
+
+export const openTelegramSupport = (username: string = 'abyssiniatradinget') => {
   const cleanUsername = username.replace('@', '');
   const url = `https://t.me/${cleanUsername}`;
   const tg = getTelegramWebApp();
