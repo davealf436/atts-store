@@ -1,9 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Product } from '../types';
 import { PRODUCTS } from '../data/products';
 import { ProductPhotoLogo } from './ProductPhotoLogo';
+import { PinButton } from './PinButton';
 import { ChevronLeft, LineChart, BookOpen, Crown, ShieldCheck, ArrowRight } from 'lucide-react';
 import { triggerHaptic, getTelegramWebApp } from '../services/telegram';
+import { getPinnedIds, subscribeToPinned, sortProductsWithPinned, setActiveCard, getActiveCard, isPinned } from '../services/pin';
 
 export type CategoryId = 'trading-tools' | 'journaling' | 'subscriptions';
 
@@ -40,8 +42,7 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({
   const getCategoryDetails = () => {
     switch (categoryId) {
       case 'trading-tools': {
-        // "1. Trading Tools = Do inside Tradingview Essential and both FXReplay pro cards"
-        const allowedIds = ['tv-essential', 'fxreplay-pro', 'fxreplay-premium'];
+        const allowedIds = ['deepcharts', 'tv-premium', 'tv-plus', 'tv-essential', 'fxreplay-pro', 'fxreplay-premium'];
         const items = allowedIds
           .map((id) => PRODUCTS.find((p) => p.id === id))
           .filter((p): p is Product => Boolean(p));
@@ -49,7 +50,7 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({
         return {
           title: 'Trading Tools',
           badge: 'Charting & Replay',
-          description: 'Official TradingView Essential license and dedicated FXReplay Pro simulation engines.',
+          description: 'Institutional DeepCharts MBO order flow, TradingView Essential licenses, and dedicated FX Replay Pro simulation engines.',
           icon: LineChart,
           products: items,
         };
@@ -89,17 +90,27 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({
     }
   };
 
+  const [pinnedIds, setPinnedIds] = useState<string[]>(getPinnedIds);
+
+  useEffect(() => {
+    const unsubscribe = subscribeToPinned((ids) => {
+      setPinnedIds(ids);
+    });
+    return unsubscribe;
+  }, []);
+
   const details = getCategoryDetails();
+  const sortedProducts = sortProductsWithPinned(details.products, pinnedIds);
   const IconComponent = details.icon;
 
   const getProductContainerBg = (product: Product) => {
-    if (product.id === 'abyssinia-journal' || product.id === 'notion-template-journal') {
+    if (product.id === 'deepcharts' || product.id === 'abyssinia-journal' || product.id === 'notion-template-journal') {
       return 'bg-white border border-stone-200/90';
     }
     if (product.id === 'telegram-premium') {
       return 'bg-[#24A1DE]';
     }
-    if (product.brand === 'FXReplay' || product.id.startsWith('fxreplay')) {
+    if (product.brand === 'FXReplay' || product.brand === 'FX Replay' || product.id.startsWith('fxreplay')) {
       return 'bg-[#070D18]';
     }
     return 'bg-black';
@@ -148,16 +159,35 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({
 
       {/* Distinct Compact Product Cards List */}
       <div className="space-y-2">
-        {details.products.map((product) => {
+        {sortedProducts.map((product) => {
           const containerBg = getProductContainerBg(product);
+
+          const handleRowClick = () => {
+            const isTouchOnly =
+              typeof window !== 'undefined' &&
+              window.matchMedia &&
+              !window.matchMedia('(hover: hover)').matches;
+
+            if (isTouchOnly) {
+              const currentActive = getActiveCard();
+              const isCardActive = currentActive === product.id;
+
+              if (!isCardActive && !isPinned(product.id)) {
+                setActiveCard(product.id);
+                triggerHaptic('soft');
+                return;
+              }
+            }
+
+            triggerHaptic('light');
+            onViewProduct(product);
+          };
 
           return (
             <div
               key={`category-compact-${product.id}`}
-              onClick={() => {
-                triggerHaptic('light');
-                onViewProduct(product);
-              }}
+              onClick={handleRowClick}
+              data-product-card="true"
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
@@ -185,13 +215,13 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({
 
               {/* Product Info (Middle) */}
               <div className="flex-1 min-w-0">
-                {product.badge && (
-                  <div className="mb-0.5 leading-none">
+                <div className="flex items-center gap-1.5 mb-0.5 leading-none flex-wrap">
+                  {product.badge && (
                     <span className="inline-flex items-center px-1.5 py-[2px] rounded text-[9.5px] font-bold tracking-tight bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]/80">
                       {product.badge}
                     </span>
-                  </div>
-                )}
+                  )}
+                </div>
                 <h4 className="text-[13.5px] font-bold text-gray-900 group-hover:text-[#721428] transition-colors truncate leading-snug">
                   {product.name}
                 </h4>
@@ -200,12 +230,22 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({
                 </div>
               </div>
 
-              {/* Compact Action Button (Right) */}
-              <div className="shrink-0 pl-1">
-                <div className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#721428] hover:bg-[#5A0E1E] text-white text-[11px] font-bold transition-all shadow-2xs group-hover:shadow-xs">
+              {/* Compact Action Button & Pin (Right) */}
+              <div className="shrink-0 pl-1 flex items-center gap-1.5">
+                <PinButton productId={product.id} size="sm" variant="card" />
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    triggerHaptic('light');
+                    onViewProduct(product);
+                  }}
+                  className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#721428] hover:bg-[#5A0E1E] text-white text-[11px] font-bold transition-all shadow-2xs group-hover:shadow-xs cursor-pointer active:scale-95"
+                  aria-label={`View ${product.name}`}
+                >
                   <span>View</span>
                   <ArrowRight className="w-3.5 h-3.5 stroke-[2.2]" />
-                </div>
+                </button>
               </div>
             </div>
           );

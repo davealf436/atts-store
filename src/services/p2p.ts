@@ -1,7 +1,7 @@
 import { TelegramUser } from '../types';
 
-export const P2P_BUY_RATE = 142.50; // 1 USDT = 142.50 ETB
-export const P2P_SELL_RATE = 140.50; // 1 USDT = 140.50 ETB
+export const P2P_BUY_RATE = 198.50; // 1 USDT = 198.50 ETB
+export const P2P_SELL_RATE = 198.50; // 1 USDT = 198.50 ETB
 
 export type P2POrderType = 'buy' | 'sell';
 export type P2POrderStatus = 'pending' | 'approved' | 'rejected';
@@ -22,14 +22,14 @@ export interface P2POrder {
   status: P2POrderStatus;
 }
 
-const P2P_STORAGE_KEY = 'ath_p2p_orders_v1';
+const P2P_STORAGE_KEY = 'ath_p2p_orders_v2';
 
 const SEED_P2P_ORDERS: P2POrder[] = [
   {
     id: 'P2P-849201',
     type: 'buy',
     amountUSDT: 15.00,
-    amountETB: 2137.50,
+    amountETB: 2977.50,
     rate: P2P_BUY_RATE,
     paymentMethod: 'Wallet Balance',
     destinationAddress: '874067761 (Binance Pay)',
@@ -41,7 +41,7 @@ const SEED_P2P_ORDERS: P2POrder[] = [
     id: 'P2P-731940',
     type: 'sell',
     amountUSDT: 20.00,
-    amountETB: 2800.00,
+    amountETB: 3970.00,
     rate: P2P_SELL_RATE,
     paymentMethod: 'Telebirr',
     accountNumber: '0934313020',
@@ -54,7 +54,7 @@ const SEED_P2P_ORDERS: P2POrder[] = [
     id: 'P2P-620481',
     type: 'buy',
     amountUSDT: 10.00,
-    amountETB: 1425.00,
+    amountETB: 1985.00,
     rate: P2P_BUY_RATE,
     paymentMethod: 'Wallet Balance',
     destinationAddress: '874067761 (Binance Pay)',

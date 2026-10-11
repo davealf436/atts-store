@@ -11,10 +11,15 @@ import { ProfileScreen } from './components/ProfileScreen';
 import { SettingsScreen } from './components/SettingsScreen';
 import { ProductPage } from './components/ProductPage';
 import { CategoryPage, CategoryId } from './components/CategoryPage';
+import { SubscriptionPlansPage, SubscriptionFamily } from './components/SubscriptionPlansPage';
 import { AthTerminalLoader } from './components/AthTerminalLoader';
+import { TelegramAuthError } from './components/TelegramAuthError';
 import { CartDrawer } from './components/CartDrawer';
 import { ToastContainer } from './components/ToastContainer';
-import { initTelegramApp, getInitialTelegramUser } from './services/telegram';
+import { initTelegramApp, getInitialTelegramUser, triggerNotificationHaptic } from './services/telegram';
+import { getAuthState, getAuthError, subscribeToAuth, AuthState } from './services/auth';
+import { canAddToCart } from './services/stock';
+import { toast } from './services/toast';
 
 export const App: React.FC = () => {
   const getInitialTab = (): NavigationTab => {
@@ -29,15 +34,29 @@ export const App: React.FC = () => {
   };
 
   const [activeTab, setActiveTab] = useState<NavigationTab>(getInitialTab);
-  const [currentView, setCurrentView] = useState<'main' | 'profile' | 'settings' | 'product' | 'category'>('main');
+  const [currentView, setCurrentView] = useState<'main' | 'profile' | 'settings' | 'product' | 'category' | 'plans'>('main');
   const [selectedCategory, setSelectedCategory] = useState<CategoryId | null>(null);
-  const [returnView, setReturnView] = useState<'main' | 'category'>('main');
+  const [selectedPlansFamily, setSelectedPlansFamily] = useState<SubscriptionFamily | null>(null);
+  const [returnView, setReturnView] = useState<'main' | 'category' | 'plans'>('main');
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [hasInitialized, setHasInitialized] = useState(false);
+  const [authState, setAuthState] = useState<AuthState>(getAuthState);
+  const [authError, setAuthError] = useState<string | null>(getAuthError);
 
   const telegramUser = getInitialTelegramUser();
+
+  // Listen for backend Telegram authentication status
+  useEffect(() => {
+    setAuthState(getAuthState());
+    setAuthError(getAuthError());
+    const unsubscribe = subscribeToAuth((state, _account, error) => {
+      setAuthState(state);
+      setAuthError(error);
+    });
+    return unsubscribe;
+  }, []);
 
   // Initialize Telegram WebApp viewport & safe-area config, and sync hash
   useEffect(() => {
@@ -49,6 +68,7 @@ export const App: React.FC = () => {
         setCurrentView('main');
         setSelectedProduct(null);
         setSelectedCategory(null);
+        setSelectedPlansFamily(null);
         setActiveTab(hash as NavigationTab);
       }
     };
@@ -60,6 +80,7 @@ export const App: React.FC = () => {
     setCurrentView('main');
     setSelectedProduct(null);
     setSelectedCategory(null);
+    setSelectedPlansFamily(null);
     setReturnView('main');
     setActiveTab(tab);
     if (typeof window !== 'undefined') {
@@ -68,11 +89,22 @@ export const App: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Cart Management
+  // Cart Management with Available Stock Protection
   const handleAddToCart = (product: Product) => {
+    const rootId = product.parentProductId || product.id;
+    const existing = cartItems.find((item) => item.product.id === product.id);
+    const currentQty = existing?.quantity || 0;
+    const stockCheck = canAddToCart(rootId, currentQty, 1);
+
+    if (!stockCheck.allowed) {
+      triggerNotificationHaptic('error');
+      toast.warning('Stock Limit', stockCheck.message || 'Cannot add more items than available in stock.');
+      return;
+    }
+
     setCartItems((prev) => {
-      const existing = prev.find((item) => item.product.id === product.id);
-      if (existing) {
+      const match = prev.find((item) => item.product.id === product.id);
+      if (match) {
         return prev.map((item) =>
           item.product.id === product.id
             ? { ...item, quantity: item.quantity + 1 }
@@ -88,6 +120,18 @@ export const App: React.FC = () => {
       handleRemoveItem(productId);
       return;
     }
+
+    const item = cartItems.find((i) => i.product.id === productId);
+    if (item && quantity > item.quantity) {
+      const rootId = item.product.parentProductId || item.product.id;
+      const stockCheck = canAddToCart(rootId, item.quantity, quantity - item.quantity);
+      if (!stockCheck.allowed) {
+        triggerNotificationHaptic('error');
+        toast.warning('Stock Limit', stockCheck.message || 'Cannot exceed available stock.');
+        return;
+      }
+    }
+
     setCartItems((prev) =>
       prev.map((item) =>
         item.product.id === productId ? { ...item, quantity } : item
@@ -104,6 +148,18 @@ export const App: React.FC = () => {
   };
 
   const cartTotalCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+
+  // If Telegram authentication failed, show clean ATH error state
+  if (hasInitialized && authState === 'error') {
+    return (
+      <TelegramAuthError
+        errorMessage={authError || undefined}
+        onRetrySuccess={() => {
+          setAuthState('authenticated');
+        }}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#F0F2F5] text-gray-900 flex flex-col items-center">
@@ -165,16 +221,39 @@ export const App: React.FC = () => {
             />
           )}
 
+          {/* Dedicated Subscription Plans Page */}
+          {currentView === 'plans' && selectedPlansFamily && (
+            <SubscriptionPlansPage
+              family={selectedPlansFamily}
+              products={PRODUCTS}
+              onBack={() => {
+                setCurrentView('main');
+                setSelectedPlansFamily(null);
+                setReturnView('main');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              onViewProduct={(product) => {
+                setSelectedProduct(product);
+                setReturnView('plans');
+                setCurrentView('product');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            />
+          )}
+
           {/* Dedicated Product Page View */}
           {currentView === 'product' && selectedProduct && (
             <ProductPage
               product={selectedProduct}
               onBack={() => {
-                if (returnView === 'category' && selectedCategory) {
+                if (returnView === 'plans' && selectedPlansFamily) {
+                  setCurrentView('plans');
+                } else if (returnView === 'category' && selectedCategory) {
                   setCurrentView('category');
                 } else {
                   setCurrentView('main');
                   setSelectedCategory(null);
+                  setSelectedPlansFamily(null);
                 }
                 setSelectedProduct(null);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -201,6 +280,11 @@ export const App: React.FC = () => {
                   onSelectCategory={(categoryId) => {
                     setSelectedCategory(categoryId);
                     setCurrentView('category');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  onOpenPlans={(family) => {
+                    setSelectedPlansFamily(family);
+                    setCurrentView('plans');
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
                 />
@@ -230,7 +314,7 @@ export const App: React.FC = () => {
         {/* Fixed Bottom Navigation (Home · P2P · Wallet · My Orders) - hidden on dedicated product page so Add to Cart bar has full focus */}
         {currentView !== 'product' && (
           <BottomNav
-            activeTab={currentView === 'category' ? 'home' : (currentView !== 'main' ? (currentView as any) : activeTab)}
+            activeTab={currentView === 'category' || currentView === 'plans' ? 'home' : (currentView !== 'main' ? (currentView as any) : activeTab)}
             onSelectTab={handleSelectTab}
           />
         )}

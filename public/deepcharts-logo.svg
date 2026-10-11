@@ -1,0 +1,41 @@
+<svg viewBox="0 0 1000 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1000" height="1000" fill="#FFFFFF" />
+  <defs>
+    <linearGradient id="dcIndigoGrad" x1="0%" y1="100%" x2="35%" y2="0%">
+      <stop offset="0%" stop-color="#3200B8" />
+      <stop offset="55%" stop-color="#1C0074" />
+      <stop offset="100%" stop-color="#080026" />
+    </linearGradient>
+  </defs>
+
+  <!-- Slanted Monogram leaning forward by -15.65 degrees -->
+  <g transform="skewX(-15.65)">
+    <!-- 1. Left Light Grey Section -->
+    <path
+      d="M 406 292 L 584 292 L 584 708 L 406 708 Z"
+      fill="#B8BAC0"
+    />
+
+    <!-- 2. Middle Muted Lavender Section -->
+    <path
+      d="M 584 292 L 700 292 L 700 708 L 584 708 Z"
+      fill="#787197"
+    />
+
+    <!-- 3. Right Deep Royal Indigo Section with Rounded D Loop -->
+    <path
+      d="M 700 292 L 838 292 C 870 292 886 308 886 340 L 886 660 C 886 692 870 708 838 708 L 700 708 Z"
+      fill="url(#dcIndigoGrad)"
+    />
+
+    <!-- 4. Three Parallel Crisp White Rounded Slots -->
+    <!-- Slot 1 (Grey) -->
+    <rect x="492" y="360" width="68" height="280" rx="8" ry="8" fill="#FFFFFF" />
+
+    <!-- Slot 2 (Lavender) -->
+    <rect x="608" y="360" width="68" height="280" rx="8" ry="8" fill="#FFFFFF" />
+
+    <!-- Slot 3 (Indigo) -->
+    <rect x="724" y="360" width="68" height="280" rx="8" ry="8" fill="#FFFFFF" />
+  </g>
+</svg>

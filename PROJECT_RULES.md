@@ -56,9 +56,9 @@
 - Product ordering on Home screen:
   1. **TradingView Premium**
   2. **TradingView Essential**
-  3. **FXReplay Pro**
+  3. **FX Replay Pro**
 - Official Logos:
   - **TradingView Premium & Essential**: Uses official TradingView monogram on solid black square background (Photo 1).
-  - **FXReplay Pro**: Uses official FXReplay forward-play chevrons on dark cosmic background with stardust (Photo 2).
+  - **FX Replay Pro**: Uses official FX Replay forward-play chevrons on dark cosmic background with stardust (Photo 2).
 - Home screen uses "View Options" CTA without fixed price.
 - Products screen uses "View Details" CTA with starting price placeholder.

@@ -1,8 +1,10 @@
 import React from 'react';
 import { Product } from '../types';
 import { ProductPhotoLogo } from './ProductPhotoLogo';
+import { PinButton } from './PinButton';
 import { ArrowRight, Check } from 'lucide-react';
 import { triggerHaptic } from '../services/telegram';
+import { setActiveCard, getActiveCard, isPinned } from '../services/pin';
 
 interface CompactProductCardProps {
   product: Product;
@@ -13,14 +15,31 @@ export const CompactProductCard: React.FC<CompactProductCardProps> = ({
   product,
   onView,
 }) => {
-  const handleClick = () => {
+  const handleCardClick = (e: React.MouseEvent) => {
+    const isTouchOnly =
+      typeof window !== 'undefined' &&
+      window.matchMedia &&
+      !window.matchMedia('(hover: hover)').matches;
+
+    if (isTouchOnly) {
+      const currentActive = getActiveCard();
+      const isCardActive = currentActive === product.id;
+
+      if (!isCardActive && !isPinned(product.id)) {
+        setActiveCard(product.id);
+        triggerHaptic('soft');
+        return;
+      }
+    }
+
     triggerHaptic('light');
     onView(product);
   };
 
   return (
     <div
-      onClick={handleClick}
+      onClick={handleCardClick}
+      data-product-card="true"
       className="group bg-white border border-gray-200/90 rounded-xl p-3.5 shadow-2xs hover:border-gray-300 hover:shadow-xs transition-all duration-150 cursor-pointer flex flex-col justify-between"
       role="button"
       tabIndex={0}
@@ -33,7 +52,7 @@ export const CompactProductCard: React.FC<CompactProductCardProps> = ({
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 mb-1">
-            <span className="text-[10.5px] font-bold text-gray-600">
+            <span className="text-[10.5px] font-bold text-gray-600 truncate">
               {product.brand}
             </span>
             {product.badge && (
@@ -46,6 +65,11 @@ export const CompactProductCard: React.FC<CompactProductCardProps> = ({
           <h4 className="text-[15px] font-extrabold text-gray-900 tracking-tight leading-snug group-hover:text-[#721428] transition-colors truncate">
             {product.name}
           </h4>
+        </div>
+
+        {/* Pin Button */}
+        <div className="shrink-0 -mr-1 -mt-1">
+          <PinButton productId={product.id} variant="card" />
         </div>
       </div>
 
@@ -71,9 +95,10 @@ export const CompactProductCard: React.FC<CompactProductCardProps> = ({
       <button
         onClick={(e) => {
           e.stopPropagation();
-          handleClick();
+          triggerHaptic('light');
+          onView(product);
         }}
-        className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-[#721428] hover:bg-[#5A0E1E] active:bg-[#470A17] text-white text-xs font-bold transition-all active:scale-[0.98] shadow-xs"
+        className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-[#721428] hover:bg-[#5A0E1E] active:bg-[#470A17] text-white text-xs font-bold transition-all active:scale-[0.98] shadow-xs cursor-pointer"
         aria-label={`View options for ${product.name}`}
       >
         <span>View Options</span>

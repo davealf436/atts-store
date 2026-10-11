@@ -22,6 +22,14 @@ import { EmptyState } from './EmptyState';
 import { triggerHaptic, triggerNotificationHaptic, openTelegramSupport } from '../services/telegram';
 import { getWalletState, formatETB, etbToUsdt, instantWalletPurchase } from '../services/wallet';
 import { saveOrder } from '../services/orders';
+import {
+  getPlanStockInfo,
+  canAddToCartPlan,
+  consumePlanStock,
+  restorePlanStock,
+  parseProductAndPlanId,
+} from '../services/stock';
+import { toast } from '../services/toast';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -75,14 +83,44 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const hasEnoughBalance = wallet.balanceETB >= totalCostETB;
   const shortfall = totalCostETB - wallet.balanceETB;
 
-  const handleInstantWalletCheckout = () => {
+  const handleInstantWalletCheckout = async () => {
     if (!hasEnoughBalance) {
       triggerNotificationHaptic('warning');
       return;
     }
 
+    // Verify stock availability for all items in cart before charging
+    const itemsToConsume: Array<{ productId: string; planId: string; quantity: number }> = [];
+
+    for (const item of items) {
+      const rootId = item.product.parentProductId || item.product.id;
+      const planId = item.product.selectedPlanId || parseProductAndPlanId(item.product.id).planId;
+      const stockCheck = canAddToCartPlan(rootId, planId, 0, item.quantity);
+      if (!stockCheck.allowed) {
+        triggerNotificationHaptic('error');
+        toast.error('Insufficient Stock', `${item.product.name}: ${stockCheck.message}`);
+        return;
+      }
+      itemsToConsume.push({
+        productId: rootId,
+        planId,
+        quantity: item.quantity,
+      });
+    }
+
     setIsProcessing(true);
     triggerHaptic('medium');
+
+    const tempOrderNumber = `ATH-ORD-${Math.floor(100000 + Math.random() * 900000)}`;
+
+    // Atomically consume stock via backend to prevent overselling
+    const consumeResult = await consumePlanStock(itemsToConsume, tempOrderNumber);
+    if (!consumeResult.success) {
+      setIsProcessing(false);
+      triggerNotificationHaptic('error');
+      toast.error('Stock Unavailable', consumeResult.error || 'Failed to allocate stock. Please adjust quantities.');
+      return;
+    }
 
     // 1-second instant wallet checkout
     setTimeout(() => {
@@ -102,7 +140,19 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
           ' • ' +
           now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
 
-        // Save order to orders ledger
+        const purchasedItems = items.map((i) => {
+          const rootId = i.product.parentProductId || i.product.id;
+          const planId = i.product.selectedPlanId || parseProductAndPlanId(i.product.id).planId;
+          return {
+            productId: rootId,
+            planId,
+            quantity: i.quantity,
+            productName: i.product.name,
+            priceETB: i.product.priceETB || 0,
+          };
+        });
+
+        // Save order to orders ledger with item breakdown for future cancel/refund restoration
         saveOrder({
           id: `ord-${Date.now()}`,
           orderNumber: result.orderId,
@@ -112,6 +162,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
           priceETB: result.totalCost,
           paymentMethod: 'ATH Wallet Balance',
           licenseKey: generatedKey,
+          items: purchasedItems,
         });
 
         triggerNotificationHaptic('success');
@@ -125,9 +176,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
         onClearCart?.();
       } else {
+        // Restore stock if payment failed
+        for (const it of itemsToConsume) {
+          restorePlanStock(it.productId, it.planId, it.quantity, tempOrderNumber, 'Payment failed');
+        }
         setIsProcessing(false);
         triggerNotificationHaptic('error');
-        alert(result.message);
+        toast.error('Payment Failed', result.message || 'Payment could not be completed.');
       }
     }, 1000);
   };
@@ -298,65 +353,107 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               )}
             </div>
 
-            {items.map((item) => (
-              <div
-                key={item.product.id}
-                className="p-3 bg-gray-50 rounded-xl border border-gray-200/80 flex items-start gap-3 shadow-2xs"
-              >
-                <div className="flex-1 min-w-0">
-                  <span className="text-[10px] font-bold text-[#721428] block">
-                    {item.product.brand}
-                  </span>
-                  <h4 className="text-xs font-bold text-gray-900 truncate">
-                    {item.product.name}
-                  </h4>
-                  <div className="text-[11px] font-bold text-[#721428] mt-0.5">
-                    {item.product.priceETB > 0 ? formatETB(item.product.priceETB) : 'Free License'}
-                  </div>
+            {items.map((item) => {
+              const rootId = item.product.parentProductId || item.product.id;
+              const planId = item.product.selectedPlanId || parseProductAndPlanId(item.product.id).planId;
+              const planStock = getPlanStockInfo(rootId, planId);
+              const availableStock = planStock.stock;
+              const isAtMaxStock = item.quantity >= availableStock;
 
-                  {/* Quantity Stepper & Remove */}
-                  <div className="flex items-center justify-between mt-2.5 pt-2 border-t border-gray-200/60">
-                    <div className="flex items-center bg-white border border-gray-200 rounded-md p-0.5 shadow-2xs">
-                      <button
-                        onClick={() => {
-                          triggerHaptic('light');
-                          onUpdateQuantity(item.product.id, item.quantity - 1);
-                        }}
-                        className="w-5.5 h-5.5 flex items-center justify-center text-gray-500 hover:text-gray-900 rounded cursor-pointer"
-                        aria-label="Decrease quantity"
-                      >
-                        <Minus className="w-3 h-3" />
-                      </button>
-                      <span className="w-6 text-center text-xs font-bold text-gray-900">
-                        {item.quantity}
+              return (
+                <div
+                  key={item.product.id}
+                  className="p-3 bg-gray-50 rounded-xl border border-gray-200/80 flex items-start gap-3 shadow-2xs"
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-1.5 mb-0.5">
+                      <span className="text-[10px] font-bold text-[#721428] block">
+                        {item.product.brand}
                       </span>
-                      <button
-                        onClick={() => {
-                          triggerHaptic('light');
-                          onUpdateQuantity(item.product.id, item.quantity + 1);
-                        }}
-                        className="w-5.5 h-5.5 flex items-center justify-center text-gray-500 hover:text-gray-900 rounded cursor-pointer"
-                        aria-label="Increase quantity"
-                      >
-                        <Plus className="w-3 h-3" />
-                      </button>
+                      {planStock.isOut ? (
+                        <span className="text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-stone-200 text-stone-700">
+                          Out of Stock
+                        </span>
+                      ) : planStock.isLow ? (
+                        <span className="text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-amber-50 text-amber-900 border border-amber-200/90 flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                          <span>{availableStock} left</span>
+                        </span>
+                      ) : (
+                        <span className="text-[9.5px] font-semibold px-1.5 py-0.5 rounded bg-stone-100 text-stone-600 border border-stone-200/80">
+                          {availableStock} available
+                        </span>
+                      )}
+                    </div>
+                    <h4 className="text-xs font-bold text-gray-900 truncate">
+                      {item.product.name}
+                    </h4>
+                    <div className="text-[11px] font-bold text-[#721428] mt-0.5">
+                      {item.product.priceETB > 0 ? formatETB(item.product.priceETB) : 'Free License'}
                     </div>
 
-                    <button
-                      onClick={() => {
-                        triggerHaptic('light');
-                        onRemoveItem(item.product.id);
-                      }}
-                      className="text-gray-400 hover:text-rose-600 p-1 transition-colors cursor-pointer"
-                      title="Remove item"
-                      aria-label="Remove item"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
+                    {/* Quantity Stepper & Remove */}
+                    <div className="flex items-center justify-between mt-2.5 pt-2 border-t border-gray-200/60">
+                      <div className="flex items-center gap-2">
+                        <div className="flex items-center bg-white border border-gray-200 rounded-md p-0.5 shadow-2xs">
+                          <button
+                            onClick={() => {
+                              triggerHaptic('light');
+                              onUpdateQuantity(item.product.id, item.quantity - 1);
+                            }}
+                            className="w-5.5 h-5.5 flex items-center justify-center text-gray-500 hover:text-gray-900 rounded cursor-pointer"
+                            aria-label="Decrease quantity"
+                          >
+                            <Minus className="w-3 h-3" />
+                          </button>
+                          <span className="w-6 text-center text-xs font-bold text-gray-900">
+                            {item.quantity}
+                          </span>
+                          <button
+                            disabled={isAtMaxStock}
+                            onClick={() => {
+                              if (isAtMaxStock) {
+                                triggerNotificationHaptic('warning');
+                                toast.warning('Max Stock Reached', `Only ${availableStock} units available in stock.`);
+                                return;
+                              }
+                              triggerHaptic('light');
+                              onUpdateQuantity(item.product.id, item.quantity + 1);
+                            }}
+                            className={`w-5.5 h-5.5 flex items-center justify-center rounded transition-opacity ${
+                              isAtMaxStock
+                                ? 'text-gray-300 cursor-not-allowed'
+                                : 'text-gray-500 hover:text-gray-900 cursor-pointer'
+                            }`}
+                            aria-label="Increase quantity"
+                            title={isAtMaxStock ? `Max available stock (${availableStock}) reached` : undefined}
+                          >
+                            <Plus className="w-3 h-3" />
+                          </button>
+                        </div>
+                        {isAtMaxStock && (
+                          <span className="text-[10px] text-amber-700 font-semibold leading-none">
+                            Max ({availableStock})
+                          </span>
+                        )}
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          triggerHaptic('light');
+                          onRemoveItem(item.product.id);
+                        }}
+                        className="text-gray-400 hover:text-rose-600 p-1 transition-colors cursor-pointer"
+                        title="Remove item"
+                        aria-label="Remove item"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
 
             {/* Instant checkout speed guarantee banner */}
             <div className="p-2.5 bg-emerald-50/70 rounded-xl border border-emerald-200/80 flex items-start gap-2 text-xs text-emerald-800">

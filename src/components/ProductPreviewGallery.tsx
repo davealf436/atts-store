@@ -27,6 +27,190 @@ export const ProductPreviewGallery: React.FC<ProductPreviewGalleryProps> = ({ pr
     const brand = product?.brand || '';
     const category = product?.category || '';
 
+    // 0. DeepCharts Order Flow & MBO Suite (deepcharts)
+    if (prodId === 'deepcharts' || brand === 'DeepCharts') {
+      return [
+        // 1. Footprint & Deep Prints®
+        {
+          id: 'dc-footprint',
+          renderVisual: (isExpanded = false) => (
+            <div className="w-full h-full bg-[#080B14] p-2 flex flex-col justify-between font-mono select-none">
+              <div className="flex items-center justify-between pb-1 border-b border-cyan-900/40 text-[8px]">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                  <span className="text-[9px] font-bold text-cyan-300">DEEP PRINTS®</span>
+                  <div className="h-1.5 w-6 bg-slate-800 rounded-xs" />
+                </div>
+                <span className="text-[7.5px] px-1 py-0.2 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">MBO TICK</span>
+              </div>
+              <div className="grid grid-cols-3 gap-1 flex-1 my-1">
+                {[
+                  { bid: '142', ask: '380', delta: '+238', bull: true, poc: 2 },
+                  { bid: '210', ask: '190', delta: '-20', bull: false, poc: 1 },
+                  { bid: '95', ask: '412', delta: '+317', bull: true, poc: 3 },
+                ].map((col, idx) => (
+                  <div key={idx} className="bg-[#0D1222] rounded border border-slate-800 p-1 flex flex-col justify-between text-[7px]">
+                    <div className="space-y-0.5">
+                      {[1, 2, 3, 4].map((row) => (
+                        <div
+                          key={row}
+                          className={`flex items-center justify-between px-0.5 rounded-[2px] ${
+                            row === col.poc
+                              ? 'bg-amber-400/20 border border-amber-400/50 text-amber-300'
+                              : 'bg-slate-900/60 text-slate-400'
+                          }`}
+                        >
+                          <span className="text-[6.5px]">{col.bid}</span>
+                          <span className={`text-[6.5px] font-bold ${col.bull ? 'text-emerald-400' : 'text-rose-400'}`}>
+                            {col.ask}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="pt-0.5 border-t border-slate-800 flex items-center justify-between">
+                      <span className="text-[6.5px] text-slate-500">Δ</span>
+                      <span className={`text-[7px] font-bold ${col.bull ? 'text-emerald-400' : 'text-rose-400'}`}>
+                        {col.delta}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ),
+        },
+        // 2. Market-By-Order (MBO) DOM Ladder
+        {
+          id: 'dc-mbo-dom',
+          renderVisual: (isExpanded = false) => (
+            <div className="w-full h-full bg-[#080B14] p-2 flex flex-col justify-between font-mono select-none">
+              <div className="flex items-center justify-between pb-1 border-b border-cyan-900/40">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+                  <span className="text-[9px] font-bold text-slate-200">MBO LADDER</span>
+                </div>
+                <span className="text-[7.5px] px-1 py-0.2 rounded bg-blue-950 text-blue-300 border border-blue-800">DEPTH L3</span>
+              </div>
+              <div className="space-y-0.5 my-1 flex-1 flex flex-col justify-center">
+                {[
+                  { price: '5,124.50', qty: '482', pct: '85%', side: 'ask' },
+                  { price: '5,124.25', qty: '312', pct: '60%', side: 'ask' },
+                  { price: '5,124.00', qty: '184', pct: '35%', side: 'curr' },
+                  { price: '5,123.75', qty: '520', pct: '92%', side: 'bid' },
+                  { price: '5,123.50', qty: '298', pct: '55%', side: 'bid' },
+                ].map((row, i) => (
+                  <div key={i} className="relative flex items-center justify-between px-1 py-0.5 rounded text-[7px] bg-[#0D1222] border border-slate-800/80 overflow-hidden">
+                    <div
+                      className={`absolute inset-y-0 left-0 opacity-20 ${
+                        row.side === 'bid' ? 'bg-emerald-500' : row.side === 'ask' ? 'bg-rose-500' : 'bg-cyan-500'
+                      }`}
+                      style={{ width: row.pct }}
+                    />
+                    <span className="relative z-10 text-slate-300">{row.price}</span>
+                    <span className={`relative z-10 font-bold ${row.side === 'bid' ? 'text-emerald-400' : row.side === 'ask' ? 'text-rose-400' : 'text-cyan-300'}`}>
+                      {row.qty}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ),
+        },
+        // 3. Volume Profile & Value Area
+        {
+          id: 'dc-volume-profile',
+          renderVisual: (isExpanded = false) => (
+            <div className="w-full h-full bg-[#080B14] p-2 flex flex-col justify-between font-mono select-none">
+              <div className="flex items-center justify-between pb-1 border-b border-cyan-900/40">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-violet-400" />
+                  <span className="text-[9px] font-bold text-slate-200">VOLUME PROFILE</span>
+                </div>
+                <span className="text-[7.5px] px-1 py-0.2 rounded bg-violet-950 text-violet-300 border border-violet-800">VAH / POC</span>
+              </div>
+              <div className="flex-1 my-1 flex items-center gap-2">
+                <div className="flex-1 h-full flex flex-col justify-between py-1">
+                  {[45, 75, 92, 60, 35].map((w, i) => (
+                    <div key={i} className="flex items-center gap-1">
+                      <div
+                        className={`h-2 rounded-xs ${
+                          i === 2 ? 'bg-gradient-to-r from-amber-400 to-amber-500 shadow-xs' : 'bg-gradient-to-r from-cyan-500/70 to-blue-500/70'
+                        }`}
+                        style={{ width: `${w}%` }}
+                      />
+                      {i === 2 && <span className="text-[6.5px] font-bold text-amber-400 leading-none">POC</span>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ),
+        },
+        // 4. Institutional Deep Trades Detector
+        {
+          id: 'dc-deep-trades',
+          renderVisual: (isExpanded = false) => (
+            <div className="w-full h-full bg-[#080B14] p-2 flex flex-col justify-between font-mono select-none">
+              <div className="flex items-center justify-between pb-1 border-b border-cyan-900/40">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  <span className="text-[9px] font-bold text-slate-200">DEEP TRADES</span>
+                </div>
+                <span className="text-[7.5px] px-1 py-0.2 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">ICEBERG FILTER</span>
+              </div>
+              <div className="space-y-1 my-1 flex-1 flex flex-col justify-center">
+                {[
+                  { tag: 'ICEBERG BUY', size: '250 Lots', time: '14:23:01', color: 'emerald' },
+                  { tag: 'ABSORPTION', size: '410 Lots', time: '14:22:45', color: 'cyan' },
+                  { tag: 'BLOCK SELL', size: '180 Lots', time: '14:21:18', color: 'rose' },
+                ].map((item, i) => (
+                  <div key={i} className="p-1 rounded bg-[#0D1222] border border-slate-800 flex items-center justify-between text-[7px]">
+                    <div className="flex items-center gap-1">
+                      <span className={`w-1 h-1 rounded-full ${item.color === 'emerald' ? 'bg-emerald-400' : item.color === 'cyan' ? 'bg-cyan-400' : 'bg-rose-400'}`} />
+                      <span className="font-bold text-slate-200">{item.tag}</span>
+                    </div>
+                    <span className="text-slate-400">{item.size}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ),
+        },
+        // 5. Deep Replay Tick Simulator
+        {
+          id: 'dc-replay',
+          renderVisual: (isExpanded = false) => (
+            <div className="w-full h-full bg-[#080B14] p-2 flex flex-col justify-between font-mono select-none">
+              <div className="flex items-center justify-between pb-1 border-b border-cyan-900/40">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                  <span className="text-[9px] font-bold text-slate-200">DEEP REPLAY</span>
+                </div>
+                <span className="text-[7.5px] px-1 py-0.2 rounded bg-amber-950 text-amber-300 border border-amber-800">TICK SIMULATOR</span>
+              </div>
+              <div className="my-1 flex-1 flex flex-col justify-center gap-1.5">
+                <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden p-0.5">
+                  <div className="h-full w-3/5 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full" />
+                </div>
+                <div className="flex justify-between text-[7px] text-slate-400">
+                  <span>10:00:00</span>
+                  <span className="text-cyan-300 font-bold">SPEED: 4X</span>
+                  <span>16:00:00</span>
+                </div>
+              </div>
+              <div className="h-4 bg-[#0D1222] rounded border border-slate-800 p-1 flex items-center justify-between">
+                <div className="flex items-center gap-1">
+                  <Play className="w-2 h-2 fill-cyan-400 text-cyan-400" />
+                  <span className="text-[7px] text-slate-300 font-bold">REPLAY ACTIVE</span>
+                </div>
+                <span className="text-[6.5px] text-emerald-400">SYNCED</span>
+              </div>
+            </div>
+          ),
+        },
+      ];
+    }
+
     // A. TradingView Suite (tv-premium, tv-essential)
     if (prodId.includes('tv-') || brand === 'TradingView') {
       return [
@@ -408,7 +592,7 @@ export const ProductPreviewGallery: React.FC<ProductPreviewGalleryProps> = ({ pr
       ];
     }
 
-    // D. Default FXReplay Suite (fxreplay-pro, fxreplay-premium, etc.)
+    // D. Default FX Replay Suite (fxreplay-pro, fxreplay-premium, etc.)
     return [
       // 1. Market Replay
       {

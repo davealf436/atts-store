@@ -1,15 +1,15 @@
 import { WalletState, WalletTransaction, TelegramUser } from '../types';
 
-export const ETB_TO_USDT_RATE = 140; // 1 USDT = 140 ETB
+export const ETB_TO_USDT_RATE = 198.5; // 1 USDT = 198.5 ETB (birr)
 
-const WALLET_STORAGE_KEY = 'ath_wallet_storage_v2';
+const WALLET_STORAGE_KEY = 'ath_wallet_storage_v3';
 
 const INITIAL_TRANSACTIONS: WalletTransaction[] = [
   {
     id: 'tx-seed-1',
     type: 'deposit',
     amountETB: 1500,
-    amountUSDT: 10.71,
+    amountUSDT: 7.56,
     method: 'Telebirr',
     description: 'Wallet Deposit',
     date: 'Sep 29, 2026 • 14:20',
@@ -21,7 +21,7 @@ const INITIAL_TRANSACTIONS: WalletTransaction[] = [
     id: 'tx-seed-2',
     type: 'purchase',
     amountETB: 700,
-    amountUSDT: 5.0,
+    amountUSDT: 3.53,
     method: 'Wallet Balance',
     description: 'TradingView Premium',
     date: 'Sep 29, 2026 • 15:10',
@@ -32,7 +32,7 @@ const INITIAL_TRANSACTIONS: WalletTransaction[] = [
     id: 'tx-seed-3',
     type: 'purchase',
     amountETB: 300,
-    amountUSDT: 2.14,
+    amountUSDT: 1.51,
     method: 'Wallet Balance',
     description: 'Telegram Premium',
     date: 'Sep 29, 2026 • 16:30',

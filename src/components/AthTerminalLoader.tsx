@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { AthLogo } from './AthLogo';
 import { initTelegramApp, triggerHaptic } from '../services/telegram';
+import { initAuth } from '../services/auth';
 import { AlertCircle, ArrowRight } from 'lucide-react';
 
 interface AthTerminalLoaderProps {
@@ -46,7 +47,7 @@ export const AthTerminalLoader: React.FC<AthTerminalLoaderProps> = ({ onInitiali
         const storageCheck = new Promise<void>((resolve) => {
           try {
             if (typeof window !== 'undefined') {
-              window.localStorage.getItem('ath_favorites_v1');
+              window.localStorage.getItem('ath_pinned_products_v1');
               window.localStorage.getItem('ath_user_profile');
             }
           } catch {
@@ -55,7 +56,9 @@ export const AthTerminalLoader: React.FC<AthTerminalLoaderProps> = ({ onInitiali
           resolve();
         });
 
-        await Promise.all([domReady, fontsReady, storageCheck]);
+        const authCheck = initAuth().catch(() => false);
+
+        await Promise.all([domReady, fontsReady, storageCheck, authCheck]);
         systemReadyRef.current = true;
 
         // If status cycle has reached the final stage, smoothly transition

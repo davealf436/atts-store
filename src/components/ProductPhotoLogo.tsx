@@ -9,7 +9,7 @@ interface ProductPhotoLogoProps {
 /**
  * Renders the exact official brandmark photos & vector artwork:
  * - TradingView: official white monogram on solid jet-black background
- * - FXReplay: official white rounded play arrow and hollow chevron on solid jet-black background
+ * - FX Replay: official white rounded play arrow and hollow chevron on solid jet-black background
  * - Abyssinia Journal: signature deep burgundy trade ledger with gold & white candlestick crest
  * - Backtesting Journal: analytical midnight blueprint with historical chart replay metrics
  * - Notion Template Journal: iconic Notion stylized "N" minimalist mark
@@ -25,6 +25,66 @@ export const ProductPhotoLogo: React.FC<ProductPhotoLogoProps> = ({
     lg: 'w-14 h-14 rounded-xl',
     banner: 'w-full h-full rounded-none',
   };
+
+  // 0. DeepCharts Custom Slanted Monogram Logo (matching user uploaded image)
+  if (productId === 'deepcharts') {
+    return (
+      <div
+        className={`relative overflow-hidden shrink-0 flex items-center justify-center select-none ${size === 'banner' ? '' : 'shadow-2xs'} ${sizeClasses[size]} ${className}`}
+        style={{ backgroundColor: '#FFFFFF' }}
+        title="DeepCharts"
+      >
+        <svg
+          viewBox="0 0 1000 1000"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-full h-full"
+        >
+          <rect width="1000" height="1000" fill="#FFFFFF" />
+
+          <defs>
+            {/* Deep Royal Purple to Midnight Indigo Linear Gradient */}
+            <linearGradient id="dcCustomIndigoGrad" x1="0%" y1="100%" x2="35%" y2="0%">
+              <stop offset="0%" stopColor="#3200B8" />
+              <stop offset="55%" stopColor="#1C0074" />
+              <stop offset="100%" stopColor="#080026" />
+            </linearGradient>
+          </defs>
+
+          {/* Slanted Monogram leaning forward by -15.65 degrees */}
+          <g transform="skewX(-15.65)">
+            {/* 1. Left Light Grey Section */}
+            <path
+              d="M 406 292 L 584 292 L 584 708 L 406 708 Z"
+              fill="#B8BAC0"
+            />
+
+            {/* 2. Middle Muted Lavender Section */}
+            <path
+              d="M 584 292 L 700 292 L 700 708 L 584 708 Z"
+              fill="#787197"
+            />
+
+            {/* 3. Right Deep Royal Indigo Section with Rounded D Loop */}
+            <path
+              d="M 700 292 L 838 292 C 870 292 886 308 886 340 L 886 660 C 886 692 870 708 838 708 L 700 708 Z"
+              fill="url(#dcCustomIndigoGrad)"
+            />
+
+            {/* 4. Three Parallel Crisp White Rounded Cutout Slots */}
+            {/* Slot 1 (Grey) */}
+            <rect x="492" y="360" width="68" height="280" rx="8" ry="8" fill="#FFFFFF" />
+
+            {/* Slot 2 (Lavender) */}
+            <rect x="608" y="360" width="68" height="280" rx="8" ry="8" fill="#FFFFFF" />
+
+            {/* Slot 3 (Indigo) */}
+            <rect x="724" y="360" width="68" height="280" rx="8" ry="8" fill="#FFFFFF" />
+          </g>
+        </svg>
+      </div>
+    );
+  }
 
   // 1. Abyssinia Journal (matching Image 1: 3D Origami Purple & Gold Bird on pure white background)
   if (productId === 'abyssinia-journal') {
@@ -367,31 +427,31 @@ export const ProductPhotoLogo: React.FC<ProductPhotoLogoProps> = ({
     );
   }
 
-  // 6. Official FXReplay Logo (matching official brandmark: solid rounded play triangle + hollow rounded chevron with vertical left faces on solid black)
-  if (productId === 'fxreplay-pro' || productId === 'fxreplay-premium') {
+  // 6. Official FX Replay Logo (for FX Replay Essential Plan, Premium Plan and Subscription)
+  if (productId === 'fxreplay-pro' || productId === 'fxreplay-premium' || productId === 'fxreplay-subscription' || productId.startsWith('fxreplay')) {
     return (
       <div
         className={`relative overflow-hidden shrink-0 flex items-center justify-center select-none shadow-2xs ${sizeClasses[size]} ${className}`}
         style={{ backgroundColor: '#000000' }}
-        title="FXReplay"
+        title={productId === 'fxreplay-subscription' ? 'FXREPLAY' : 'FX Replay Pro'}
       >
         <svg
-          viewBox="0 0 100 100"
+          viewBox="-110 -110 940 940"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           className="w-full h-full"
         >
-          <rect width="100" height="100" fill="#000000" />
+          <rect x="-150" y="-150" width="1200" height="1200" fill="#000000" />
 
-          {/* Solid Left Play Triangle matching official 0x0.png */}
+          {/* Official Hollow Right Chevron */}
           <path
-            d="M 18.5 24.0 C 18.5 20.0 20.5 18.0 24.5 18.0 L 47.5 47.0 C 49.5 49.0 49.5 51.0 47.5 53.0 L 24.5 82.0 C 20.5 82.0 18.5 80.0 18.5 76.0 Z"
+            d="M704.74 328.15L330.63 8.53005C306.72 -11.89 271.71 6.65005 271.71 39.73V679C271.71 712.08 306.71 730.62 330.63 710.2L704.74 390.53C723.33 374.66 723.33 344 704.74 328.15ZM594.56 377.33L379.88 567.66C365.95 580.01 345.1 569.22 345.1 549.66V169C345.1 149.45 365.95 138.66 379.88 151L594.56 341.35C605 350.63 605 368.05 594.56 377.33Z"
             fill="#FFFFFF"
           />
 
-          {/* Hollow Right Chevron with vertical left faces matching official 0x0.png */}
+          {/* Official Solid Left Play Triangle */}
           <path
-            d="M 44.0 24.5 C 44.0 20.0 46.5 18.0 50.5 18.0 L 79.5 47.0 C 81.5 49.0 81.5 51.0 79.5 53.0 L 50.5 82.0 C 46.5 82.0 44.0 80.0 44.0 75.5 L 44.0 69.5 C 44.0 67.5 45.0 66.0 47.0 64.5 L 64.5 53.0 C 66.0 51.5 66.0 48.5 64.5 47.0 L 47.0 35.5 C 45.0 34.0 44.0 32.5 44.0 30.5 Z"
+            d="M435.72 330.44L62.69 11.76C38 -9.31001 0 8.20999 0 40.66V678C0 710.44 38 728 62.69 706.89L435.69 388.21C439.865 384.645 443.218 380.217 445.518 375.232C447.818 370.247 449.011 364.822 449.014 359.332C449.017 353.842 447.83 348.416 445.535 343.428C443.24 338.441 439.891 334.01 435.72 330.44Z"
             fill="#FFFFFF"
           />
         </svg>

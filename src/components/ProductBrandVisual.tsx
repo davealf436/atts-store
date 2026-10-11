@@ -8,14 +8,70 @@ interface ProductBrandVisualProps {
 }
 
 export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product, className = '' }) => {
+  const isDeepCharts = product.id === 'deepcharts';
   const isTVPremium = product.id === 'tv-premium';
   const isTVEssential = product.id === 'tv-essential';
-  const isFXReplay = product.brand === 'FXReplay';
+  const isFXReplay = product.brand === 'FXReplay' || product.brand === 'FX Replay' || product.id.startsWith('fxreplay');
   const isAbyssiniaJournal = product.id === 'abyssinia-journal';
   const isBacktestingJournal = product.id === 'backtesting-journal';
   const isNotion = product.id === 'notion-template-journal';
   const isTelegram = product.id === 'telegram-premium';
   const isGoogleAI = product.id === 'google-ai';
+
+  // 0. DeepCharts — Institutional Order Flow & MBO Identity Card
+  if (isDeepCharts) {
+    return (
+      <div
+        className={`relative w-full h-[74px] sm:h-[80px] overflow-hidden bg-gradient-to-r from-[#FAFBFD] via-[#F4F5F9] to-[#EAE8F6] dark:from-[#11131E] dark:via-[#161726] dark:to-[#121124] flex items-center justify-between px-3.5 sm:px-4 py-2 border-b border-gray-200/90 dark:border-gray-800 select-none ${className}`}
+      >
+        <div
+          className="absolute inset-0 opacity-[0.08] pointer-events-none"
+          style={{
+            backgroundImage: 'radial-gradient(circle, #3200B8 0.85px, transparent 0.85px)',
+            backgroundSize: '16px 16px',
+          }}
+        />
+        <div
+          className="absolute right-0 top-0 bottom-0 w-1/3 pointer-events-none opacity-20"
+          style={{
+            background: 'radial-gradient(circle at 100% 50%, rgba(50, 0, 184, 0.25) 0%, transparent 70%)',
+          }}
+        />
+
+        {/* Left + Center Content Group */}
+        <div className="relative z-10 flex items-center gap-3 sm:gap-3.5 min-w-0 flex-1">
+          {/* Logo Showcase with clean white card */}
+          <div className="relative shrink-0">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl overflow-hidden ring-1 ring-gray-200 dark:ring-gray-700 shadow-2xs flex items-center justify-center bg-white">
+              <ProductPhotoLogo productId={product.id} size="md" className="w-full h-full" />
+            </div>
+          </div>
+
+          <div className="min-w-0 flex-1 flex flex-col justify-center">
+            {/* Kicker with live status indicator */}
+            <div className="flex items-center gap-1.5 mb-0.5 leading-none">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#3200B8] shrink-0" />
+              <span className="text-[9.5px] font-extrabold uppercase tracking-wider text-[#3200B8] dark:text-[#A78BFA] leading-none">
+                Institutional MBO Engine
+              </span>
+            </div>
+
+            {/* Product Title */}
+            <h3 className="text-[15px] sm:text-[16px] font-black text-gray-900 dark:text-white tracking-tight leading-tight truncate">
+              DeepCharts <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 normal-case">· Order Flow</span>
+            </h3>
+          </div>
+        </div>
+
+        {/* Right Tag Seal */}
+        <div className="relative z-10 shrink-0 ml-2 hidden xs:flex">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-[#3200B8]/10 dark:bg-[#3200B8]/25 border border-[#3200B8]/20 text-[9px] font-extrabold uppercase tracking-widest text-[#3200B8] dark:text-[#C4B5FD] shadow-2xs">
+            MBO Flow
+          </span>
+        </div>
+      </div>
+    );
+  }
 
   // 1. Telegram Premium — Compact Horizontal Identity Card
   if (isTelegram) {
@@ -256,7 +312,7 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
     );
   }
 
-  // 6. FXReplay Pro / Premium — Compact Horizontal Identity Card
+  // 6. FX Replay Pro / Premium — Compact Horizontal Identity Card
   if (isFXReplay) {
     const isPremiumTier = product.id === 'fxreplay-premium';
     return (
@@ -288,12 +344,12 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
             <div className="flex items-center gap-1.5 mb-0.5 leading-none">
               <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${isPremiumTier ? 'bg-amber-400 animate-pulse' : 'bg-emerald-400'}`} />
               <span className={`text-[9.5px] font-extrabold uppercase tracking-wider leading-none ${isPremiumTier ? 'text-amber-300' : 'text-emerald-400'}`}>
-                {isPremiumTier ? 'Dedicated Private License · 1 Month' : 'Tick-by-Tick Market Simulator'}
+                {isPremiumTier ? 'Dedicated License · Pro Plan' : 'Tick-by-Tick Market Simulator'}
               </span>
             </div>
 
             <h3 className="text-[15px] sm:text-[16px] font-black text-white tracking-tight leading-tight truncate uppercase">
-              FX<span className="text-emerald-400">REPLAY</span> <span className="text-xs font-semibold text-gray-300 normal-case">{isPremiumTier ? '· Premium Plan' : '· Pro Plan'}</span>
+              FX<span className="text-emerald-400">REPLAY</span> <span className="text-xs font-semibold text-gray-300 normal-case">{isPremiumTier ? '· Flagship Plan' : '· Pro Plan'}</span>
             </h3>
           </div>
         </div>
@@ -304,7 +360,7 @@ export const ProductBrandVisual: React.FC<ProductBrandVisualProps> = ({ product,
               ? 'bg-amber-950/80 border border-amber-800/60 text-amber-300'
               : 'bg-emerald-950/80 border border-emerald-800/60 text-emerald-300'
           }`}>
-            {isPremiumTier ? 'Private' : 'Flexible'}
+            {isPremiumTier ? 'Flagship' : 'Flexible'}
           </span>
         </div>
       </div>

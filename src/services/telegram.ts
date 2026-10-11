@@ -62,6 +62,7 @@ declare global {
         ready: () => void;
         expand: () => void;
         close: () => void;
+        enableClosingConfirmation?: () => void;
         openLink: (url: string, options?: { try_instant_view?: boolean }) => void;
         openTelegramLink: (url: string) => void;
         sendData: (data: string) => void;
@@ -72,6 +73,23 @@ declare global {
 
 export const isTelegramWebApp = (): boolean => {
   return typeof window !== 'undefined' && Boolean(window.Telegram?.WebApp?.initData);
+};
+
+/**
+ * Authoritative Telegram User IDs with administrative access rights.
+ * Security Authority: Permanent numeric Telegram User ID (not mutable usernames).
+ */
+export const ADMIN_TELEGRAM_IDS: ReadonlySet<number> = new Set<number>([
+  7638499069, // ΛBYSSIПIΛ VΣПDOR (@abyssiniavendor)
+]);
+
+/**
+ * Evaluates whether a Telegram user or ID is an authorized ATH admin.
+ */
+export const isTelegramAdmin = (userOrId?: TelegramUser | number | null): boolean => {
+  if (!userOrId) return false;
+  const id = typeof userOrId === 'number' ? userOrId : userOrId.id;
+  return typeof id === 'number' && ADMIN_TELEGRAM_IDS.has(id);
 };
 
 export const getTelegramWebApp = () => {
@@ -87,11 +105,18 @@ export const initTelegramApp = () => {
     try {
       tg.ready();
       tg.expand();
-      if (tg.headerColor) {
+      if (typeof tg.setHeaderColor === 'function') {
+        tg.setHeaderColor('#FFFFFF');
+      } else if (tg.headerColor) {
         tg.headerColor = '#FFFFFF';
       }
-      if (tg.backgroundColor) {
+      if (typeof tg.setBackgroundColor === 'function') {
+        tg.setBackgroundColor('#F8FAFC');
+      } else if (tg.backgroundColor) {
         tg.backgroundColor = '#F8FAFC';
+      }
+      if (typeof tg.enableClosingConfirmation === 'function') {
+        tg.enableClosingConfirmation();
       }
     } catch (e) {
       console.warn('Telegram WebApp init warning:', e);
@@ -141,8 +166,16 @@ export const shareToTelegram = (text: string, url: string) => {
   const tg = getTelegramWebApp();
   if (tg?.openTelegramLink) {
     tg.openTelegramLink(shareUrl);
-  } else {
-    window.open(shareUrl, '_blank');
+  } else if (tg?.openLink) {
+    tg.openLink(shareUrl);
+  } else if (typeof window !== 'undefined') {
+    const a = document.createElement('a');
+    a.href = shareUrl;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   }
 };
 
@@ -152,7 +185,15 @@ export const openTelegramSupport = (username: string = 'abyssiniavendor') => {
   const tg = getTelegramWebApp();
   if (tg?.openTelegramLink) {
     tg.openTelegramLink(url);
-  } else {
-    window.open(url, '_blank');
+  } else if (tg?.openLink) {
+    tg.openLink(url);
+  } else if (typeof window !== 'undefined') {
+    const a = document.createElement('a');
+    a.href = url;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   }
 };

@@ -1,35 +1,77 @@
 import React from 'react';
 import { Product } from '../types';
 import { ProductPhotoLogo } from './ProductPhotoLogo';
+import { PinButton } from './PinButton';
 import { ArrowRight } from 'lucide-react';
 import { triggerHaptic } from '../services/telegram';
+import { setActiveCard, getActiveCard, isPinned } from '../services/pin';
 
 interface SwipeableProductCardProps {
   product: Product;
   onView: (product: Product) => void;
   className?: string;
+  buttonText?: string;
+  onCustomAction?: () => void;
 }
 
 export const SwipeableProductCard: React.FC<SwipeableProductCardProps> = ({
   product,
   onView,
   className = 'w-[210px] xs:w-[225px] shrink-0 snap-start',
+  buttonText,
+  onCustomAction,
 }) => {
-  const handleClick = () => {
+  const handleCardClick = (e: React.MouseEvent) => {
+    // Check if on touch device without hover capability
+    const isTouchOnly =
+      typeof window !== 'undefined' &&
+      window.matchMedia &&
+      !window.matchMedia('(hover: hover)').matches;
+
+    if (isTouchOnly) {
+      const currentActive = getActiveCard();
+      const isCardActive = currentActive === product.id;
+
+      // If card is not yet active on touch and not already pinned, first touch reveals pin
+      if (!isCardActive && !isPinned(product.id)) {
+        setActiveCard(product.id);
+        triggerHaptic('soft');
+        return;
+      }
+    }
+
+    // Normal navigation
     triggerHaptic('light');
-    onView(product);
+    if (onCustomAction) {
+      onCustomAction();
+    } else {
+      onView(product);
+    }
   };
 
-  const isFXReplay = product.brand === 'FXReplay' || product.id === 'fxreplay-pro' || product.id === 'fxreplay-premium';
+  const handleActionClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    triggerHaptic('light');
+    if (onCustomAction) {
+      onCustomAction();
+    } else {
+      onView(product);
+    }
+  };
+
+  const isDeepCharts = product.id === 'deepcharts';
+  const isFXReplay = product.brand === 'FXReplay' || product.brand === 'FX Replay' || product.id.startsWith('fxreplay');
   const isAbyssiniaJournal = product.id === 'abyssinia-journal';
   const isBacktestingJournal = product.id === 'backtesting-journal';
   const isNotion = product.id === 'notion-template-journal';
   const isTelegram = product.id === 'telegram-premium';
   const isGoogleAI = product.id === 'google-ai';
 
-  const isLightBg = isAbyssiniaJournal || isNotion || isGoogleAI;
+  const isLightBg = isDeepCharts || isAbyssiniaJournal || isNotion || isGoogleAI;
 
-  const containerBg = isAbyssiniaJournal
+  const containerBg = isDeepCharts
+    ? 'bg-white'
+    : isAbyssiniaJournal
     ? 'bg-white'
     : isBacktestingJournal
     ? 'bg-black'
@@ -45,11 +87,12 @@ export const SwipeableProductCard: React.FC<SwipeableProductCardProps> = ({
 
   return (
     <div
-      onClick={handleClick}
+      onClick={handleCardClick}
+      data-product-card="true"
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          handleClick();
+          onView(product);
         }
       }}
       className={`bg-white border border-gray-200/90 hover:border-[#721428]/40 rounded-2xl p-2.5 flex flex-col justify-between shadow-2xs hover:shadow-xs transition-all duration-150 cursor-pointer group active:scale-[0.98] ${className}`}
@@ -61,7 +104,7 @@ export const SwipeableProductCard: React.FC<SwipeableProductCardProps> = ({
         {/* Large Product Logo/Image Area with subtle badge overlay */}
         <div
           className={`relative w-full h-32 xs:h-36 rounded-xl overflow-hidden flex items-center justify-center ${
-            isLightBg ? '' : 'shadow-inner'
+            isLightBg ? 'border border-gray-100 dark:border-gray-800' : 'shadow-inner'
           } ${containerBg}`}
         >
           {/* Official brand logo centered & scaled */}
@@ -87,6 +130,11 @@ export const SwipeableProductCard: React.FC<SwipeableProductCardProps> = ({
               </span>
             </div>
           )}
+
+          {/* Clean, compact Pin Button in top-right (revealed on desktop hover or mobile touch) */}
+          <div className="absolute top-2 right-2 z-20">
+            <PinButton productId={product.id} variant="card" />
+          </div>
         </div>
 
         {/* Product Name at the bottom of the image area */}
@@ -97,17 +145,14 @@ export const SwipeableProductCard: React.FC<SwipeableProductCardProps> = ({
         </div>
       </div>
 
-      {/* Deep Burgundy View Options Button */}
+      {/* Deep Burgundy Action Button */}
       <div className="pt-1">
         <button
-          onClick={(e) => {
-            e.stopPropagation();
-            handleClick();
-          }}
-          className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-[#721428] hover:bg-[#5A0E1E] active:bg-[#470A17] text-white text-xs font-bold transition-all active:scale-[0.98] shadow-xs"
-          aria-label={`View options for ${product.name}`}
+          onClick={handleActionClick}
+          className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-[#721428] hover:bg-[#5A0E1E] active:bg-[#470A17] text-white text-xs font-bold transition-all active:scale-[0.98] shadow-xs cursor-pointer"
+          aria-label={buttonText || `View options for ${product.name}`}
         >
-          <span>View Options</span>
+          <span>{buttonText || 'View Options'}</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>

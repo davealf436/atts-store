@@ -6,15 +6,13 @@ import {
   ArrowLeftRight,
   ShieldCheck,
   Zap,
-  Bookmark,
-  Compass,
   LineChart,
   BookOpen,
   Crown,
 } from 'lucide-react';
 import { triggerHaptic } from '../services/telegram';
 import { AthLogo } from './AthLogo';
-import { getFavoriteIds, subscribeToFavorites } from '../services/favorites';
+import { getPinnedIds, subscribeToPinned, sortProductsWithPinned } from '../services/pin';
 
 interface HomeScreenProps {
   products: Product[];
@@ -22,6 +20,7 @@ interface HomeScreenProps {
   onAddToCart: (product: Product) => void;
   onNavigateToP2P: () => void;
   onSelectCategory: (categoryId: 'trading-tools' | 'journaling' | 'subscriptions') => void;
+  onOpenPlans?: (family: 'tradingview' | 'fxreplay') => void;
 }
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({
@@ -29,42 +28,75 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onViewProduct,
   onNavigateToP2P,
   onSelectCategory,
+  onOpenPlans,
 }) => {
-  const [homeTab, setHomeTab] = useState<'all' | 'saved'>('all');
-  const [favoriteIds, setFavoriteIds] = useState<string[]>(getFavoriteIds);
+  const [pinnedIds, setPinnedIds] = useState<string[]>(getPinnedIds);
 
   useEffect(() => {
-    const unsubscribe = subscribeToFavorites((ids) => {
-      setFavoriteIds(ids);
+    const unsubscribe = subscribeToPinned((ids) => {
+      setPinnedIds(ids);
     });
     return unsubscribe;
   }, []);
 
-  const savedProducts = products.filter((p) => favoriteIds.includes(p.id));
+  const tvSubscriptionProduct: Product = {
+    id: 'tv-subscription',
+    name: 'TradingView',
+    brand: 'TradingView',
+    category: 'tradingview',
+    tier: 'Trading Platform',
+    badge: 'Trading Platform',
+    subtitle: 'Official TradingView multi-charting setups.',
+    shortDescription: 'Official multi-chart licenses with real-time data, server-side alerts, and historical bar replays.',
+    fullDescription: 'Official TradingView platform featuring multi-charting, high-frequency intervals, and server-side alerts.',
+    startingPricePlaceholder: 'View Plans',
+    priceETB: 1400,
+    features: ['Official multi-chart layouts', 'Server-side alerts', 'High-frequency intervals'],
+  };
 
-  // Display products in the exact requested order:
-  // 1. TradingView Premium
-  // 2. TradingView Essential
-  // 3. FXReplay Pro (Essential Plan)
-  // 4. FXReplay Pro (Premium Plan)
-  const orderedProducts = ['tv-premium', 'tv-essential', 'fxreplay-pro', 'fxreplay-premium']
-    .map((id) => products.find((p) => p.id === id))
-    .filter((p): p is Product => Boolean(p));
+  const fxreplaySubscriptionProduct: Product = {
+    id: 'fxreplay-subscription',
+    name: 'FXREPLAY',
+    brand: 'FX Replay',
+    category: 'backtesting',
+    tier: 'Backtesting Platform',
+    badge: 'Backtesting Platform',
+    subtitle: 'Official FX Replay simulation passes.',
+    shortDescription: 'Tick-by-tick Forex, Crypto & Index backtesting simulation engines with strategy execution journals.',
+    fullDescription: 'Master your edge with FX Replay. Access tick-by-tick market simulation across Forex, Crypto, and Indices.',
+    startingPricePlaceholder: 'View Plans',
+    priceETB: 250,
+    features: ['Tick-by-tick market replay', 'Multi-timeframe simultaneous chart sync', 'Automated trade journaling'],
+  };
 
-  // Journaling Tools in exact requested order:
+  // Featured Tools minimized to exactly 3 products:
+  // 1. DeepCharts
+  // 2. TradingView
+  // 3. FXREPLAY
+  const deepchartsProduct = products.find((p) => p.id === 'deepcharts');
+  const rawFeatured = [
+    ...(deepchartsProduct ? [deepchartsProduct] : []),
+    tvSubscriptionProduct,
+    fxreplaySubscriptionProduct,
+  ];
+  const orderedProducts = sortProductsWithPinned(rawFeatured, pinnedIds);
+
+  // Journaling Tools in exact requested order with pinned products first:
   // 1. Abyssinia Journal
   // 2. Backtesting Journal
   // 3. Notion Template Journal — Free
-  const orderedJournalProducts = ['abyssinia-journal', 'backtesting-journal', 'notion-template-journal']
+  const rawJournal = ['abyssinia-journal', 'backtesting-journal', 'notion-template-journal']
     .map((id) => products.find((p) => p.id === id))
     .filter((p): p is Product => Boolean(p));
+  const orderedJournalProducts = sortProductsWithPinned(rawJournal, pinnedIds);
 
-  // Premium Subscriptions in exact requested order:
+  // Premium Subscriptions in exact requested order with pinned products first:
   // 1. Telegram Premium
   // 2. Google AI
-  const orderedSubscriptionProducts = ['telegram-premium', 'google-ai']
+  const rawSubscriptions = ['telegram-premium', 'google-ai']
     .map((id) => products.find((p) => p.id === id))
     .filter((p): p is Product => Boolean(p));
+  const orderedSubscriptionProducts = sortProductsWithPinned(rawSubscriptions, pinnedIds);
 
   const scrollToSection = (sectionId: string) => {
     triggerHaptic('light');
@@ -188,125 +220,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
       </section>
 
-      {/* Category / Saved Tab Switcher */}
-      <section className="flex items-center gap-2 p-1 bg-stone-100/90 rounded-xl border border-stone-200/80">
-        <button
-          type="button"
-          onClick={() => {
-            triggerHaptic('light');
-            setHomeTab('all');
-          }}
-          className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-            homeTab === 'all'
-              ? 'bg-white text-stone-900 shadow-2xs border border-stone-200/80'
-              : 'text-stone-500 hover:text-stone-800'
-          }`}
-        >
-          <Compass className="w-3.5 h-3.5" />
-          <span>All Tools</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => {
-            triggerHaptic('light');
-            setHomeTab('saved');
-          }}
-          className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-            homeTab === 'saved'
-              ? 'bg-white text-[#721428] shadow-2xs border border-stone-200/80'
-              : 'text-stone-500 hover:text-stone-800'
-          }`}
-        >
-          <Bookmark className={`w-3.5 h-3.5 ${favoriteIds.length > 0 ? 'fill-[#721428] text-[#721428]' : ''}`} />
-          <span>Saved</span>
-          {favoriteIds.length > 0 && (
-            <span className="ml-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-extrabold bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]">
-              {favoriteIds.length}
-            </span>
-          )}
-        </button>
-      </section>
-
-      {/* ─── SAVED VIEW (When Saved Tab is Active) ─── */}
-      {homeTab === 'saved' && (
-        <section className="space-y-3 animate-in fade-in duration-150">
-          <div className="flex items-center justify-between px-0.5">
-            <div>
-              <h3 className="text-sm font-bold text-gray-900 tracking-tight flex items-center gap-1.5">
-                <span>Your Saved Tools</span>
-                <span className="text-[10px] font-semibold text-gray-400">· {savedProducts.length} items</span>
-              </h3>
-              <p className="text-[11px] text-gray-500">
-                Bookmarked platforms and licenses for fast access
-              </p>
-            </div>
-
-            {savedProducts.length > 0 && (
-              <button
-                type="button"
-                onClick={() => {
-                  triggerHaptic('light');
-                  setHomeTab('all');
-                }}
-                className="text-[11px] font-bold text-[#721428] hover:underline cursor-pointer"
-              >
-                Browse Store
-              </button>
-            )}
+      {/* Available Tools Category Navigation */}
+      <section className="space-y-1.5">
+        <div className="flex items-center justify-between px-0.5">
+          <div>
+            <h3 className="text-sm font-bold text-gray-900 tracking-tight flex items-center gap-1.5">
+              <span>Available Tools</span>
+            </h3>
           </div>
-
-          {savedProducts.length > 0 ? (
-            <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
-              {savedProducts.map((product) => (
-                <div key={`saved-grid-${product.id}`} className="w-full">
-                  <SwipeableProductCard
-                    product={product}
-                    onView={onViewProduct}
-                    className="w-full"
-                  />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="py-12 px-4 rounded-2xl bg-white border border-stone-200/90 text-center flex flex-col items-center justify-center space-y-3">
-              <div className="w-12 h-12 rounded-2xl bg-[#FAF0F2] border border-[#F0D5DA] flex items-center justify-center text-[#721428]">
-                <Bookmark className="w-6 h-6 stroke-[1.8]" />
-              </div>
-              <div>
-                <h4 className="text-sm font-bold text-stone-900">No Saved Items Yet</h4>
-                <p className="text-xs text-stone-500 max-w-xs mx-auto mt-1 leading-relaxed">
-                  Open View Options on any tool and tap the star icon to save it here for fast access.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  triggerHaptic('light');
-                  setHomeTab('all');
-                }}
-                className="px-4 py-2 rounded-xl bg-[#721428] hover:bg-[#5A0E1E] text-white text-xs font-bold transition-all active:scale-[0.98] shadow-xs cursor-pointer inline-flex items-center gap-1.5"
-              >
-                <Compass className="w-3.5 h-3.5" />
-                <span>Explore All Tools</span>
-              </button>
-            </div>
-          )}
-        </section>
-      )}
-
-      {/* ─── ALL TOOLS VIEW (When All Tools Tab is Active) ─── */}
-      {homeTab === 'all' && (
-        <>
-          {/* Available Tools Category Navigation */}
-          <section className="space-y-1.5">
-            <div className="flex items-center justify-between px-0.5">
-              <div>
-                <h3 className="text-sm font-bold text-gray-900 tracking-tight flex items-center gap-1.5">
-                  <span>Available Tools</span>
-                </h3>
-              </div>
-            </div>
+        </div>
 
             <div className="grid grid-cols-3 gap-2">
               {/* 1. Trading Tools */}
@@ -379,15 +301,28 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               </div>
             </div>
 
-            {/* Horizontal Swipeable Track (Ordered: 1. TV Premium, 2. TV Essential, 3. FXReplay Pro) */}
+            {/* Horizontal Swipeable Track */}
             <div className="flex gap-3 overflow-x-auto pb-2 pt-0.5 -mx-3.5 px-3.5 snap-x snap-mandatory scrollbar-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-              {orderedProducts.map((product) => (
-                <SwipeableProductCard
-                  key={product.id}
-                  product={product}
-                  onView={onViewProduct}
-                />
-              ))}
+              {orderedProducts.map((product) => {
+                const isTVSub = product.id === 'tv-subscription';
+                const isFXSub = product.id === 'fxreplay-subscription';
+
+                return (
+                  <SwipeableProductCard
+                    key={product.id}
+                    product={product}
+                    buttonText={isTVSub || isFXSub ? 'View Plans' : undefined}
+                    onCustomAction={
+                      isTVSub
+                        ? () => onOpenPlans?.('tradingview')
+                        : isFXSub
+                        ? () => onOpenPlans?.('fxreplay')
+                        : undefined
+                    }
+                    onView={onViewProduct}
+                  />
+                );
+              })}
             </div>
           </section>
 
@@ -499,8 +434,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               </p>
             </div>
           </section>
-        </>
-      )}
     </div>
   );
 };

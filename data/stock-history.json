@@ -1,0 +1,32 @@
+[
+  {
+    "id": "hist-1791410505541-v8nyz",
+    "timestamp": "2026-10-07T22:01:45.541Z",
+    "productId": "fxreplay-pro",
+    "planId": "6d",
+    "productName": "FX Replay Pro",
+    "planName": "6 Days",
+    "action": "restore",
+    "quantityDelta": 1,
+    "stockBefore": 3,
+    "stockAfter": 4,
+    "orderNumber": "TEST-ORD-1",
+    "reason": "Test restore",
+    "actor": "system"
+  },
+  {
+    "id": "hist-1791410499969-ggjsz",
+    "timestamp": "2026-10-07T22:01:39.969Z",
+    "productId": "fxreplay-pro",
+    "planId": "6d",
+    "productName": "FX Replay Pro",
+    "planName": "6 Days",
+    "action": "purchase",
+    "quantityDelta": -1,
+    "stockBefore": 4,
+    "stockAfter": 3,
+    "orderNumber": "TEST-ORD-1",
+    "reason": "Customer purchase checkout",
+    "actor": "customer"
+  }
+]

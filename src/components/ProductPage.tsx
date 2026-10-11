@@ -5,23 +5,25 @@ import { ProductPhotoLogo } from './ProductPhotoLogo';
 import { ProductPreviewGallery } from './ProductPreviewGallery';
 import {
   ArrowLeft,
+  ArrowRight,
   Check,
   ShoppingCart,
   ShieldCheck,
   Zap,
   Clock,
-  Star,
+  Share2,
+  HelpCircle,
   LayoutGrid,
   History,
   LineChart,
   Radio,
   ChevronDown,
-  HelpCircle,
 } from 'lucide-react';
 import { triggerHaptic, triggerNotificationHaptic } from '../services/telegram';
 import { formatETB } from '../services/wallet';
 import { toast } from '../services/toast';
-import { isFavorite, toggleFavorite, subscribeToFavorites } from '../services/favorites';
+import { PinButton } from './PinButton';
+import { getPlanStockInfo, canAddToCartPlan, subscribeToStock } from '../services/stock';
 
 interface ProductPageProps {
   product: Product;
@@ -46,84 +48,171 @@ export const ProductPage: React.FC<ProductPageProps> = ({
   onBack,
   onAddToCart,
 }) => {
+  const isDeepCharts = product.id === 'deepcharts';
   const isEssentialFX = product.id === 'fxreplay-pro';
   const isPremiumFX = product.id === 'fxreplay-premium';
-  const isFXReplay = product.brand === 'FXReplay' || isEssentialFX || isPremiumFX;
+  const isFXReplay = product.brand === 'FXReplay' || product.brand === 'FX Replay' || isEssentialFX || isPremiumFX;
 
   // State for optional bundle with Backtesting Lab on Essential Plan
   const [bundleJournal, setBundleJournal] = useState<boolean>(false);
 
-  // FAQs state: open item index and collapse/compact toggle
+  // Live Available Stock State subscription
+  const [, setStockVersion] = useState<number>(0);
+
+  useEffect(() => {
+    const unsubscribe = subscribeToStock(() => {
+      setStockVersion((v) => v + 1);
+    });
+    return unsubscribe;
+  }, []);
+
+  // FAQs state: open item index and collapse/compact toggle (collapsed by default on first visit)
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
-  const [isFaqsCollapsed, setIsFaqsCollapsed] = useState<boolean>(false);
+  const [isFaqsCollapsed, setIsFaqsCollapsed] = useState<boolean>(true);
 
-  const productFaqs = [
-    {
-      q: 'How do I receive my license?',
-      a: 'Your license key and login credentials are automatically generated and sent directly to your Telegram bot within 5 minutes of payment verification.',
-    },
-    {
-      q: 'What markets are supported?',
-      a: 'FXReplay supports all major and minor Forex pairs, Crypto, global Indices (US30, NAS100, SPX500), and Commodities with deep historical tick data.',
-    },
-    {
-      q: 'How long does access last?',
-      a: 'Access remains fully unlocked for the entire length of your chosen pass (6 days, 2 weeks, 1 month, or 3 months) backed by our full duration warranty.',
-    },
-    {
-      q: 'Can I add Backtesting Lab later?',
-      a: 'Yes, you can easily add or bundle the Backtesting Lab add-on at any time from your orders dashboard or by contacting ATH support.',
-    },
-    {
-      q: 'Do I need a trading account?',
-      a: 'No broker or funded trading account is needed. FXReplay is a self-contained web simulator with built-in TradingView charting and execution.',
-    },
-    {
-      q: 'Can I get a refund?',
-      a: 'We provide an instant free replacement or store credit guarantee if you experience any technical activation issue that our team cannot resolve.',
-    },
-  ];
+  const productFaqs = isDeepCharts
+    ? [
+        {
+          q: 'How do I receive my DeepCharts license?',
+          a: 'Your license key and official DeepCharts installer package are generated and delivered directly to your Telegram bot within 5 minutes of verification.',
+        },
+        {
+          q: 'What data feeds are supported?',
+          a: 'DeepCharts natively ingests Market-By-Order (MBO) feeds from Optimus Futures, Rithmic, CQG, dxFeed, and supported prop firm connections.',
+        },
+        {
+          q: 'What is Deep Prints® footprint charting?',
+          a: 'Deep Prints® renders tick-by-tick bid/ask volume clusters directly on each bar, exposing aggressive buyer/seller delta, imbalances, and Value Areas in real time.',
+        },
+        {
+          q: 'Does it include Deep Replay tick backtesting?',
+          a: 'Yes, full tick-by-tick market replay with order book depth and DOM ladder simulation is fully unlocked in all DeepCharts licenses.',
+        },
+        {
+          q: 'Can I use DeepCharts on multiple screens?',
+          a: 'Yes, multi-monitor workspace layouts with fully decoupled footprint charts, DOM ladders, and volume profiles are completely supported.',
+        },
+        {
+          q: 'What warranty is included?',
+          a: 'Every license comes with a 100% full-duration validity warranty, replacement guarantee, and dedicated priority Telegram support.',
+        },
+      ]
+    : isFXReplay
+    ? [
+        {
+          q: 'How do I receive my license?',
+          a: 'Your license key and login credentials are automatically generated and sent directly to your Telegram bot within 5 minutes of payment verification.',
+        },
+        {
+          q: 'What markets are supported?',
+          a: 'FX Replay supports all major and minor Forex pairs, Crypto, global Indices (US30, NAS100, SPX500), and Commodities with deep historical tick data.',
+        },
+        {
+          q: 'How long does access last?',
+          a: 'Access remains fully unlocked for the entire length of your chosen pass (7 days, 2 weeks, 1 month, or 3 months) backed by our full duration warranty.',
+        },
+        {
+          q: 'Can I add Backtesting Lab later?',
+          a: 'Yes, you can easily add or bundle the Backtesting Lab add-on at any time from your orders dashboard or by contacting ATH support.',
+        },
+        {
+          q: 'Do I need a trading account?',
+          a: 'No broker or funded trading account is needed. FX Replay is a self-contained web simulator with built-in TradingView charting and execution.',
+        },
+        {
+          q: 'Can I get a refund?',
+          a: 'We provide an instant free replacement or store credit guarantee if you experience any technical activation issue that our team cannot resolve.',
+        },
+      ]
+    : [
+        {
+          q: 'How do I receive my license?',
+          a: 'Your official credentials or access links are automatically dispatched directly to your Telegram account within 5 minutes of order completion.',
+        },
+        {
+          q: 'Is this an official subscription?',
+          a: 'Yes, all accounts and software licenses provided through ATH Store are genuine and backed by our full validity guarantee.',
+        },
+        {
+          q: 'What devices are supported?',
+          a: 'Access works seamlessly across desktop, browser, tablet, and mobile applications with cloud synchronization.',
+        },
+        {
+          q: 'How does activation support work?',
+          a: 'Our dedicated Telegram assistance team is available 7 days a week to ensure smooth setup and answer any technical questions.',
+        },
+      ];
 
-  // Generate pricing plans based on product
+  // Generate pricing plans based on product (converted to USDT at 198.5 birr)
   let plans: PlanOption[] = [];
-  if (isEssentialFX) {
+  if (isDeepCharts) {
+    plans = [
+      {
+        id: '1m',
+        name: '1 Month',
+        durationLabel: 'Monthly Pro MBO Pass',
+        priceETB: 1850,
+        priceUSD: 9.32,
+        isPopular: true,
+        billingText: 'Billed once • 30 days full MBO & Deep Prints access',
+      },
+      {
+        id: '3m',
+        name: '3 Months',
+        durationLabel: 'Quarterly Pro Pass',
+        priceETB: 4995,
+        priceUSD: 25.16,
+        savingsBadge: 'Save 10%',
+        billingText: 'Billed once • 90 days full MBO & Deep Prints access',
+      },
+      {
+        id: 'annual',
+        name: 'Annual',
+        durationLabel: '12 Months Institutional Pass',
+        priceETB: 16650,
+        priceUSD: 83.88,
+        savingsBadge: 'Save 25% · Best Value',
+        billingText: 'Billed once • 365 days full MBO & Deep Prints access',
+      },
+    ];
+  } else if (isEssentialFX) {
     plans = [
       {
         id: '3m',
         name: '3 Months',
         durationLabel: '3 Months to Prove & Refine Your System',
         priceETB: 2100,
-        priceUSD: 15.0,
+        priceUSD: 10.58,
         savingsBadge: 'Build Your Edge',
-        billingText: 'Every Week • 90 days full access to prove & refine your system',
+        billingText: '90 days full access to prove & refine your system',
       },
       {
         id: '1m',
         name: '1 Month',
-        durationLabel: '30 + 6 Days Complete Pass',
+        durationLabel: '30 + 7 Days Complete Pass',
         priceETB: 800,
-        priceUSD: 5.7,
+        priceUSD: 4.03,
         savingsBadge: 'Popular Choice',
         isPopular: true,
-        billingText: 'Every Week • 36 days full backtesting access',
+        billingText: '37 days full backtesting access',
       },
       {
         id: '2w',
         name: '2 Weeks',
         durationLabel: '14-Day Strategy Pass',
         priceETB: 500,
-        priceUSD: 3.6,
+        priceUSD: 2.52,
         savingsBadge: 'Best Value',
-        billingText: 'Every Week • 14 days full backtesting access',
+        billingText: '14 days full backtesting access',
       },
       {
         id: '6d',
-        name: '6 Days',
+        name: '7 Days',
         durationLabel: 'Sprint Replay Pass',
         priceETB: 250,
-        priceUSD: 1.8,
+        priceUSD: 1.26,
         savingsBadge: 'Strategy Sprint',
-        billingText: 'Every Week • 6 days full backtesting access',
+        billingText: '7 days full backtesting access',
       },
     ];
   } else if (isPremiumFX) {
@@ -131,43 +220,35 @@ export const ProductPage: React.FC<ProductPageProps> = ({
       {
         id: '1m',
         name: '1 Month',
-        durationLabel: 'Private Monthly Access',
-        priceETB: 2700,
-        priceUSD: 19.3,
+        durationLabel: 'Monthly Access',
+        priceETB: 2100,
+        priceUSD: 10.58,
+        savingsBadge: 'Know Your Edge',
         isPopular: true,
-        billingText: 'One email, private and non-shareable access',
-      },
-      {
-        id: '3m',
-        name: '3 Months',
-        durationLabel: 'Private Quarterly Pass',
-        priceETB: 7290,
-        priceUSD: 52.0,
-        savingsBadge: 'Save 10%',
-        billingText: 'Billed once • 90 days private dedicated access',
+        billingText: '30+7 Days dedicated access',
       },
       {
         id: 'annual',
         name: 'Annual',
-        durationLabel: 'Private 12 Months Access',
-        priceETB: 24300,
-        priceUSD: 173.5,
-        savingsBadge: 'Save 25% · Best Value',
-        billingText: 'Billed once • 365 days private dedicated access',
+        durationLabel: '12 Months Access',
+        priceETB: 18600,
+        priceUSD: 93.70,
+        savingsBadge: 'Master Forex Trading',
+        billingText: '365 days dedicated access',
       },
     ];
   } else {
     const baseETB = product.priceETB || 2500;
-    const baseUSD = Math.round((baseETB / 140) * 100) / 100;
+    const baseUSD = Math.round((baseETB / 198.5) * 100) / 100;
 
     const price1mETB = baseETB;
     const price1mUSD = baseUSD;
 
     const price3mETB = Math.round(baseETB * 3 * 0.9);
-    const price3mUSD = Math.round((price3mETB / 140) * 100) / 100;
+    const price3mUSD = Math.round((price3mETB / 198.5) * 100) / 100;
 
     const priceAnnualETB = Math.round(baseETB * 12 * 0.75);
-    const priceAnnualUSD = Math.round((priceAnnualETB / 140) * 100) / 100;
+    const priceAnnualUSD = Math.round((priceAnnualETB / 198.5) * 100) / 100;
 
     plans = [
       {
@@ -211,12 +292,17 @@ export const ProductPage: React.FC<ProductPageProps> = ({
   const selectedPlan = plans.find((p) => p.id === selectedPlanId) || plans[0];
 
   const bundleAddonETB = 350;
-  const bundleAddonUSD = 2.5;
+  const bundleAddonUSD = 1.76;
+
+  const hasBundle = (isEssentialFX || isPremiumFX) && bundleJournal;
+  // Free bundle on Flagship / Premium plan (+350 ETB value included for free)
+  const bundleCostETB = isPremiumFX ? 0 : bundleAddonETB;
+  const bundleCostUSD = isPremiumFX ? 0 : bundleAddonUSD;
 
   const currentPriceETB =
-    selectedPlan.priceETB + (isEssentialFX && bundleJournal ? bundleAddonETB : 0);
+    selectedPlan.priceETB + (hasBundle ? bundleCostETB : 0);
   const currentPriceUSD =
-    selectedPlan.priceUSD + (isEssentialFX && bundleJournal ? bundleAddonUSD : 0);
+    selectedPlan.priceUSD + (hasBundle ? bundleCostUSD : 0);
 
   const fxReplayBenefits = [
     {
@@ -245,6 +331,36 @@ export const ProductPage: React.FC<ProductPageProps> = ({
       icon: Radio,
     },
   ];
+
+  const deepChartsBenefits = [
+    {
+      title: 'Deep Prints® Footprint',
+      description: 'Tick-by-tick bid/ask volume clusters with delta imbalances and absorption markers.',
+      icon: LineChart,
+    },
+    {
+      title: 'Market-By-Order (MBO)',
+      description: 'Institutional L3 queue tracking with iceberg order execution analytics.',
+      icon: LayoutGrid,
+    },
+    {
+      title: 'Multi-Layer Volume Profile',
+      description: 'Composite, session, and periodic profiles with automatic POC and Value Area.',
+      icon: Radio,
+    },
+    {
+      title: 'Deep Replay Simulator',
+      description: 'True historical tick simulation with variable speed order book replay.',
+      icon: History,
+    },
+    {
+      title: 'Ultra-Low Latency Feeds',
+      description: 'Direct high-speed connection to Rithmic, CQG, dxFeed, and supported prop accounts.',
+      icon: Zap,
+    },
+  ];
+
+  const activeBenefits = isDeepCharts ? deepChartsBenefits : fxReplayBenefits;
 
   const fxComparisonFeatures = [
     {
@@ -276,7 +392,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
       m3: true,
     },
     {
-      name: 'Automated journaling',
+      name: 'Upto 5 Device',
       d6: false,
       w2: false,
       m1: true,
@@ -298,22 +414,55 @@ export const ProductPage: React.FC<ProductPageProps> = ({
     },
   ];
 
-  const [isLiked, setIsLiked] = useState<boolean>(() => isFavorite(product.id));
+  const handleShareProduct = async () => {
+    triggerHaptic('light');
+    const shareUrl = window.location.href;
+    const shareTitle = `${product.name} | Abyssinia Trading Hub`;
+    const shareText = `Check out ${product.name} on Abyssinia Trading Hub (${product.startingPricePlaceholder || formatETB(product.priceETB)})`;
 
-  useEffect(() => {
-    const unsubscribe = subscribeToFavorites((favIds) => {
-      setIsLiked(favIds.includes(product.id));
-    });
-    return unsubscribe;
-  }, [product.id]);
+    // 1. Try native Web Share API
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({
+          title: shareTitle,
+          text: shareText,
+          url: shareUrl,
+        });
+        toast.success('Shared', `${product.name} link shared.`);
+        return;
+      } catch (err: any) {
+        if (err.name === 'AbortError') return;
+      }
+    }
 
-  const handleToggleFavorite = () => {
-    triggerHaptic('medium');
-    const nowSaved = toggleFavorite(product.id);
-    if (nowSaved) {
-      toast.success('Added to Saved', `${product.name} added to your saved list.`);
+    // 2. Direct Telegram Share Fallback for Telegram contacts
+    const tgShareUrl = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`;
+    const tgWebApp = (window as any).Telegram?.WebApp;
+
+    if (tgWebApp?.openTelegramLink) {
+      tgWebApp.openTelegramLink(tgShareUrl);
+      toast.success('Opening Telegram', 'Select a contact to share with.');
+    } else if (navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        toast.success('Link Copied', 'Product link copied to clipboard.');
+      } catch {
+        const a = document.createElement('a');
+        a.href = tgShareUrl;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
     } else {
-      toast.info('Removed from Saved', `${product.name} removed from your saved list.`);
+      const a = document.createElement('a');
+      a.href = tgShareUrl;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     }
   };
 
@@ -344,16 +493,38 @@ export const ProductPage: React.FC<ProductPageProps> = ({
     setSelectedPlanId(planId);
   };
 
+  const selectedPlanStock = getPlanStockInfo(product.id, selectedPlan.id);
+  const isCurrentPlanOut = selectedPlanStock.isOut;
+
   const handleAddToCartClick = () => {
+    if (isCurrentPlanOut) {
+      triggerNotificationHaptic('error');
+      toast.error('Out of Stock', `${selectedPlan.name} is currently out of stock. Please select another duration.`);
+      return;
+    }
+    const check = canAddToCartPlan(product.id, selectedPlan.id, 0, 1);
+    if (!check.allowed) {
+      triggerNotificationHaptic('error');
+      toast.error('Insufficient Stock', check.message || 'Cannot add to cart.');
+      return;
+    }
     triggerNotificationHaptic('success');
-    const bundleSuffix = isEssentialFX && bundleJournal ? ' + Backtesting Lab' : '';
+    const bundleSuffix = hasBundle
+      ? isPremiumFX
+        ? ' + Backtesting Lab (Free)'
+        : ' + Backtesting Lab'
+      : '';
     const itemTitle = `${product.name} — ${product.tier || selectedPlan.name} (${selectedPlan.name})${bundleSuffix}`;
 
     const configuredProduct: Product = {
       ...product,
-      id: `${product.id}-${selectedPlan.id}${isEssentialFX && bundleJournal ? '-bundle' : ''}`,
+      id: `${product.id}-${selectedPlan.id}${hasBundle ? '-bundle' : ''}`,
       name: itemTitle,
       priceETB: currentPriceETB,
+      parentProductId: product.id,
+      selectedPlanId: selectedPlan.id,
+      stock: selectedPlanStock.stock,
+      maxStock: selectedPlanStock.stock,
     };
     onAddToCart(configuredProduct);
     toast.success('Added to Cart', `${itemTitle} has been added to your cart.`);
@@ -385,24 +556,19 @@ export const ProductPage: React.FC<ProductPageProps> = ({
             </span>
           )}
 
-          {/* Star Bookmark Button */}
+          {/* Share Button (Web Share API with Telegram contacts fallback) */}
           <button
             type="button"
-            onClick={handleToggleFavorite}
-            className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all shadow-2xs border cursor-pointer active:scale-90 ${
-              isLiked
-                ? 'bg-amber-50 border-amber-200 text-amber-500'
-                : 'bg-white border-stone-200 text-stone-400 hover:text-amber-500'
-            }`}
-            aria-label={isLiked ? 'Remove from Saved' : 'Save to Favorites'}
-            title={isLiked ? 'Remove from Saved' : 'Save to Favorites'}
+            onClick={handleShareProduct}
+            className="w-8 h-8 rounded-xl flex items-center justify-center transition-all shadow-2xs border bg-white border-stone-200 text-stone-600 hover:text-stone-950 hover:bg-stone-50 cursor-pointer active:scale-90"
+            aria-label="Share product"
+            title="Share with Telegram contacts"
           >
-            <Star
-              className={`w-4 h-4 transition-transform ${
-                isLiked ? 'fill-amber-400 text-amber-500 scale-110' : 'stroke-[2]'
-              }`}
-            />
+            <Share2 className="w-4 h-4 stroke-[1.8]" />
           </button>
+
+          {/* Clean Pin Button */}
+          <PinButton productId={product.id} size="default" variant="header" />
         </div>
       </div>
 
@@ -414,7 +580,11 @@ export const ProductPage: React.FC<ProductPageProps> = ({
             {/* Left & Middle: Product Logo + Info */}
             <div className="flex items-center gap-3 min-w-0 flex-1">
               {/* Product Logo / Visual (Left) */}
-              <div className="shrink-0 w-12 h-12 sm:w-13 sm:h-13 rounded-xl bg-black border border-stone-800 p-1 flex items-center justify-center overflow-hidden shadow-2xs ring-1 ring-[#721428]/25">
+              <div className={`shrink-0 w-12 h-12 sm:w-13 sm:h-13 rounded-xl p-1 flex items-center justify-center overflow-hidden shadow-2xs ${
+                isDeepCharts || product.id === 'abyssinia-journal' || product.id === 'notion-template-journal' || product.id === 'google-ai'
+                  ? 'bg-white border border-stone-200 ring-1 ring-stone-200/80'
+                  : 'bg-black border border-stone-800 ring-1 ring-[#721428]/25'
+              }`}>
                 <div className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center">
                   <ProductPhotoLogo
                     productId={product.id}
@@ -426,13 +596,13 @@ export const ProductPage: React.FC<ProductPageProps> = ({
 
               {/* Product Info (Middle) */}
               <div className="min-w-0 flex-1">
-                {product.badge && (
-                  <div className="mb-0.5 leading-none">
+                <div className="flex items-center gap-1.5 mb-0.5 leading-none flex-wrap">
+                  {product.badge && (
                     <span className="inline-flex items-center px-1.5 py-[2px] rounded text-[9.5px] font-bold tracking-tight bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]">
                       {product.badge}
                     </span>
-                  </div>
-                )}
+                  )}
+                </div>
                 <h1 className="text-base sm:text-lg font-black text-stone-950 tracking-tight leading-snug truncate uppercase">
                   {product.name}
                 </h1>
@@ -441,9 +611,11 @@ export const ProductPage: React.FC<ProductPageProps> = ({
                   <span className="text-[#721428] font-bold">
                     {formatETB(product.priceETB)}
                   </span>
-                  <span className="text-stone-400 font-normal ml-1">
-                    (~${(product.priceETB / 140).toFixed(1)} USD)
-                  </span>
+                  {product.priceETB > 0 && (
+                    <span className="text-stone-400 font-normal ml-1">
+                      (~{(product.priceETB / 198.5).toFixed(2)} USDT)
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -463,7 +635,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
                 aria-label="Choose plan options"
               >
                 <span>Choose Plan</span>
-                <ChevronDown className="w-3.5 h-3.5 stroke-[2.5]" />
+                <ArrowRight className="w-3.5 h-3.5 stroke-[2.2]" />
               </button>
             </div>
           </div>
@@ -473,17 +645,17 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         <ProductPreviewGallery product={product} />
       </div>
 
-      {/* 5. Why FXReplay Pro? (Horizontal Minimal & Compact Benefit Cards with Swipe Hint & Dots) */}
-      {isEssentialFX && (
+      {/* 5. Why FX Replay Pro? / Why DeepCharts? (Horizontal Minimal & Compact Benefit Cards) */}
+      {(isEssentialFX || isDeepCharts) && (
         <div className="bg-white rounded-2xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs space-y-3 relative overflow-hidden">
           <div className="flex items-center justify-between">
             <h3 className="text-xs sm:text-sm font-bold text-stone-900 tracking-tight">
-              Why FXReplay Pro?
+              {isDeepCharts ? 'Why DeepCharts?' : 'Why FX Replay Pro?'}
             </h3>
 
             {/* Dots indicator for swipe awareness */}
             <div className="flex items-center gap-1.5" title="Swipe to view all highlights">
-              {fxReplayBenefits.map((_, i) => (
+              {activeBenefits.map((_, i) => (
                 <button
                   key={i}
                   type="button"
@@ -506,7 +678,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
               onScroll={handleHighlightsScroll}
               className="flex items-stretch gap-2.5 overflow-x-auto -mx-1 px-1 snap-x snap-mandatory scroll-smooth no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
             >
-              {fxReplayBenefits.map((benefit, idx) => {
+              {activeBenefits.map((benefit, idx) => {
                 const IconComponent = benefit.icon;
                 return (
                   <div
@@ -532,7 +704,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
             </div>
 
             {/* Subtle right gradient fade hint for swipeability on mobile */}
-            {activeHighlightIndex < fxReplayBenefits.length - 1 && (
+            {activeHighlightIndex < activeBenefits.length - 1 && (
               <div className="pointer-events-none absolute right-0 top-0 bottom-2 w-8 bg-gradient-to-l from-white via-white/70 to-transparent sm:hidden" />
             )}
           </div>
@@ -547,12 +719,9 @@ export const ProductPage: React.FC<ProductPageProps> = ({
               What's Included
             </h3>
             <p className="text-[10px] text-stone-500 mt-0.5">
-              Tap any column to select that pass
+              {isEssentialFX ? 'Tap any column to select that pass' : 'Everything included with your license'}
             </p>
           </div>
-          <span className="text-[10px] font-semibold text-[#721428] bg-[#FAF0F2] border border-[#F0D5DA] px-2 py-0.5 rounded-full">
-            Plan Comparison
-          </span>
         </div>
 
         {isEssentialFX ? (
@@ -564,7 +733,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
                     Features
                   </th>
                   {[
-                    { id: '6d', labelShort: '6D', labelLong: '6 Days' },
+                    { id: '6d', labelShort: '7D', labelLong: '7 Days' },
                     { id: '2w', labelShort: '2W', labelLong: '2 Weeks' },
                     { id: '1m', labelShort: '1M', labelLong: '1 Month' },
                     { id: '3m', labelShort: '3M', labelLong: '3 Months' },
@@ -626,7 +795,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
                       <td
                         onClick={() => {
                           handleSelectPlan('6d');
-                          toast.info('Plan Selected', 'Switched to 6 Days');
+                          toast.info('Plan Selected', 'Switched to 7 Days');
                         }}
                         className={`py-2.5 text-center cursor-pointer transition-colors ${
                           selectedPlanId === '6d' ? 'bg-[#FAF0F2]/50' : ''
@@ -698,10 +867,10 @@ export const ProductPage: React.FC<ProductPageProps> = ({
           <ShieldCheck className="w-4.5 h-4.5 text-amber-600 shrink-0 mt-0.5" />
           <div className="text-xs space-y-0.5">
             <div className="font-extrabold text-amber-900">
-              One Email, Private &amp; Non-Shareable Access
+              Your Own Email and Password
             </div>
             <div className="text-amber-800 text-[11px] leading-snug">
-              Guaranteed 100% private session. Dedicated account assigned exclusively to your single designated email address.
+              Dedicated credentials registered to your personal email and password. Upto 5 devices supported with shareable access.
             </div>
           </div>
         </div>
@@ -722,13 +891,19 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         <div className="space-y-2">
           {plans.map((plan) => {
             const isSelected = plan.id === selectedPlanId;
+            const planStock = getPlanStockInfo(product.id, plan.id);
+
             return (
               <div
                 key={plan.id}
                 onClick={() => handleSelectPlan(plan.id)}
                 className={`relative rounded-xl p-3.5 border transition-all cursor-pointer flex items-center justify-between select-none ${
                   isSelected
-                    ? 'border-[#721428] bg-[#FAF0F2]/50 shadow-xs'
+                    ? planStock.isOut
+                      ? 'border-stone-400 bg-stone-100/70 shadow-xs'
+                      : 'border-[#721428] bg-[#FAF0F2]/50 shadow-xs'
+                    : planStock.isOut
+                    ? 'border-stone-200 bg-stone-50/60 hover:bg-stone-100/50 opacity-85'
                     : 'border-stone-200 bg-white hover:border-stone-300 hover:bg-stone-50/60'
                 }`}
               >
@@ -738,7 +913,9 @@ export const ProductPage: React.FC<ProductPageProps> = ({
                   <div
                     className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-colors ${
                       isSelected
-                        ? 'bg-[#721428] text-white'
+                        ? planStock.isOut
+                          ? 'bg-stone-500 text-white'
+                          : 'bg-[#721428] text-white'
                         : 'border border-stone-300 bg-white text-transparent'
                     }`}
                   >
@@ -750,10 +927,31 @@ export const ProductPage: React.FC<ProductPageProps> = ({
                       <span className="text-xs sm:text-sm font-bold text-stone-900 leading-tight">
                         {plan.name}
                       </span>
+
+                      {/* Real current availability indicator for each purchasable plan */}
+                      {planStock.isOut ? (
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-stone-200 text-stone-700 border border-stone-300">
+                          Out of Stock
+                        </span>
+                      ) : planStock.isLow ? (
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-amber-50 text-amber-900 border border-amber-200/90 flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                          <span>{planStock.stock} available</span>
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-md bg-stone-100 text-stone-600 border border-stone-200/80">
+                          {planStock.stock} available
+                        </span>
+                      )}
+
                       {plan.savingsBadge && (
                         <span
                           className={`text-[9.5px] font-bold px-1.5 py-0.5 rounded-full ${
-                            plan.isPopular
+                            plan.savingsBadge === 'Know Your Edge' ||
+                            plan.savingsBadge === 'Master Forex Trading' ||
+                            plan.savingsBadge.includes('Flagship')
+                              ? 'bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]'
+                              : plan.isPopular
                               ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
                               : 'bg-amber-100 text-amber-800 border border-amber-200'
                           }`}
@@ -774,7 +972,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
                     {formatETB(plan.priceETB)}
                   </div>
                   <div className="text-[10.5px] font-medium text-stone-500">
-                    ~${plan.priceUSD.toFixed(2)} USD
+                    ~${plan.priceUSD.toFixed(2)} USDT
                   </div>
                 </div>
               </div>
@@ -782,8 +980,8 @@ export const ProductPage: React.FC<ProductPageProps> = ({
           })}
         </div>
 
-        {/* Optional Bundle with Backtesting Lab for Essential Plan */}
-        {isEssentialFX && (
+        {/* Optional Bundle with Backtesting Lab for Essential & Flagship Plans */}
+        {(isEssentialFX || isPremiumFX) && (
           <div className="p-3.5 rounded-xl border border-[#721428]/25 bg-[#FCFAF7] transition-colors">
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-start gap-2.5">
@@ -802,12 +1000,18 @@ export const ProductPage: React.FC<ProductPageProps> = ({
                     <span className="text-xs font-bold text-stone-900">
                       Bundle with Backtesting Lab
                     </span>
-                    <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]">
-                      +{formatETB(bundleAddonETB)}
-                    </span>
+                    {isPremiumFX ? (
+                      <span className="px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                        Free
+                      </span>
+                    ) : (
+                      <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]">
+                        +{formatETB(bundleAddonETB)}
+                      </span>
+                    )}
                   </div>
                   <p className="text-[11px] text-stone-600 mt-1 leading-snug">
-                    Includes official Backtesting Lab with historical trade analytics and metrics tracking alongside your FXReplay sessions.
+                    Includes official Backtesting Lab with historical trade analytics and metrics tracking alongside your FX Replay sessions.
                   </p>
                 </label>
               </div>
@@ -823,10 +1027,10 @@ export const ProductPage: React.FC<ProductPageProps> = ({
             </span>
             <span className="font-semibold text-stone-900">
               {selectedPlan.name} ({selectedPlan.durationLabel})
-              {isEssentialFX && bundleJournal ? ' + Backtesting Lab' : ''}
+              {hasBundle ? (isPremiumFX ? ' + Backtesting Lab (Free)' : ' + Backtesting Lab') : ''}
             </span>
             <span className="text-[10px] text-stone-500 block mt-0.5">
-              {selectedPlan.billingText.replace(/Billed once/gi, 'Every Week')}
+              {selectedPlan.billingText.replace(/Every Week\s*•?\s*/gi, '').replace(/Billed once\s*•?\s*/gi, '')}
             </span>
           </div>
           <div className="text-right">
@@ -834,7 +1038,7 @@ export const ProductPage: React.FC<ProductPageProps> = ({
               {formatETB(currentPriceETB)}
             </div>
             <div className="text-[10.5px] font-medium text-stone-500">
-              ~${currentPriceUSD.toFixed(2)} USD
+              ~${currentPriceUSD.toFixed(2)} USDT
             </div>
           </div>
         </div>
@@ -900,74 +1104,93 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         </div>
       </div>
 
-      {/* 9. Frequently Asked Questions (Clean Framer Motion Accordion) */}
-      <div className="bg-white rounded-2xl border border-stone-200/90 shadow-2xs overflow-hidden select-none">
-        {/* FAQ Header with Hide/Compact Toggle (No subtitle) */}
-        <div className="p-3 sm:p-3.5 flex items-center justify-between gap-2.5 border-b border-stone-100">
+      {/* 9. FAQs (Premium Minimalist Card Accordion) */}
+      <div className="bg-white rounded-2xl border border-stone-200/80 shadow-[0_2px_10px_rgba(0,0,0,0.025)] overflow-hidden select-none">
+        {/* Header: Clean & Minimal with Icon & Compact/Expand Control */}
+        <div
+          onClick={() => {
+            triggerHaptic('light');
+            setIsFaqsCollapsed(!isFaqsCollapsed);
+          }}
+          className={`px-4 py-3 sm:px-4.5 sm:py-3.5 flex items-center justify-between gap-3 transition-colors cursor-pointer bg-stone-50/40 hover:bg-stone-50/70 select-none ${
+            !isFaqsCollapsed ? 'border-b border-stone-100' : ''
+          }`}
+        >
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-lg bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] flex items-center justify-center shrink-0">
+            <div className="w-5.5 h-5.5 rounded-lg bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA]/80 flex items-center justify-center shrink-0 shadow-2xs">
               <HelpCircle className="w-3.5 h-3.5 stroke-[2]" />
             </div>
-            <h4 className="text-xs font-bold text-stone-900 leading-tight">
-              Frequently Asked Questions
+            <h4 className="text-xs sm:text-[13px] font-bold text-stone-900 tracking-tight">
+              FAQs
             </h4>
           </div>
 
-          {/* Hide / Expand Compact Toggle Button */}
+          {/* Minimal Ghost Toggle Control */}
           <button
             type="button"
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               triggerHaptic('light');
               setIsFaqsCollapsed(!isFaqsCollapsed);
             }}
-            className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-stone-100/90 hover:bg-stone-200/70 active:bg-stone-200 text-stone-700 text-[11px] font-bold transition-colors cursor-pointer"
-            aria-label={isFaqsCollapsed ? 'Show FAQs' : 'Hide FAQs'}
+            className="group/toggle inline-flex items-center gap-1.5 text-[11px] font-medium text-stone-500 hover:text-stone-900 active:text-stone-950 transition-colors cursor-pointer select-none"
+            aria-label={isFaqsCollapsed ? 'Expand FAQs' : 'Collapse FAQs'}
           >
-            <span>{isFaqsCollapsed ? 'Show FAQs' : 'Hide / Compact'}</span>
+            <span>{isFaqsCollapsed ? 'Expand' : 'Collapse'}</span>
             <motion.div
-              animate={{ rotate: isFaqsCollapsed ? -90 : 0 }}
+              animate={{ rotate: isFaqsCollapsed ? 0 : 180 }}
               transition={{ duration: 0.2, ease: 'easeInOut' }}
             >
-              <ChevronDown className="w-3 h-3" />
+              <ChevronDown className="w-3 h-3 text-stone-400 group-hover/toggle:text-stone-700 transition-colors" />
             </motion.div>
           </button>
         </div>
 
-        {/* Collapsible FAQ Content with Framer Motion */}
+        {/* Collapsible Card Body */}
         <AnimatePresence initial={false}>
-          {!isFaqsCollapsed ? (
+          {!isFaqsCollapsed && (
             <motion.div
-              key="faq-list"
+              key="faq-card-content"
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] }}
-              className="overflow-hidden divide-y divide-stone-100 p-1.5 sm:p-2"
+              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+              className="overflow-hidden divide-y divide-stone-100"
             >
               {productFaqs.map((faq, idx) => {
                 const isOpen = openFaqIndex === idx;
                 return (
-                  <div key={idx} className="rounded-xl transition-colors overflow-hidden">
+                  <div key={idx} className="group px-4 sm:px-4.5 py-3 hover:bg-stone-50/50 transition-colors">
+                    {/* Question Row */}
                     <button
                       type="button"
                       onClick={() => {
                         triggerHaptic('light');
                         setOpenFaqIndex(isOpen ? null : idx);
                       }}
-                      className="w-full py-2 px-2.5 flex items-center justify-between text-left gap-2 hover:bg-stone-50/70 rounded-lg transition-colors cursor-pointer"
+                      className="w-full flex items-center justify-between text-left gap-3.5 cursor-pointer group/q"
                     >
-                      <span className="text-xs font-semibold text-stone-900 leading-snug">
+                      <span
+                        className={`text-[12.5px] sm:text-[13px] font-semibold leading-snug tracking-tight transition-colors ${
+                          isOpen ? 'text-stone-950' : 'text-stone-800 group-hover/q:text-stone-950'
+                        }`}
+                      >
                         {faq.q}
                       </span>
-                      <motion.span
+                      {/* Subtle, Thin Animated Chevron Icon */}
+                      <motion.div
                         animate={{ rotate: isOpen ? 180 : 0 }}
-                        transition={{ duration: 0.2, ease: 'easeInOut' }}
-                        className="w-4.5 h-4.5 rounded-md bg-stone-100 text-stone-500 flex items-center justify-center shrink-0"
+                        transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                        className={`shrink-0 flex items-center justify-center transition-colors ${
+                          isOpen ? 'text-stone-800' : 'text-stone-400 group-hover/q:text-stone-600'
+                        }`}
+                        aria-hidden="true"
                       >
-                        <ChevronDown className={`w-3 h-3 ${isOpen ? 'text-[#721428]' : ''}`} />
-                      </motion.span>
+                        <ChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[1.25]" />
+                      </motion.div>
                     </button>
 
+                    {/* Answer Row */}
                     <AnimatePresence initial={false}>
                       {isOpen && (
                         <motion.div
@@ -975,35 +1198,18 @@ export const ProductPage: React.FC<ProductPageProps> = ({
                           initial={{ height: 0, opacity: 0 }}
                           animate={{ height: 'auto', opacity: 1 }}
                           exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.22, ease: [0.25, 0.1, 0.25, 1] }}
+                          transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
                           className="overflow-hidden"
                         >
-                          <div className="px-2.5 pb-2.5 pt-0.5 text-[11px] text-stone-600 leading-relaxed font-normal">
-                            <div className="p-2 rounded-lg bg-[#FAF0F2]/45 border border-[#F0D5DA]/70 text-stone-700">
-                              {faq.a}
-                            </div>
-                          </div>
+                          <p className="pt-2 text-[11.5px] sm:text-xs text-stone-600 leading-relaxed font-normal pr-3 sm:pr-4">
+                            {faq.a}
+                          </p>
                         </motion.div>
                       )}
                     </AnimatePresence>
                   </div>
                 );
               })}
-            </motion.div>
-          ) : (
-            <motion.div
-              key="faq-collapsed-hint"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.15 }}
-              onClick={() => {
-                triggerHaptic('light');
-                setIsFaqsCollapsed(false);
-              }}
-              className="p-2.5 text-center text-[11px] text-stone-500 bg-stone-50/60 hover:bg-stone-50 cursor-pointer transition-colors"
-            >
-              <span>FAQs are compacted. Tap to reveal answers.</span>
             </motion.div>
           )}
         </AnimatePresence>
@@ -1014,20 +1220,31 @@ export const ProductPage: React.FC<ProductPageProps> = ({
         <div className="max-w-md mx-auto pointer-events-auto">
           <button
             type="button"
-            onClick={handleAddToCartClick}
-            className="w-full h-12 rounded-xl bg-[#721428] hover:bg-[#5A0E1E] active:bg-[#470A17] text-white font-bold text-xs sm:text-sm flex items-center justify-between px-4 transition-all active:scale-[0.98] shadow-[0_8px_24px_rgba(114,20,40,0.35)] cursor-pointer select-none"
+            onClick={isCurrentPlanOut ? undefined : handleAddToCartClick}
+            disabled={isCurrentPlanOut}
+            className={`w-full h-12 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-between px-4 transition-all select-none ${
+              isCurrentPlanOut
+                ? 'bg-stone-300 text-stone-500 cursor-not-allowed shadow-none'
+                : 'bg-[#721428] hover:bg-[#5A0E1E] active:bg-[#470A17] text-white shadow-[0_8px_24px_rgba(114,20,40,0.35)] cursor-pointer active:scale-[0.98]'
+            }`}
           >
             <div className="flex items-center gap-2">
               <ShoppingCart className="w-4.5 h-4.5" strokeWidth={2} />
               <span>
-                Add to Cart • {selectedPlan.name}
-                {isEssentialFX && bundleJournal ? ' + Bundle' : ''}
+                {isCurrentPlanOut ? (
+                  `Out of Stock • ${selectedPlan.name}`
+                ) : (
+                  <>
+                    Add to Cart • {selectedPlan.name}
+                    {hasBundle ? ' + Bundle' : ''}
+                  </>
+                )}
               </span>
             </div>
             <div className="flex items-center gap-1.5 font-extrabold tabular-nums">
               <span>{formatETB(currentPriceETB)}</span>
-              <span className="text-white/70 text-[11px] font-normal">
-                (~${currentPriceUSD.toFixed(2)})
+              <span className={isCurrentPlanOut ? 'text-stone-400 text-[11px] font-normal' : 'text-white/70 text-[11px] font-normal'}>
+                (~${currentPriceUSD.toFixed(2)} USDT)
               </span>
             </div>
           </button>

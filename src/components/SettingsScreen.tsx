@@ -174,7 +174,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({ onBack }) => {
                 Promotions &amp; Flash Stock
               </span>
               <span className="text-[10.5px] text-gray-500">
-                Alerts when limited TradingView or FXReplay slots open
+                Alerts when limited TradingView or FX Replay slots open
               </span>
             </div>
 
@@ -208,14 +208,41 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({ onBack }) => {
               <ShieldCheck className="w-3.5 h-3.5 text-[#721428]" />
             </div>
             <p className="text-[11px] text-[#721428] font-mono font-bold">
-              ATH App v2.4.0 <span className="text-gray-400 font-normal">· Build 2026.09</span>
+              ATH App v2.4.1 <span className="text-gray-400 font-normal">· Latest Update</span>
             </p>
           </div>
         </div>
 
+        {/* Force Update / Clear Cache Button */}
+        <div className="p-3 rounded-xl bg-stone-50 border border-stone-200/80 flex items-center justify-between gap-3">
+          <div>
+            <span className="text-xs font-bold text-stone-900 block">
+              Sync Mini App Update
+            </span>
+            <span className="text-[10.5px] text-stone-500 block">
+              Purge Telegram in-app cache and load latest updates
+            </span>
+          </div>
+          <button
+            onClick={() => {
+              triggerHaptic('medium');
+              if (typeof window !== 'undefined') {
+                if ('caches' in window) {
+                  caches.keys().then((names) => names.forEach((n) => caches.delete(n)));
+                }
+                const cleanUrl = window.location.origin + window.location.pathname;
+                window.location.replace(`${cleanUrl}?v=${Date.now()}`);
+              }
+            }}
+            className="px-3 py-1.5 rounded-xl bg-[#721428] hover:bg-[#5A0E1E] active:bg-[#470A17] text-white text-xs font-bold transition-all shadow-xs shrink-0 cursor-pointer flex items-center gap-1.5 active:scale-95"
+          >
+            <span>Update Now</span>
+          </button>
+        </div>
+
         <div className="p-3 rounded-xl bg-gray-50 border border-gray-150 text-[11px] text-gray-600 leading-relaxed space-y-1.5">
           <p>
-            <strong className="text-gray-900">Abyssinia Trading Hub (ATH)</strong> is Ethiopia’s premier digital trading resource ecosystem. We deliver verified TradingView Pro/Premium licenses, FXReplay backtesting suites, algorithmic tools, and secure P2P payment solutions.
+            <strong className="text-gray-900">Abyssinia Trading Hub (ATH)</strong> is Ethiopia’s premier digital trading resource ecosystem. We deliver verified TradingView Pro/Premium licenses, FX Replay backtesting suites, algorithmic tools, and secure P2P payment solutions.
           </p>
           <p className="text-gray-500">
             Built for professional traders who demand precision, instant delivery, and zero downtime.

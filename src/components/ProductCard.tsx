@@ -1,8 +1,10 @@
 import React from 'react';
 import { Product } from '../types';
 import { ProductBrandVisual } from './ProductBrandVisual';
+import { PinButton } from './PinButton';
 import { ArrowRight, Check } from 'lucide-react';
 import { triggerHaptic } from '../services/telegram';
+import { setActiveCard, getActiveCard, isPinned } from '../services/pin';
 
 interface ProductCardProps {
   product: Product;
@@ -19,22 +21,46 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const isOptionsCTA = ctaVariant === 'options';
 
+  const handleCardClick = (e: React.MouseEvent) => {
+    const isTouchOnly =
+      typeof window !== 'undefined' &&
+      window.matchMedia &&
+      !window.matchMedia('(hover: hover)').matches;
+
+    if (isTouchOnly) {
+      const currentActive = getActiveCard();
+      const isCardActive = currentActive === product.id;
+
+      if (!isCardActive && !isPinned(product.id)) {
+        setActiveCard(product.id);
+        triggerHaptic('soft');
+        return;
+      }
+    }
+
+    triggerHaptic('light');
+    onView(product);
+  };
+
   return (
     <div
-      onClick={() => {
-        triggerHaptic('light');
-        onView(product);
-      }}
+      onClick={handleCardClick}
+      data-product-card="true"
       className="group bg-white border border-gray-200/90 rounded-xl overflow-hidden shadow-xs hover:border-gray-300 hover:shadow-sm transition-all duration-150 cursor-pointer flex flex-col justify-between"
     >
       {/* 1. Large visual / logo area (Style C with real logos) */}
-      <ProductBrandVisual product={product} />
+      <div className="relative">
+        <ProductBrandVisual product={product} />
+        <div className="absolute top-2.5 right-2.5 z-10">
+          <PinButton productId={product.id} variant="card" />
+        </div>
+      </div>
 
       {/* 2. Card Content Body */}
       <div className="p-4 flex-1 flex flex-col justify-between">
         <div>
           {/* Header Row: Badge & Brand */}
-          <div className="flex items-center justify-between gap-2 mb-1.5">
+          <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
             <span className="text-[10.5px] font-bold text-gray-700 bg-gray-100 px-2 py-0.5 rounded">
               {product.brand}
             </span>

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "ath_7638499069",
+    "telegramId": 7638499069,
+    "firstName": "ΛBYSSIПIΛ",
+    "lastName": "VΣПDOR",
+    "username": "abyssiniavendor",
+    "languageCode": "en",
+    "createdAt": "2026-10-08T14:35:00.000Z",
+    "updatedAt": "2026-10-08T14:41:32.081Z",
+    "lastLoginAt": "2026-10-08T14:41:32.081Z",
+    "status": "active",
+    "role": "admin",
+    "orderCount": 0,
+    "totalSpentETB": 0
+  },
+  {
+    "id": "ath_984572019",
+    "telegramId": 984572019,
+    "firstName": "Dave",
+    "lastName": "Alf",
+    "username": "davealf436",
+    "languageCode": "en",
+    "createdAt": "2026-10-07T22:37:55.363Z",
+    "updatedAt": "2026-10-11T04:30:27.718Z",
+    "lastLoginAt": "2026-10-11T04:30:27.718Z",
+    "status": "active",
+    "role": "customer",
+    "orderCount": 0,
+    "totalSpentETB": 0
+  }
+]

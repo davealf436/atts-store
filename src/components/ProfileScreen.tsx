@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   ArrowLeft, 
   ShieldCheck, 
@@ -6,10 +6,13 @@ import {
   Check, 
   CheckCircle,
   Wallet,
-  ArrowRight
+  ArrowRight,
+  Calendar,
 } from 'lucide-react';
 import { triggerHaptic, getInitialTelegramUser } from '../services/telegram';
 import { getWalletState, formatETB, etbToUsdt } from '../services/wallet';
+import { getCurrentAccount, subscribeToAuth } from '../services/auth';
+import { AthAccount } from '../types';
 
 interface ProfileScreenProps {
   onBack: () => void;
@@ -21,9 +24,24 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
   onBack,
   onNavigateToWallet,
 }) => {
-  const user = getInitialTelegramUser();
+  const fallbackUser = getInitialTelegramUser();
+  const [account, setAccount] = useState<AthAccount | null>(() => getCurrentAccount());
   const wallet = getWalletState();
   const [copiedField, setCopiedField] = useState<string | null>(null);
+
+  useEffect(() => {
+    setAccount(getCurrentAccount());
+    const unsubscribe = subscribeToAuth((_state, authAccount) => {
+      setAccount(authAccount);
+    });
+    return unsubscribe;
+  }, []);
+
+  const telegramId = account?.telegramId ?? fallbackUser.id;
+  const firstName = account?.firstName ?? fallbackUser.first_name;
+  const lastName = account?.lastName ?? fallbackUser.last_name;
+  const username = account?.username ?? fallbackUser.username;
+  const photoUrl = account?.photoUrl ?? fallbackUser.photo_url;
 
   const handleCopy = (text: string, fieldName: string) => {
     triggerHaptic('light');
@@ -31,6 +49,14 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
     setCopiedField(fieldName);
     setTimeout(() => setCopiedField(null), 2000);
   };
+
+  const formattedDate = account?.createdAt
+    ? new Date(account.createdAt).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      })
+    : 'Active Session';
 
   return (
     <div className="space-y-4 pb-6 select-none animate-in fade-in duration-150">
@@ -61,15 +87,15 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
         <div className="flex items-center gap-3.5">
           {/* Telegram Profile Photo or Initial Avatar */}
           <div className="relative shrink-0">
-            {user.photo_url ? (
+            {photoUrl ? (
               <img
-                src={user.photo_url}
-                alt={user.first_name}
+                src={photoUrl}
+                alt={firstName}
                 className="w-16 h-16 rounded-2xl object-cover border border-[#F0D5DA] shadow-xs"
               />
             ) : (
               <div className="w-16 h-16 rounded-2xl bg-[#721428] text-white flex items-center justify-center font-black text-2xl shadow-xs ring-4 ring-[#FAF0F2]">
-                {(user.first_name?.[0] || 'D').toUpperCase()}
+                {(firstName?.[0] || 'T').toUpperCase()}
               </div>
             )}
             <span className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-white border border-[#F0D5DA] flex items-center justify-center shadow-2xs">
@@ -81,17 +107,17 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
           <div className="flex-1 min-w-0 space-y-0.5">
             <div className="flex items-center gap-1.5">
               <h2 className="text-base font-bold text-gray-900 truncate">
-                {user.first_name} {user.last_name || ''}
+                {firstName} {lastName || ''}
               </h2>
             </div>
 
-            {user.username && (
+            {username && (
               <button
-                onClick={() => handleCopy(`@${user.username}`, 'username')}
+                onClick={() => handleCopy(`@${username}`, 'username')}
                 className="text-xs text-[#721428] font-bold hover:underline flex items-center gap-1 cursor-pointer"
                 title="Copy username"
               >
-                <span>@{user.username}</span>
+                <span>@{username}</span>
                 {copiedField === 'username' ? (
                   <Check className="w-3 h-3 text-emerald-600" />
                 ) : (
@@ -100,16 +126,34 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
               </button>
             )}
 
-            <div className="pt-1 flex items-center gap-2">
+            <div className="pt-1 flex items-center gap-2 flex-wrap">
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#FAF0F2] text-[#721428] text-[10px] font-bold border border-[#F0D5DA]">
                 <ShieldCheck className="w-3 h-3 text-[#721428]" />
                 <span>ATH Verified</span>
               </span>
-              <span className="text-[10.5px] font-mono text-gray-400">
-                ID: {user.id}
-              </span>
+              <button
+                onClick={() => handleCopy(telegramId.toString(), 'id')}
+                className="text-[10.5px] font-mono text-gray-500 hover:text-gray-800 flex items-center gap-1 cursor-pointer"
+                title="Permanent Telegram User ID"
+              >
+                <span>ID: {telegramId}</span>
+                {copiedField === 'id' ? (
+                  <Check className="w-3 h-3 text-emerald-600" />
+                ) : (
+                  <Copy className="w-3 h-3 opacity-40" />
+                )}
+              </button>
             </div>
           </div>
+        </div>
+
+        {/* Account Creation & Permanent ID Footer */}
+        <div className="mt-3.5 pt-3 border-t border-gray-100 flex items-center justify-between text-[11px] text-gray-500">
+          <span className="flex items-center gap-1">
+            <Calendar className="w-3.5 h-3.5 text-gray-400" />
+            <span>Member since: {formattedDate}</span>
+          </span>
+          <span className="font-semibold text-emerald-600">Telegram Authenticated</span>
         </div>
       </div>
 

@@ -49,7 +49,7 @@ export const OrdersScreen: React.FC<OrdersScreenProps> = ({ onBrowseProducts }) 
           <EmptyState
             icon={<Package className="w-6 h-6 text-[#721428] stroke-[1.8]" />}
             title="No orders yet"
-            description="Your completed TradingView subscriptions and FXReplay licenses will appear here once purchased."
+            description="Your completed TradingView subscriptions and FX Replay licenses will appear here once purchased."
             actionLabel="Browse Catalog"
             onAction={() => {
               triggerHaptic('light');
@@ -97,6 +97,16 @@ export const OrdersScreen: React.FC<OrdersScreenProps> = ({ onBrowseProducts }) 
                   {order.status === 'expired' && (
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 border border-gray-200 text-[9.5px] font-bold">
                       <span>Expired</span>
+                    </span>
+                  )}
+                  {order.status === 'cancelled' && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 text-[9.5px] font-bold">
+                      <span>Cancelled (Restored)</span>
+                    </span>
+                  )}
+                  {order.status === 'returned' && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-stone-100 text-stone-700 border border-stone-200 text-[9.5px] font-bold">
+                      <span>Returned</span>
                     </span>
                   )}
 

@@ -22,6 +22,10 @@ export interface Product {
   badge?: string;
   tier?: string;
   subtitle?: string;
+  stock?: number;
+  maxStock?: number;
+  parentProductId?: string;
+  selectedPlanId?: string;
 }
 
 export interface CartItem {
@@ -29,15 +33,26 @@ export interface CartItem {
   quantity: number;
 }
 
+export interface OrderPurchasedItem {
+  productId: string;
+  planId: string;
+  quantity: number;
+  productName: string;
+  planName?: string;
+  priceETB?: number;
+}
+
 export interface OrderItem {
   id: string;
   orderNumber: string;
   productName: string;
   date: string;
-  status: 'active' | 'processing' | 'expired';
+  status: 'active' | 'processing' | 'expired' | 'cancelled' | 'rejected' | 'returned';
   priceETB?: number;
   paymentMethod?: string;
   licenseKey?: string;
+  items?: OrderPurchasedItem[];
+  cancelReason?: string;
 }
 
 export interface WalletTransaction {
@@ -60,3 +75,21 @@ export interface WalletState {
   totalSpentETB: number;
   transactions: WalletTransaction[];
 }
+
+export interface AthAccount {
+  id: string; // Internal account ID
+  telegramId: number; // Permanent account identifier from Telegram
+  firstName: string;
+  lastName?: string;
+  username?: string;
+  photoUrl?: string;
+  languageCode?: string;
+  createdAt: string;
+  updatedAt: string;
+  lastLoginAt: string;
+  status: 'active' | 'suspended';
+  role: 'customer' | 'admin';
+  orderCount?: number;
+  totalSpentETB?: number;
+}
+

@@ -16,6 +16,8 @@ import {
 } from 'lucide-react';
 import { triggerHaptic, getInitialTelegramUser } from '../services/telegram';
 import { fetchLiveExchangeRates, getCachedExchangeRates, ExchangeRateData } from '../services/exchangeRates';
+import { getCurrentAccount, subscribeToAuth } from '../services/auth';
+import { AthAccount } from '../types';
 
 interface NotificationItem {
   id: string;
@@ -38,7 +40,7 @@ const INITIAL_NOTIFICATIONS: NotificationItem[] = [
   {
     id: 'notif-2',
     title: 'Exclusive Weekend Offer',
-    description: 'Special 20% discount on FXReplay Pro 1-year licenses is active today.',
+    description: 'Special 20% discount on FX Replay Pro 1-year licenses is active today.',
     time: '1h ago',
     unread: true,
     type: 'promo',
@@ -76,7 +78,21 @@ export const TopBar: React.FC<TopBarProps> = ({
   const profileRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
   const ratesRef = useRef<HTMLDivElement>(null);
-  const user = getInitialTelegramUser();
+  const fallbackUser = getInitialTelegramUser();
+  const [account, setAccount] = useState<AthAccount | null>(() => getCurrentAccount());
+
+  useEffect(() => {
+    setAccount(getCurrentAccount());
+    const unsubscribe = subscribeToAuth((_state, authAccount) => {
+      setAccount(authAccount);
+    });
+    return unsubscribe;
+  }, []);
+
+  const displayName = account?.firstName || fallbackUser.first_name || 'Trader';
+  const displayUsername = account?.username || fallbackUser.username;
+  const photoUrl = account?.photoUrl || fallbackUser.photo_url;
+  const initialLetter = (displayName[0] || 'T').toUpperCase();
 
   const unreadCount = notifications.filter((n) => n.unread).length;
 
@@ -155,16 +171,24 @@ export const TopBar: React.FC<TopBarProps> = ({
                 : 'bg-white hover:bg-gray-50 text-gray-900 border-gray-200/90 shadow-2xs'
             }`}
             aria-label="User Profile"
-            title={`${user.first_name || 'User'} Profile`}
+            title={`${displayName} Profile`}
           >
-            {/* Avatar circle with initial in deep burgundy */}
-            <div className="w-6.5 h-6.5 rounded-full bg-[#721428] text-white font-extrabold text-[11.5px] flex items-center justify-center ring-2 ring-[#721428]/15 shrink-0">
-              {(user.first_name?.[0] || 'D').toUpperCase()}
-            </div>
+            {/* Avatar circle with photo or initial in deep burgundy */}
+            {photoUrl ? (
+              <img
+                src={photoUrl}
+                alt={displayName}
+                className="w-6.5 h-6.5 rounded-full object-cover ring-2 ring-[#721428]/15 shrink-0"
+              />
+            ) : (
+              <div className="w-6.5 h-6.5 rounded-full bg-[#721428] text-white font-extrabold text-[11.5px] flex items-center justify-center ring-2 ring-[#721428]/15 shrink-0">
+                {initialLetter}
+              </div>
+            )}
 
             {/* Current user name in bold white-burgundy theme */}
             <span className="text-xs font-bold text-gray-900 tracking-tight truncate max-w-[85px] xs:max-w-[105px]">
-              {user.first_name || 'Dave'}
+              {displayName}
             </span>
           </button>
 
@@ -173,15 +197,23 @@ export const TopBar: React.FC<TopBarProps> = ({
             <div className="absolute left-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-200/90 p-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150 select-none">
               {/* User Identity Mini Banner */}
               <div className="px-2.5 py-2 mb-1.5 border-b border-gray-100 flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-[#721428] text-white font-bold text-xs flex items-center justify-center ring-2 ring-[#721428]/20 shrink-0">
-                  {user.first_name?.[0]?.toUpperCase() || 'D'}
-                </div>
+                {photoUrl ? (
+                  <img
+                    src={photoUrl}
+                    alt={displayName}
+                    className="w-8 h-8 rounded-full object-cover ring-2 ring-[#721428]/20 shrink-0"
+                  />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-[#721428] text-white font-bold text-xs flex items-center justify-center ring-2 ring-[#721428]/20 shrink-0">
+                    {initialLetter}
+                  </div>
+                )}
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-bold text-gray-900 truncate">
-                    {user.first_name} {user.last_name || ''}
+                    {displayName} {account?.lastName || fallbackUser.last_name || ''}
                   </p>
                   <p className="text-[10.5px] text-gray-400 truncate">
-                    {user.username ? `@${user.username}` : 'ATH Member'}
+                    {displayUsername ? `@${displayUsername}` : 'ATH Member'}
                   </p>
                 </div>
               </div>
@@ -221,6 +253,37 @@ export const TopBar: React.FC<TopBarProps> = ({
                   </div>
                   <ChevronRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-[#721428] transition-colors" />
                 </button>
+
+                <div className="pt-1 mt-1 border-t border-gray-100">
+                  <button
+                    onClick={() => {
+                      triggerHaptic('medium');
+                      setIsProfileOpen(false);
+                      if (typeof window !== 'undefined') {
+                        if ('caches' in window) {
+                          caches.keys().then((names) => names.forEach((n) => caches.delete(n)));
+                        }
+                        const cleanUrl = window.location.origin + window.location.pathname;
+                        window.location.replace(`${cleanUrl}?v=${Date.now()}`);
+                      }
+                    }}
+                    className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-left bg-emerald-50/60 hover:bg-emerald-50 text-emerald-900 border border-emerald-200/80 transition-colors group cursor-pointer"
+                    title="Reload latest version bypassing cache"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-lg bg-emerald-100/80 flex items-center justify-center text-emerald-700">
+                        <RefreshCw className="w-4 h-4 stroke-[2]" />
+                      </div>
+                      <div>
+                        <span className="text-xs font-bold block leading-tight">Sync Updates</span>
+                        <span className="text-[9.5px] text-emerald-700 font-medium">Bypass cache</span>
+                      </div>
+                    </div>
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-200/80 text-emerald-900">
+                      v2.4
+                    </span>
+                  </button>
+                </div>
               </div>
             </div>
           )}
@@ -248,91 +311,77 @@ export const TopBar: React.FC<TopBarProps> = ({
               <ArrowLeftRight className="w-4.5 h-4.5" strokeWidth={1.8} />
             </button>
 
-            {/* Exchange Rates Popover */}
+            {/* Exchange Rates Popover — Minimal & Compact */}
             {isRatesOpen && (
-              <div className="absolute right-0 mt-2 w-72 xs:w-80 bg-white rounded-2xl shadow-xl border border-gray-200/90 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-150 select-none">
+              <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-stone-200/80 overflow-hidden z-50 animate-in fade-in slide-in-from-top-1.5 duration-150 select-none">
                 {/* Popover Header */}
-                <div className="px-3.5 py-2.5 border-b border-gray-100 flex items-center justify-between bg-gray-50/60">
+                <div className="px-3 py-2 border-b border-stone-100 flex items-center justify-between">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-xs font-bold text-gray-900">Exchange Rates</span>
-                    <span className="inline-flex items-center gap-1 text-[9.5px] font-bold bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded-full border border-emerald-200/70">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      Live
-                    </span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="text-[11.5px] font-bold text-stone-900 tracking-tight">Exchange Rates</span>
+                    <span className="text-[10px] text-stone-400 font-medium">· Live</span>
                   </div>
                   <button
                     onClick={handleRefreshRates}
                     disabled={isRefreshingRates}
-                    className="p-1 text-gray-400 hover:text-[#721428] rounded-md hover:bg-gray-200/60 transition-colors disabled:opacity-50 cursor-pointer"
+                    className="p-1 text-stone-400 hover:text-stone-700 active:text-stone-950 transition-colors disabled:opacity-50 cursor-pointer"
                     title="Refresh live exchange rates"
                     aria-label="Refresh rates"
                   >
-                    <RefreshCw className={`w-3.5 h-3.5 ${isRefreshingRates ? 'animate-spin text-[#721428]' : ''}`} />
+                    <RefreshCw className={`w-3 h-3 ${isRefreshingRates ? 'animate-spin text-stone-700' : ''}`} />
                   </button>
                 </div>
 
-                {/* Popover Body: USD/ETB & USDT/ETB Pairs */}
-                <div className="p-2.5 space-y-2">
+                {/* Popover Body: Clean edge-to-edge rows with thin divider */}
+                <div className="divide-y divide-stone-100/90 text-xs">
                   {/* Pair 1: USD / ETB */}
-                  <div className="p-2.5 rounded-xl bg-stone-50/80 border border-stone-200/80 flex items-center justify-between transition-colors hover:bg-stone-50">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-lg bg-[#FAF0F2] text-[#721428] border border-[#F0D5DA] font-bold text-xs flex items-center justify-center shrink-0">
-                        $
-                      </div>
-                      <div>
-                        <div className="text-xs font-bold text-gray-900 leading-none">
-                          USD / ETB
-                        </div>
-                        <span className="text-[10px] text-gray-500 block mt-0.5">
-                          US Dollar Rate
-                        </span>
-                      </div>
+                  <div className="px-3 py-2 flex items-center justify-between hover:bg-stone-50/70 transition-colors">
+                    <div>
+                      <span className="font-semibold text-stone-900 text-[11.5px] tracking-tight block leading-tight">
+                        USD / ETB
+                      </span>
+                      <span className="text-[9.5px] text-stone-400 block leading-none mt-0.5">
+                        US Dollar
+                      </span>
                     </div>
                     <div className="text-right">
-                      <div className="text-sm font-extrabold text-[#721428] tabular-nums leading-none">
+                      <span className="font-bold text-stone-900 tabular-nums text-[12.5px] leading-tight block">
                         {ratesData.usdToEtb.toFixed(2)}
-                      </div>
-                      <span className="text-[10px] font-semibold text-gray-400 block mt-0.5">
+                      </span>
+                      <span className="text-[9px] font-medium text-stone-400 block leading-none mt-0.5">
                         ETB
                       </span>
                     </div>
                   </div>
 
                   {/* Pair 2: USDT / ETB */}
-                  <div className="p-2.5 rounded-xl bg-stone-50/80 border border-stone-200/80 flex items-center justify-between transition-colors hover:bg-stone-50">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200/80 font-bold text-xs flex items-center justify-center shrink-0">
-                        ₮
-                      </div>
-                      <div>
-                        <div className="text-xs font-bold text-gray-900 leading-none">
-                          USDT / ETB
-                        </div>
-                        <span className="text-[10px] text-gray-500 block mt-0.5">
-                          Tether P2P Rate
-                        </span>
-                      </div>
+                  <div className="px-3 py-2 flex items-center justify-between hover:bg-stone-50/70 transition-colors">
+                    <div>
+                      <span className="font-semibold text-stone-900 text-[11.5px] tracking-tight block leading-tight">
+                        USDT / ETB
+                      </span>
+                      <span className="text-[9.5px] text-stone-400 block leading-none mt-0.5">
+                        Tether P2P
+                      </span>
                     </div>
                     <div className="text-right">
-                      <div className="text-sm font-extrabold text-[#721428] tabular-nums leading-none">
+                      <span className="font-bold text-stone-900 tabular-nums text-[12.5px] leading-tight block">
                         {ratesData.usdtToEtb.toFixed(2)}
-                      </div>
-                      <span className="text-[10px] font-semibold text-gray-400 block mt-0.5">
+                      </span>
+                      <span className="text-[9px] font-medium text-stone-400 block leading-none mt-0.5">
                         ETB
                       </span>
                     </div>
                   </div>
                 </div>
 
-                {/* Popover Footer: Timestamp & Source */}
-                <div className="px-3 py-2 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between text-[10px] text-gray-500">
-                  <div className="flex items-center gap-1 text-gray-400">
-                    <Clock className="w-3 h-3 text-gray-400 shrink-0" />
-                    <span>Updated: {ratesData.lastUpdated}</span>
+                {/* Popover Footer: Minimal 1-line timestamp */}
+                <div className="px-3 py-1.5 bg-stone-50/60 border-t border-stone-100 flex items-center justify-between text-[9.5px] text-stone-400">
+                  <div className="flex items-center gap-1">
+                    <Clock className="w-2.5 h-2.5 text-stone-400 shrink-0" />
+                    <span>{ratesData.lastUpdated}</span>
                   </div>
-                  <span className="text-[9.5px] font-medium text-stone-400">
-                    ATH Market Feed
-                  </span>
+                  <span>ATH Market Feed</span>
                 </div>
               </div>
             )}
