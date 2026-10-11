@@ -14,23 +14,52 @@ class StockDatabase {
   private history: StockHistoryRecord[] = [];
   private isLoaded = false;
 
+  private getStockDbPath(): string {
+    if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
+      const tmpDir = path.resolve('/tmp', 'ath_data');
+      try {
+        if (!fs.existsSync(tmpDir)) {
+          fs.mkdirSync(tmpDir, { recursive: true });
+        }
+        return path.resolve(tmpDir, 'stock-db.json');
+      } catch {}
+    }
+    return STOCK_DB_PATH;
+  }
+
+  private getHistoryDbPath(): string {
+    if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
+      const tmpDir = path.resolve('/tmp', 'ath_data');
+      try {
+        if (!fs.existsSync(tmpDir)) {
+          fs.mkdirSync(tmpDir, { recursive: true });
+        }
+        return path.resolve(tmpDir, 'stock-history.json');
+      } catch {}
+    }
+    return HISTORY_DB_PATH;
+  }
+
   private ensureDataDir() {
     try {
       if (!fs.existsSync(DATA_DIR)) {
         fs.mkdirSync(DATA_DIR, { recursive: true });
       }
-    } catch (e) {
-      console.warn('[StockDb] Failed to create data dir:', e);
+    } catch {
+      // Read-only filesystem in serverless environments
     }
   }
 
   private loadFromDisk() {
     this.ensureDataDir();
+    const activeStockPath = this.getStockDbPath();
+    const activeHistoryPath = this.getHistoryDbPath();
 
     // 1. Load stock map
     try {
-      if (fs.existsSync(STOCK_DB_PATH)) {
-        const raw = fs.readFileSync(STOCK_DB_PATH, 'utf-8');
+      const targetPath = fs.existsSync(activeStockPath) ? activeStockPath : (fs.existsSync(STOCK_DB_PATH) ? STOCK_DB_PATH : null);
+      if (targetPath) {
+        const raw = fs.readFileSync(targetPath, 'utf-8');
         const parsed = JSON.parse(raw);
         if (parsed && typeof parsed === 'object') {
           this.stockMap = { ...DEFAULT_PLANS, ...parsed };
@@ -41,22 +70,21 @@ class StockDatabase {
         this.stockMap = { ...DEFAULT_PLANS };
         this.saveStockToDisk();
       }
-    } catch (e) {
-      console.warn('[StockDb] Error reading stock db file, using seed:', e);
+    } catch {
       this.stockMap = { ...DEFAULT_PLANS };
     }
 
     // 2. Load history
     try {
-      if (fs.existsSync(HISTORY_DB_PATH)) {
-        const rawHistory = fs.readFileSync(HISTORY_DB_PATH, 'utf-8');
+      const targetPath = fs.existsSync(activeHistoryPath) ? activeHistoryPath : (fs.existsSync(HISTORY_DB_PATH) ? HISTORY_DB_PATH : null);
+      if (targetPath) {
+        const rawHistory = fs.readFileSync(targetPath, 'utf-8');
         const parsedHistory = JSON.parse(rawHistory);
         if (Array.isArray(parsedHistory)) {
           this.history = parsedHistory;
         }
       }
-    } catch (e) {
-      console.warn('[StockDb] Error reading history db file:', e);
+    } catch {
       this.history = [];
     }
 
@@ -65,19 +93,21 @@ class StockDatabase {
 
   private saveStockToDisk() {
     this.ensureDataDir();
+    const targetPath = this.getStockDbPath();
     try {
-      fs.writeFileSync(STOCK_DB_PATH, JSON.stringify(this.stockMap, null, 2), 'utf-8');
-    } catch (e) {
-      console.warn('[StockDb] Failed to save stock to disk:', e);
+      fs.writeFileSync(targetPath, JSON.stringify(this.stockMap, null, 2), 'utf-8');
+    } catch {
+      // Silently proceed in-memory if write is blocked
     }
   }
 
   private saveHistoryToDisk() {
     this.ensureDataDir();
+    const targetPath = this.getHistoryDbPath();
     try {
-      fs.writeFileSync(HISTORY_DB_PATH, JSON.stringify(this.history, null, 2), 'utf-8');
-    } catch (e) {
-      console.warn('[StockDb] Failed to save history to disk:', e);
+      fs.writeFileSync(targetPath, JSON.stringify(this.history, null, 2), 'utf-8');
+    } catch {
+      // Silently proceed in-memory if write is blocked
     }
   }
 

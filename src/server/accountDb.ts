@@ -19,21 +19,36 @@ class AccountDatabase {
   private accountsMap: Map<number, AthAccount> = new Map();
   private isLoaded = false;
 
+  private getDbPath(): string {
+    if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
+      const tmpDir = path.resolve('/tmp', 'ath_data');
+      try {
+        if (!fs.existsSync(tmpDir)) {
+          fs.mkdirSync(tmpDir, { recursive: true });
+        }
+        return path.resolve(tmpDir, 'accounts-db.json');
+      } catch {}
+    }
+    return ACCOUNTS_DB_PATH;
+  }
+
   private ensureDataDir() {
     try {
       if (!fs.existsSync(DATA_DIR)) {
         fs.mkdirSync(DATA_DIR, { recursive: true });
       }
-    } catch (e) {
-      console.warn('[AccountDb] Failed to create data dir:', e);
+    } catch {
+      // Read-only filesystem in serverless environments
     }
   }
 
   private loadFromDisk() {
     this.ensureDataDir();
+    const activePath = this.getDbPath();
     try {
-      if (fs.existsSync(ACCOUNTS_DB_PATH)) {
-        const raw = fs.readFileSync(ACCOUNTS_DB_PATH, 'utf-8');
+      const targetPath = fs.existsSync(activePath) ? activePath : (fs.existsSync(ACCOUNTS_DB_PATH) ? ACCOUNTS_DB_PATH : null);
+      if (targetPath) {
+        const raw = fs.readFileSync(targetPath, 'utf-8');
         const parsed = JSON.parse(raw);
         if (Array.isArray(parsed)) {
           this.accountsMap.clear();
@@ -42,7 +57,7 @@ class AccountDatabase {
               this.accountsMap.set(acc.telegramId, acc);
             }
           }
-          console.log(`[AccountDb] Loaded ${this.accountsMap.size} user accounts from disk`);
+          console.log(`[AccountDb] Loaded ${this.accountsMap.size} user accounts from disk (${targetPath})`);
         }
       }
     } catch (err) {
@@ -82,13 +97,14 @@ class AccountDatabase {
 
   private saveToDisk() {
     this.ensureDataDir();
+    const targetPath = this.getDbPath();
     try {
       const accountsList = Array.from(this.accountsMap.values());
-      const tempPath = `${ACCOUNTS_DB_PATH}.tmp`;
+      const tempPath = `${targetPath}.tmp`;
       fs.writeFileSync(tempPath, JSON.stringify(accountsList, null, 2), 'utf-8');
-      fs.renameSync(tempPath, ACCOUNTS_DB_PATH);
+      fs.renameSync(tempPath, targetPath);
     } catch (err) {
-      console.error('[AccountDb] Failed to persist accounts to disk:', err);
+      console.warn('[AccountDb] Failed to persist accounts to disk:', err);
     }
   }
 
